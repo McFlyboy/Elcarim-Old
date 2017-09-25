@@ -51,11 +51,7 @@ public class GameWindow{
 	}
 	public static void setVSync(boolean vsync){
 		GameWindow.vsync = vsync;
-		int interval = 0;
-		if(vsync){
-			interval = 1;
-		}
-		glfwSwapInterval(interval);
+		glfwSwapInterval(vsync ? 1 : 0);
 	}
 	public static void center(){
 		glfwSetWindowPos(window, (getMonitorWidth() - windowWidth) / 2, (getMonitorHeight() - windowHeight) / 2);
