@@ -35,6 +35,7 @@ public class Main{
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
 			Time.init();
+			systemDelta = new DeltaTimer();
 			run();
 		}
 		catch(Exception e){
