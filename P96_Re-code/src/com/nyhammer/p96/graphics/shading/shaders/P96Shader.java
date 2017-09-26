@@ -15,6 +15,7 @@ public class P96Shader extends ShaderProgram{
 	@Override
 	protected void bindAttribs(){
 		super.bindAttrib(0, "vertex");
+		super.bindAttrib(1, "textureCoord");
 	}
 	@Override
 	protected void getUniformLocations(){

@@ -37,8 +37,8 @@ public class Main{
 			GameWindow.setVSync(false);
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
-			Render.setClearColor(0.3f, 0.3f, 0.4f);
 			Render.setAlphaBlend(true);
+			Render.init();
 			globalScene = new GlobalScene();
 			Time.init();
 			systemDelta = new DeltaTimer();
@@ -88,6 +88,7 @@ public class Main{
 	private void stop(){
 		try{
 			globalScene.dispose();
+			Render.terminate();
 			Keyboard.destroy();
 			GameWindow.destroy();
 			Framework.terminate();

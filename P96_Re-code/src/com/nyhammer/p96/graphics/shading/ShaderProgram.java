@@ -9,22 +9,22 @@ import com.nyhammer.p96.util.io.TextIO;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 
 public abstract class ShaderProgram{
-	private final int vertexShaderID;
-	private final int fragmentShaderID;
-	private final int programID;
+	private final int vertexShader;
+	private final int fragmentShader;
+	private final int program;
 	public ShaderProgram(String vshFilename, String fshFilename){
-		vertexShaderID = loadShader(vshFilename, GL_VERTEX_SHADER);
-		fragmentShaderID = loadShader(fshFilename, GL_FRAGMENT_SHADER);
-		programID = glCreateProgram();
-		glAttachShader(programID, vertexShaderID);
-		glAttachShader(programID, fragmentShaderID);
+		vertexShader = loadShader(vshFilename, GL_VERTEX_SHADER);
+		fragmentShader = loadShader(fshFilename, GL_FRAGMENT_SHADER);
+		program = glCreateProgram();
+		glAttachShader(program, vertexShader);
+		glAttachShader(program, fragmentShader);
 		bindAttribs();
-		glLinkProgram(programID);
-		glValidateProgram(programID);
+		glLinkProgram(program);
+		glValidateProgram(program);
 		getUniformLocations();
 	}
 	public void start(){
-		glUseProgram(programID);
+		glUseProgram(program);
 	}
 	public static void stop(){
 		glUseProgram(0);
@@ -46,29 +46,30 @@ public abstract class ShaderProgram{
 	}
 	protected abstract void getUniformLocations();
 	protected int getUniformLocation(String varName){
-		return glGetUniformLocation(programID, varName);
+		return glGetUniformLocation(program, varName);
 	}
 	protected abstract void bindAttribs();
 	protected void bindAttrib(int index, String varName){
-		glBindAttribLocation(programID, index, varName);
+		glBindAttribLocation(program, index, varName);
 	}
 	public static int loadShader(String filename, int type){
-		String shaderSource = new TextIO(TextIO.RESOURCE, filename).readTextResourceWhole();
+		String filepath = "/shaders/" + filename;
+		String shaderSource = new TextIO(TextIO.RESOURCE, filepath).readTextResourceWhole();
 		int shaderID = glCreateShader(type);
 		glShaderSource(shaderID, shaderSource);
 		glCompileShader(shaderID);
 		if(glGetShaderi(shaderID, GL_COMPILE_STATUS) != GL_TRUE){
-			ErrorHandler.printError("Error in shader-source: " + filename, true);
+			ErrorHandler.printError("Error in shader-source: " + filepath, true);
 			ErrorHandler.printError(glGetShaderInfoLog(shaderID, 500));
 			GameWindow.close();
 		}
 		return shaderID;
 	}
 	public void dispose(){
-		glDetachShader(programID, vertexShaderID);
-		glDetachShader(programID, fragmentShaderID);
-		glDeleteShader(vertexShaderID);
-		glDeleteShader(fragmentShaderID);
-		glDeleteProgram(programID);
+		glDetachShader(program, vertexShader);
+		glDetachShader(program, fragmentShader);
+		glDeleteShader(vertexShader);
+		glDeleteShader(fragmentShader);
+		glDeleteProgram(program);
 	}
 }

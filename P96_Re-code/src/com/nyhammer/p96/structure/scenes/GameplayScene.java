@@ -3,13 +3,16 @@ package com.nyhammer.p96.structure.scenes;
 import com.nyhammer.p96.graphics.Model;
 import com.nyhammer.p96.graphics.Models;
 import com.nyhammer.p96.graphics.Render;
+import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.SceneStruct;
 
 public class GameplayScene extends SceneStruct{
-	private Model model;
+	private Model square;
+	private Texture bgTex;
 	public GameplayScene(){
 		super(null);
-		model = Models.createSquare();
+		square = Models.createSquare();
+		bgTex = new Texture("background/Background.png", false);
 	}
 	@Override
 	protected void startSpecifics(){
@@ -21,7 +24,7 @@ public class GameplayScene extends SceneStruct{
 	}
 	@Override
 	protected void renderSpecifics(){
-		Render.render(model);
+		Render.render(square, bgTex);
 	}
 	@Override
 	protected void stopSpecifics(){
@@ -29,6 +32,7 @@ public class GameplayScene extends SceneStruct{
 	}
 	@Override
 	protected void disposeSpecifics(){
-		model.dispose();
+		bgTex.dispose();
+		square.dispose();
 	}
 }
