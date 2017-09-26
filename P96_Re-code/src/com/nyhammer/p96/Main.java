@@ -2,6 +2,7 @@ package com.nyhammer.p96;
 
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.input.Mouse;
+import com.nyhammer.p96.structure.scenes.GlobalScene;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Time;
@@ -14,6 +15,7 @@ public class Main{
 	public static final String PRE_VERSION_SUFFIX = "a";
 	public static final String TITLE = "Project 1996";
 	private DeltaTimer systemDelta;
+	private GlobalScene globalScene;
 	public static String getVersion(){
 		StringBuilder version = new StringBuilder();
 		version.append(String.format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION));
@@ -34,8 +36,10 @@ public class Main{
 			GameWindow.setVSync(false);
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
+			globalScene = new GlobalScene();
 			Time.init();
 			systemDelta = new DeltaTimer();
+			globalScene.start();
 			run();
 		}
 		catch(Exception e){
@@ -71,14 +75,16 @@ public class Main{
 		stop();
 	}
 	private void update(){
-		
+		globalScene.update();
 	}
 	private void render(){
+		globalScene.render();
 		GameWindow.update();
 		Time.updateFPS();
 	}
 	private void stop(){
 		try{
+			globalScene.dispose();
 			Keyboard.destroy();
 			GameWindow.destroy();
 			Framework.terminate();
