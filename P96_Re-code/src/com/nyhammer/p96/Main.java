@@ -38,6 +38,7 @@ public class Main{
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
 			Render.setClearColor(0.3f, 0.3f, 0.4f);
+			Render.setAlphaBlend(true);
 			globalScene = new GlobalScene();
 			Time.init();
 			systemDelta = new DeltaTimer();
