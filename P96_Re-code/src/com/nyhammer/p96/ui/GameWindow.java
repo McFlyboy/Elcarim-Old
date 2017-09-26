@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.nyhammer.p96.ErrorHandler;
 import com.nyhammer.p96.Main;
+import com.nyhammer.p96.graphics.Render;
 
 public class GameWindow{
 	private static long monitor;
@@ -122,6 +123,7 @@ public class GameWindow{
 	public static void update(){
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		Render.clear();
 	}
 	public static void close(){
 		glfwSetWindowShouldClose(window, true);

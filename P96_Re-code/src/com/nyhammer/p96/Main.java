@@ -1,5 +1,6 @@
 package com.nyhammer.p96;
 
+import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.input.Mouse;
 import com.nyhammer.p96.structure.scenes.GlobalScene;
@@ -36,6 +37,7 @@ public class Main{
 			GameWindow.setVSync(false);
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
+			Render.setClearColor(0.3f, 0.3f, 0.4f);
 			globalScene = new GlobalScene();
 			Time.init();
 			systemDelta = new DeltaTimer();
