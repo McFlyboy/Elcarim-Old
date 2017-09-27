@@ -3,6 +3,7 @@ package com.nyhammer.p96;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.input.Mouse;
+import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.scenes.GlobalScene;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.timing.DeltaTimer;
@@ -88,6 +89,7 @@ public class Main{
 	private void stop(){
 		try{
 			globalScene.dispose();
+			ResourceStorage.disposeAll();
 			Render.terminate();
 			Keyboard.destroy();
 			GameWindow.destroy();

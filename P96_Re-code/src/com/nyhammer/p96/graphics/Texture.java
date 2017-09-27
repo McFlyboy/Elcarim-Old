@@ -20,9 +20,15 @@ public class Texture{
 	private int height;
 	private int colorComp;
 	private int texture;
+	public Texture(String filename){
+		this(filename, false);
+	}
 	public Texture(String filename, boolean linear){
 		ByteBuffer buffer = loadImage(filename);
 		initTexture(buffer, linear);
+	}
+	public Texture(BufferedImage img){
+		this(img, false);
 	}
 	public Texture(BufferedImage img, boolean linear){
 		ByteBuffer buffer = createByteBuffer(img);

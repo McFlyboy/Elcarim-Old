@@ -1,11 +1,14 @@
 package com.nyhammer.p96.structure.scenes;
 
+import com.nyhammer.p96.graphics.Models;
+import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.SceneStruct;
 
 public class GlobalScene extends SceneStruct{
 	private GameplayScene gameplayScene;
 	public GlobalScene(){
 		super(null);
+		ResourceStorage.add("square", Models.createSquare());
 	}
 	@Override
 	protected void startSpecifics(){
@@ -27,5 +30,6 @@ public class GlobalScene extends SceneStruct{
 	@Override
 	protected void disposeSpecifics(){
 		gameplayScene.dispose();
+		ResourceStorage.disposeModel("square");
 	}
 }
