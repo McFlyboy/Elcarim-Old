@@ -1,5 +1,6 @@
 package com.nyhammer.p96;
 
+import com.nyhammer.p96.audio.AudioSystem;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.input.Mouse;
@@ -38,6 +39,7 @@ public class Main{
 			GameWindow.setVSync(false);
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
+			AudioSystem.init();
 			Render.setAlphaBlend(true);
 			Render.init();
 			globalScene = new GlobalScene();
@@ -91,6 +93,7 @@ public class Main{
 			globalScene.dispose();
 			ResourceStorage.disposeAll();
 			Render.terminate();
+			AudioSystem.terminate();
 			Keyboard.destroy();
 			GameWindow.destroy();
 			Framework.terminate();
