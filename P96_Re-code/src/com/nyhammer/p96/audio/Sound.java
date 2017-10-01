@@ -66,16 +66,16 @@ public class Sound{
 	}
 	private ShortBuffer readVorbis(String filename, STBVorbisInfo info){
 		IntBuffer error = BufferUtils.createIntBuffer(1);
-		long decoder = STBVorbis.stb_vorbis_open_filename("assets/audio/" + filename, error, null);
+		long decoder = STBVorbis.stb_vorbis_open_filename("assets/audio/sfx/" + filename, error, null);
 		if(decoder == MemoryUtil.NULL){
-			ErrorHandler.printError("Could not load audio from file: assets/audio/" + filename + "\nError: " + error.get(), true);
+			ErrorHandler.printError("Could not load audio from file: assets/audio/sfx/" + filename + "\nError: " + error.get(), true);
 			ErrorHandler.printError(new RuntimeException());
 			GameWindow.close();
 		}
 		STBVorbis.stb_vorbis_get_info(decoder, info);
 		int channels = info.channels();
-		int lengthSamples = STBVorbis.stb_vorbis_stream_length_in_samples(decoder);
-		ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples * channels);
+		int lengthSamples = STBVorbis.stb_vorbis_stream_length_in_samples(decoder) * channels;
+		ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples);
 		STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm);
 		STBVorbis.stb_vorbis_close(decoder);
 		return pcm;
