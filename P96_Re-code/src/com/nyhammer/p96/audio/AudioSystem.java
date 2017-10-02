@@ -15,7 +15,6 @@ import com.nyhammer.p96.ui.GameWindow;
 
 public class AudioSystem{
 	private static long device;
-	private static ALCCapabilities deviceCaps;
 	private static long context;
 	public static void init(){
 		device = alcOpenDevice((ByteBuffer)null);
@@ -24,7 +23,7 @@ public class AudioSystem{
 			ErrorHandler.printError(new IllegalStateException());
 			GameWindow.close();
 		}
-		deviceCaps = ALC.createCapabilities(device);
+		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 		context = alcCreateContext(device, (IntBuffer)null);
 		if(context == NULL){
 			ErrorHandler.printError("Could not create an OpenAL-context!", true);

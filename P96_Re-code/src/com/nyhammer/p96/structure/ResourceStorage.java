@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.nyhammer.p96.ErrorHandler;
+import com.nyhammer.p96.audio.Music;
 import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.graphics.Model;
 import com.nyhammer.p96.graphics.Texture;
@@ -14,6 +15,7 @@ public class ResourceStorage{
 	private static Map<String, Model> modelStorage = new HashMap<String, Model>();
 	private static Map<String, Texture> textureStorage = new HashMap<String, Texture>();
 	private static Map<String, Sound> soundStorage = new HashMap<String, Sound>();
+	private static Map<String, Music> musicStorage = new HashMap<String, Music>();
 	public static Model getModel(String name){
 		Model model = modelStorage.get(name);
 		if(model == null){
@@ -35,6 +37,13 @@ public class ResourceStorage{
 		}
 		return sound;
 	}
+	public static Music getMusic(String name){
+		Music music = musicStorage.get(name);
+		if(music == null){
+			ErrorHandler.printError("Resource-name mismatch!");
+		}
+		return music;
+	}
 	public static void add(String name, Model model){
 		modelStorage.put(name, model);
 	}
@@ -43,6 +52,9 @@ public class ResourceStorage{
 	}
 	public static void add(String name, Sound sound){
 		soundStorage.put(name, sound);
+	}
+	public static void add(String name, Music music){
+		musicStorage.put(name, music);
 	}
 	public static void disposeModel(String name){
 		Model model = modelStorage.remove(name);
@@ -60,6 +72,12 @@ public class ResourceStorage{
 		Sound sound = soundStorage.remove(name);
 		if(sound != null){
 			sound.dispose();
+		}
+	}
+	public static void disposeMusic(String name){
+		Music music = musicStorage.remove(name);
+		if(music != null){
+			music.dispose();
 		}
 	}
 	public static void disposeModels(){
@@ -83,9 +101,17 @@ public class ResourceStorage{
 		}
 		soundStorage.clear();
 	}
+	public static void disposeMusics(){
+		Iterator<Entry<String, Music>> iterator = musicStorage.entrySet().iterator();
+		while(iterator.hasNext()){
+			iterator.next().getValue().dispose();
+		}
+		musicStorage.clear();
+	}
 	public static void disposeAll(){
 		disposeModels();
 		disposeTextures();
 		disposeSounds();
+		disposeMusics();
 	}
 }
