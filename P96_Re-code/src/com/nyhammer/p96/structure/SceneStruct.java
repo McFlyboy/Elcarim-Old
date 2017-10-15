@@ -23,6 +23,7 @@ public abstract class SceneStruct{
 		}
 		sceneTimer.resume();
 		startSpecifics();
+		running = true;
 	}
 	public void update(){
 		if(!running){
@@ -39,6 +40,7 @@ public abstract class SceneStruct{
 		}
 		sceneTimer.pause();
 		stopSpecifics();
+		running = false;
 	}
 	public void dispose(){
 		disposeSpecifics();
