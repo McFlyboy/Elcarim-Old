@@ -1,5 +1,6 @@
 package com.nyhammer.p96;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,12 +11,14 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class ErrorHandler{
+	private static Toolkit toolkit;
 	private static File logFile;
 	private static PrintStream stream;
 	public static PrintStream getStream(){
 		return stream;
 	}
 	public static void init(){
+		toolkit = Toolkit.getDefaultToolkit();
 		logFile = new File("Errorlog.txt");
 		if(!logFile.exists()){
 			try{
@@ -24,6 +27,7 @@ public class ErrorHandler{
 			catch(IOException e){
 				System.err.println("Failed to create the logfile!!!");
 				e.printStackTrace();
+				toolkit.beep();
 				System.exit(1);
 			}
 		}
@@ -33,6 +37,7 @@ public class ErrorHandler{
 		catch(FileNotFoundException e){
 			System.err.println("Failed to locate the logfile!!!");
 			e.printStackTrace();
+			toolkit.beep();
 			System.exit(1);
 		}
 		try{
@@ -48,6 +53,7 @@ public class ErrorHandler{
 		System.err.println(error);
 		stream.println(error);
 		if(shouldPopUp){
+			toolkit.beep();
 			JOptionPane.showMessageDialog(null, error + "\nCheck logfile for more info");
 		}
 	}

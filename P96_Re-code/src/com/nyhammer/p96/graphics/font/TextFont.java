@@ -42,7 +42,7 @@ public class TextFont{
 		FontMetrics metrics = createFontMetrics(font);
 		List<BufferedImage> charImages = new ArrayList<BufferedImage>();
 		List<Character> chars = new ArrayList<Character>();
-		for(int i = 32; i < 128; i++){
+		for(int i = 32; i < 256; i++){
 			char ch = (char)i;
 			BufferedImage charImage = createCharImage(ch, font, metrics);
 			imgWidth += charImage.getWidth();
@@ -82,6 +82,9 @@ public class TextFont{
 	public Glyph getGlyph(char ch){
 		return glyphs.get(ch);
 	}
+	public void dispose(){
+		fontTexture.dispose();
+	}
 	private FontMetrics createFontMetrics(Font font){
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
@@ -99,7 +102,7 @@ public class TextFont{
 		g.dispose();
 		return charImage;
 	}
-	private class Glyph{
+	public class Glyph{
 		private int x, y, width, height;
 		public Glyph(int x, int y, int width, int height){
 			this.x = x;

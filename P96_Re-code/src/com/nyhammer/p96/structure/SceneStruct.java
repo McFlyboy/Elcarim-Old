@@ -5,7 +5,6 @@ import com.nyhammer.p96.util.timing.Timer;
 public abstract class SceneStruct{
 	private boolean running;
 	protected Timer sceneTimer;
-	//List of what to render
 	public SceneStruct(Timer timer){
 		sceneTimer = new Timer(timer);
 	}

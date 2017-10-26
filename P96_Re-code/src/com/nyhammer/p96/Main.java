@@ -2,6 +2,7 @@ package com.nyhammer.p96;
 
 import com.nyhammer.p96.audio.AudioSystem;
 import com.nyhammer.p96.graphics.Render;
+import com.nyhammer.p96.graphics.font.TextFont;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.input.Mouse;
 import com.nyhammer.p96.structure.ResourceStorage;
@@ -40,19 +41,20 @@ public class Main{
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
 			AudioSystem.init();
+			ResourceStorage.add("font", new TextFont("consola.ttf", 28));
 			Render.setAlphaBlend(true);
 			Render.init();
 			globalScene = new GlobalScene();
 			Time.init();
 			systemDelta = new DeltaTimer();
 			globalScene.start();
-			run();
 		}
 		catch(Exception e){
 			ErrorHandler.printError("Error in game-startup!", true);
 			ErrorHandler.printError(e);
 			stop();
 		}
+		run();
 	}
 	private void run(){
 		double targetFrameTime = 1.0 / GameWindow.getMonitorRefreshRate();
@@ -85,6 +87,7 @@ public class Main{
 	}
 	private void render(){
 		globalScene.render();
+		Render.renderQueue();
 		GameWindow.update();
 		Time.updateFPS();
 	}

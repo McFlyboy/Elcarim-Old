@@ -12,7 +12,7 @@ public class GlobalScene extends SceneStruct{
 	}
 	@Override
 	protected void startSpecifics(){
-		gameplayScene = new GameplayScene();
+		gameplayScene = new GameplayScene(this.sceneTimer);
 		gameplayScene.start();
 	}
 	@Override

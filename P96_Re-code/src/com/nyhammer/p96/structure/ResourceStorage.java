@@ -10,37 +10,46 @@ import com.nyhammer.p96.audio.Music;
 import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.graphics.Model;
 import com.nyhammer.p96.graphics.Texture;
+import com.nyhammer.p96.graphics.font.TextFont;
 
 public class ResourceStorage{
 	private static Map<String, Model> modelStorage = new HashMap<String, Model>();
 	private static Map<String, Texture> textureStorage = new HashMap<String, Texture>();
+	private static Map<String, TextFont> fontStorage = new HashMap<String, TextFont>();
 	private static Map<String, Sound> soundStorage = new HashMap<String, Sound>();
 	private static Map<String, Music> musicStorage = new HashMap<String, Music>();
 	public static Model getModel(String name){
 		Model model = modelStorage.get(name);
 		if(model == null){
-			ErrorHandler.printError("Resource-name mismatch!");
+			ErrorHandler.printError("Resource-name mismatch!\nWrong name: " + name);
 		}
 		return model;
 	}
 	public static Texture getTexture(String name){
 		Texture texture = textureStorage.get(name);
 		if(texture == null){
-			ErrorHandler.printError("Resource-name mismatch!");
+			ErrorHandler.printError("Resource-name mismatch!\nWrong name: " + name);
 		}
 		return texture;
+	}
+	public static TextFont getTextFont(String name){
+		TextFont font = fontStorage.get(name);
+		if(font == null){
+			ErrorHandler.printError("Resource-name mismatch!\nWrong name: " + name);
+		}
+		return font;
 	}
 	public static Sound getSound(String name){
 		Sound sound = soundStorage.get(name);
 		if(sound == null){
-			ErrorHandler.printError("Resource-name mismatch!");
+			ErrorHandler.printError("Resource-name mismatch!\nWrong name: " + name);
 		}
 		return sound;
 	}
 	public static Music getMusic(String name){
 		Music music = musicStorage.get(name);
 		if(music == null){
-			ErrorHandler.printError("Resource-name mismatch!");
+			ErrorHandler.printError("Resource-name mismatch!\nWrong name: " + name);
 		}
 		return music;
 	}
@@ -49,6 +58,9 @@ public class ResourceStorage{
 	}
 	public static void add(String name, Texture texture){
 		textureStorage.put(name, texture);
+	}
+	public static void add(String name, TextFont font){
+		fontStorage.put(name, font);
 	}
 	public static void add(String name, Sound sound){
 		soundStorage.put(name, sound);
@@ -66,6 +78,12 @@ public class ResourceStorage{
 		Texture texture = textureStorage.remove(name);
 		if(texture != null){
 			texture.dispose();
+		}
+	}
+	public static void disposeTextFont(String name){
+		TextFont font = fontStorage.remove(name);
+		if(font != null){
+			font.dispose();
 		}
 	}
 	public static void disposeSound(String name){
@@ -94,6 +112,13 @@ public class ResourceStorage{
 		}
 		textureStorage.clear();
 	}
+	public static void disposeTextFonts(){
+		Iterator<Entry<String, TextFont>> iterator = fontStorage.entrySet().iterator();
+		while(iterator.hasNext()){
+			iterator.next().getValue().dispose();
+		}
+		fontStorage.clear();
+	}
 	public static void disposeSounds(){
 		Iterator<Entry<String, Sound>> iterator = soundStorage.entrySet().iterator();
 		while(iterator.hasNext()){
@@ -111,6 +136,7 @@ public class ResourceStorage{
 	public static void disposeAll(){
 		disposeModels();
 		disposeTextures();
+		disposeTextFonts();
 		disposeSounds();
 		disposeMusics();
 	}

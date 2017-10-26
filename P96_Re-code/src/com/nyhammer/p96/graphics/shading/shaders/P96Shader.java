@@ -9,6 +9,10 @@ public class P96Shader extends ShaderProgram{
 	private int positionLocation;
 	private int angleLocation;
 	private int scaleLocation;
+	private int colorActiveLocation;
+	private int redLocation;
+	private int greenLocation;
+	private int blueLocation;
 	public P96Shader(){
 		super(vshFilename, fshFilename);
 	}
@@ -22,10 +26,20 @@ public class P96Shader extends ShaderProgram{
 		positionLocation = super.getUniformLocation("position");
 		angleLocation = super.getUniformLocation("angle");
 		scaleLocation = super.getUniformLocation("scale");
+		colorActiveLocation = super.getUniformLocation("colorActive");
+		redLocation = super.getUniformLocation("red");
+		greenLocation = super.getUniformLocation("green");
+		blueLocation = super.getUniformLocation("blue");
 	}
 	public void loadTransformation(Vector2f position, float angle, Vector2f scale){
 		super.loadVector2f(positionLocation, position);
 		super.loadFloat(angleLocation, angle);
 		super.loadVector2f(scaleLocation, scale);
+	}
+	public void loadColors(boolean colorActive, float red, float green, float blue){
+		super.loadBoolean(colorActiveLocation, colorActive);
+		super.loadFloat(redLocation, red);
+		super.loadFloat(greenLocation, green);
+		super.loadFloat(blueLocation, blue);
 	}
 }

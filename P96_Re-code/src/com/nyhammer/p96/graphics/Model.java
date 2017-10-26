@@ -21,6 +21,9 @@ public class Model{
 		vao = glGenVertexArrays();
 		bind();
 	}
+	public int getVAO(){
+		return vao;
+	}
 	public int getIndexCount(){
 		return indexCount;
 	}

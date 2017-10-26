@@ -3,6 +3,9 @@ package com.nyhammer.p96.ui;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.nio.IntBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -12,15 +15,12 @@ import com.nyhammer.p96.Main;
 import com.nyhammer.p96.graphics.Render;
 
 public class GameWindow{
+	public static final float ASPECT_RATIO = 16f / 9f;
 	private static long monitor;
 	private static GLFWVidMode vidMode;
 	private static long window;
 	private static int windowWidth;
 	private static int windowHeight;
-	private static int fullscreenAspectFixX;
-	private static int fullscreenAspectFixY;
-	private static int fullscreenAspectFixWidth;
-	private static int fullscreenAspectFixHeight;
 	private static boolean vsync;
 	public static long getWindow(){
 		return window;
@@ -45,7 +45,7 @@ public class GameWindow{
 	}
 	public static void setFullscreen(boolean fullscreen){
 		glfwSetWindowMonitor(window, fullscreen ? monitor : NULL, 0, 0, getMonitorWidth(), getMonitorHeight(), fullscreen ? getMonitorRefreshRate() : GLFW_DONT_CARE);
-		setViewPort(fullscreen);
+		setViewPort();
 	}
 	public static boolean isVSync(){
 		return vsync;
@@ -57,17 +57,42 @@ public class GameWindow{
 	public static void center(){
 		glfwSetWindowPos(window, (getMonitorWidth() - windowWidth) / 2, (getMonitorHeight() - windowHeight) / 2);
 	}
-	public static void setViewPort(boolean fullscreen){
-		if(fullscreen){
-			GL11.glViewport(fullscreenAspectFixX, fullscreenAspectFixY, fullscreenAspectFixWidth, fullscreenAspectFixHeight);
+	public static void setViewPort(){
+		IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
+		IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
+		glfwGetWindowSize(window, widthBuffer, heightBuffer);
+		int width = widthBuffer.get();
+		int height = heightBuffer.get();
+		float aspectRatio = (float)width / (float)height;
+		int aspectFixX;
+		int aspectFixY;
+		int aspectFixWidth;
+		int aspectFixHeight;
+		if(aspectRatio == 16f / 9f){
+			aspectFixX = 0;
+			aspectFixY = 0;
+			aspectFixWidth = width;
+			aspectFixHeight = height;
+		}
+		else if(aspectRatio < 16f / 9f){
+			int heightOffset = height / 2 - 9 * width / 32;
+			aspectFixX = 0;
+			aspectFixY = heightOffset;
+			aspectFixWidth = width;
+			aspectFixHeight = height - heightOffset * 2;
 		}
 		else{
-			GL11.glViewport(0, 0, windowWidth, windowHeight);
+			int widthOffset = width / 2 - 8 * height / 9;
+			aspectFixX = widthOffset;
+			aspectFixY = 0;
+			aspectFixWidth = width - widthOffset * 2;
+			aspectFixHeight = height;
 		}
+		GL11.glViewport(aspectFixX, aspectFixY, aspectFixWidth, aspectFixHeight);
 	}
 	public static void create(boolean fullscreen) throws Exception{
-		windowWidth = 1366;
-		windowHeight = 768;
+		windowWidth = 1280;
+		windowHeight = 720;
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -77,31 +102,6 @@ public class GameWindow{
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 		monitor = glfwGetPrimaryMonitor();
 		vidMode = glfwGetVideoMode(monitor);
-		float monitorAspectRatio = getMonitorAspectRatio();
-		if(monitorAspectRatio == 16f / 9f){
-			fullscreenAspectFixX = 0;
-			fullscreenAspectFixY = 0;
-			fullscreenAspectFixWidth = getMonitorWidth();
-			fullscreenAspectFixHeight = getMonitorHeight();
-		}
-		else if(monitorAspectRatio < 16f / 9f){
-			int monitorWidth = getMonitorWidth();
-			int monitorHeight = getMonitorHeight();
-			int heightOffset = monitorHeight / 2 - 9 * monitorWidth / 32;
-			fullscreenAspectFixX = 0;
-			fullscreenAspectFixY = heightOffset;
-			fullscreenAspectFixWidth = monitorWidth;
-			fullscreenAspectFixHeight = monitorHeight - heightOffset;
-		}
-		else{
-			int monitorWidth = getMonitorWidth();
-			int monitorHeight = getMonitorHeight();
-			int widthOffset = monitorWidth / 2 - 8 * monitorHeight / 9;
-			fullscreenAspectFixX = widthOffset;
-			fullscreenAspectFixY = 0;
-			fullscreenAspectFixWidth = monitorWidth - widthOffset;
-			fullscreenAspectFixHeight = monitorHeight;
-		}
 		if(fullscreen){
 			window = glfwCreateWindow(vidMode.width(), vidMode.height(), Main.TITLE, monitor, NULL);
 		}
@@ -117,7 +117,7 @@ public class GameWindow{
 		}
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
-		setViewPort(fullscreen);
+		setViewPort();
 		glfwShowWindow(window);
 	}
 	public static void update(){
