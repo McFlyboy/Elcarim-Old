@@ -5,8 +5,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-public class Controller{
-	/** Controller buttons */
+public class Gamepad{
+	/** Gamepad buttons */
 	public static final int
 		BUTTON_A          = 0,
 		BUTTON_B          = 1,
@@ -22,7 +22,7 @@ public class Controller{
 		BUTTON_DPAD_RIGHT = 11,
 		BUTTON_DPAD_DOWN  = 12,
 		BUTTON_DPAD_LEFT  = 13;
-	/** Controller axes */
+	/** Gamepad axes */
 	public static final int
 		AXIS_LX = 0,
 		AXIS_LY = 1,
@@ -63,18 +63,28 @@ public class Controller{
 		return innerThreshold;
 	}
 	public static void setInnerThreshold(float innerThreshold){
-		Controller.innerThreshold = innerThreshold;
+		Gamepad.innerThreshold = innerThreshold;
 	}
 	public static float getOuterThreshold(){
 		return outerThreshold;
 	}
 	public static void setOuterThreshold(float outerThreshold){
-		Controller.outerThreshold = outerThreshold;
+		Gamepad.outerThreshold = outerThreshold;
 	}
-	public static void updateButtonStates(){
+	public static void update(){
+		if(!isPresent()){
+			return;
+		}
+		updateButtonStates();
+		updateAxisStates();
+	}
+	private static void updateButtonStates(){
 		ByteBuffer buttonStates = glfwGetJoystickButtons(GLFW_JOYSTICK_1);
 		if(buttonStates == null){
 			return;
+		}
+		else{
+			//ControlScheme.setActiveInput(ControlScheme.ACTIVE_GAMEPAD);
 		}
 		int i = 0;
 		while(buttonStates.hasRemaining()){
@@ -98,10 +108,13 @@ public class Controller{
 			i++;
 		}
 	}
-	public static void updateAxisStates(){
+	private static void updateAxisStates(){
 		FloatBuffer axisStates = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
 		if(axisStates == null){
 			return;
+		}
+		else{
+			//ControlScheme.setActiveInput(ControlScheme.ACTIVE_GAMEPAD);
 		}
 		int i = 0;
 		while(axisStates.hasRemaining()){

@@ -62,6 +62,7 @@ public class Render{
 			}
 		}
 		masterQueue.clear();
+		unprepare();
 	}
 	private static void unprepare(){
 		glDisableVertexAttribArray(0);

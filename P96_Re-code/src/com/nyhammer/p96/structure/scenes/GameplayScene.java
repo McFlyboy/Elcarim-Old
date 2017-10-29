@@ -7,6 +7,7 @@ import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.SceneStruct;
+import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Timer;
@@ -14,8 +15,10 @@ import com.nyhammer.p96.util.timing.Timer;
 public class GameplayScene extends SceneStruct{
 	private ModelEntity background;
 	private TextField text;
+	private GameplayControls controls;
 	public GameplayScene(Timer timer){
 		super(timer);
+		controls = new GameplayControls();
 		Texture bgTexture = new Texture("background/Background.png");
 		ResourceStorage.add("bgTex", bgTexture);
 		background = new ModelEntity(ResourceStorage.getModel("square"), bgTexture, new Vector2f(), new Vector2f(GameWindow.ASPECT_RATIO, 1f), 0f);
@@ -33,6 +36,7 @@ public class GameplayScene extends SceneStruct{
 	@Override
 	protected void startSpecifics(){
 		ResourceStorage.getMusic("bgm").play();
+		updateControls();
 	}
 	@Override
 	protected void updateSpecifics(){
@@ -51,5 +55,8 @@ public class GameplayScene extends SceneStruct{
 	protected void disposeSpecifics(){
 		ResourceStorage.disposeTexture("bgTex");
 		ResourceStorage.disposeMusic("bgm");
+	}
+	public void updateControls(){
+		
 	}
 }

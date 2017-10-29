@@ -3,8 +3,10 @@ package com.nyhammer.p96;
 import com.nyhammer.p96.audio.AudioSystem;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.font.TextFont;
+import com.nyhammer.p96.input.Gamepad;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.input.Mouse;
+import com.nyhammer.p96.structure.ControlScheme;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.scenes.GlobalScene;
 import com.nyhammer.p96.ui.GameWindow;
@@ -23,9 +25,9 @@ public class Main{
 	public static String getVersion(){
 		StringBuilder version = new StringBuilder();
 		version.append(String.format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION));
-		String patch = String.format("%02d", VERSION_PATCH);
-		if(!patch.equals("00")){
-			version.append("_" + patch);
+		String patch = String.format("%d", VERSION_PATCH);
+		if(!patch.equals("0")){
+			version.append("." + patch);
 		}
 		version.append(PRE_VERSION_SUFFIX);
 		return version.toString();
@@ -40,6 +42,7 @@ public class Main{
 			GameWindow.setVSync(false);
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
+			ControlScheme.setActiveInput(Gamepad.isPresent() ? ControlScheme.ACTIVE_GAMEPAD : ControlScheme.ACTIVE_KEYBOARD);
 			AudioSystem.init();
 			ResourceStorage.add("font", new TextFont("consola.ttf", 28));
 			Render.setAlphaBlend(true);

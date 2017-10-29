@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
 
+import com.nyhammer.p96.structure.ControlScheme;
 import com.nyhammer.p96.ui.GameWindow;
 
 public class Keyboard{
@@ -142,7 +143,7 @@ public class Keyboard{
 	public static final int
 		KEY_UNCHANGE_RANGE = 2;
 	private static GLFWKeyCallback keyCallback;
-	private static int[] keys = new int[65536];
+	private static int[] keys = new int[0x10000];
 	private static int getKeyState(int key){
 		int keyState = keys[key];
 		if(keyState >= KEY_UNCHANGE_RANGE){
@@ -161,6 +162,7 @@ public class Keyboard{
 		glfwSetKeyCallback(GameWindow.getWindow(), keyCallback = new GLFWKeyCallback(){
 			@Override
 			public void invoke(long window, int key, int scancode, int action, int mods){
+				ControlScheme.setActiveInput(ControlScheme.ACTIVE_KEYBOARD);
 				if(action == GLFW_PRESS){
 					keys[key] = KEY_PRESSED;
 				}
