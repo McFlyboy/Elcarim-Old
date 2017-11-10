@@ -84,7 +84,7 @@ public class Gamepad{
 			return;
 		}
 		else{
-			//ControlScheme.setActiveInput(ControlScheme.ACTIVE_GAMEPAD);
+			//ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_GAMEPAD);
 		}
 		int i = 0;
 		while(buttonStates.hasRemaining()){
@@ -114,7 +114,7 @@ public class Gamepad{
 			return;
 		}
 		else{
-			//ControlScheme.setActiveInput(ControlScheme.ACTIVE_GAMEPAD);
+			//ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_GAMEPAD);
 		}
 		int i = 0;
 		while(axisStates.hasRemaining()){

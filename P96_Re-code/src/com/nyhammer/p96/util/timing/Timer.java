@@ -4,7 +4,6 @@ public class Timer{
 	private Timer baseTimer;
 	private double startTime;
 	private double pauseTime;
-	private double pausedTime;
 	private boolean pause;
 	public Timer(){
 		this(null, false);
@@ -25,9 +24,13 @@ public class Timer{
 	}
 	public double getTime(){
 		if(pause){
-			return pauseTime - startTime - pausedTime;
+			return pauseTime - startTime;
 		}
-		return baseTimer != null ? baseTimer.getTime() : Time.getTime() - startTime - pausedTime;
+		return (baseTimer != null ? baseTimer.getTime() : Time.getTime()) - startTime;
+	}
+	public void setTime(double time){
+		startTime = (baseTimer != null ? baseTimer.getTime() : Time.getTime()) - time;
+		pauseTime = startTime;
 	}
 	public void pause(){
 		if(pause){
@@ -40,18 +43,16 @@ public class Timer{
 		if(!pause){
 			return;
 		}
-		pausedTime += baseTimer != null ? baseTimer.getTime() : Time.getTime() - pauseTime;
+		startTime += (baseTimer != null ? baseTimer.getTime() : Time.getTime()) - pauseTime;
 		pause = false;
 	}
 	public void reset(boolean startOnInit){
 		startTime = baseTimer != null ? baseTimer.getTime() : Time.getTime();
-		pausedTime = 0.0;
 		if(!startOnInit){
 			pause = true;
 			pauseTime = startTime;
 		}
 		else{
-			pause = false;
 			pauseTime = 0.0;
 		}
 	}

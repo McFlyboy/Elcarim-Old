@@ -7,12 +7,28 @@ public class TargetTimer{
 		this(null, targetTime);
 	}
 	public TargetTimer(Timer baseTimer, double targetTime){
-		timer = new Timer(baseTimer, true);
+		timer = new Timer(baseTimer, false);
 		this.targetTime = targetTime;
 	}
+	public double getTargetTime(){
+		return targetTime;
+	}
+	public void setTargetTime(double targetTime){
+		this.targetTime = targetTime;
+	}
+	public void resume(){
+		timer.resume();
+	}
+	public void pause(){
+		timer.pause();
+	}
+	public void reset(){
+		timer.reset(false);
+	}
 	public boolean targetReached(){
-		if(timer.getTime() >= targetTime){
-			timer.reset(true);
+		double time = timer.getTime();
+		if(time >= targetTime){
+			timer.setTime(time - targetTime);
 			return true;
 		}
 		return false;

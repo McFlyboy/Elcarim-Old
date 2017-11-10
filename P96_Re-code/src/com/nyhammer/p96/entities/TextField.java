@@ -6,7 +6,7 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 
 public class TextField extends Entity{
 	private String text;
-	private float red, green, blue;
+	public float red, green, blue;
 	private int baseWidth, baseHeight;
 	public TextField(){
 		super();
@@ -36,24 +36,6 @@ public class TextField extends Entity{
 		}
 		this.text = text;
 		calculateBaseSize();
-	}
-	public float getRed(){
-		return red;
-	}
-	public void setRed(float red){
-		this.red = red;
-	}
-	public float getGreen(){
-		return green;
-	}
-	public void setGreen(float green){
-		this.green = green;
-	}
-	public float getBlue(){
-		return blue;
-	}
-	public void setBlue(float blue){
-		this.blue = blue;
 	}
 	public int getBaseWidth(){
 		return baseWidth;

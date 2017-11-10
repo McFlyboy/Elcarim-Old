@@ -1,7 +1,9 @@
 package com.nyhammer.p96.structure.scenes;
 
+import com.nyhammer.p96.Main;
 import com.nyhammer.p96.audio.Music;
 import com.nyhammer.p96.entities.ModelEntity;
+import com.nyhammer.p96.entities.Player;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
@@ -10,12 +12,14 @@ import com.nyhammer.p96.structure.SceneStruct;
 import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
+import com.nyhammer.p96.util.timing.Time;
 import com.nyhammer.p96.util.timing.Timer;
 
 public class GameplayScene extends SceneStruct{
 	private ModelEntity background;
-	private TextField text;
+	private TextField fpsText;
 	private GameplayControls controls;
+	private Player player;
 	public GameplayScene(Timer timer){
 		super(timer);
 		controls = new GameplayControls();
@@ -28,24 +32,36 @@ public class GameplayScene extends SceneStruct{
 		});
 		bgm.setPartLooping(0, false);
 		ResourceStorage.add("bgm", bgm);
-		text = new TextField();
-		text.setText("This is a test");
-		text.setRed(1f);
-		text.setGreen(1f);
+		fpsText = new TextField();
+		fpsText.scale = new Vector2f(0.003f, 0.003f);
+		fpsText.red = 1f;
+		fpsText.green = 1f;
+		Texture playerTex = new Texture("char/player.png", 3, 3);
+		player = new Player(this.sceneTimer);
+		player.model = ResourceStorage.getModel("square");
+		player.texture = playerTex;
+		player.scale = new Vector2f(0.05f, 0.05f);
+		player.position.y = -1f + player.scale.y;
+		ResourceStorage.add("playerTex", playerTex);
+		Texture bulletTex = new Texture("bullet/bullet.png");
+		ResourceStorage.add("bulletTex", bulletTex);
 	}
 	@Override
 	protected void startSpecifics(){
 		ResourceStorage.getMusic("bgm").play();
-		updateControls();
 	}
 	@Override
 	protected void updateSpecifics(){
 		ResourceStorage.getMusic("bgm").update();
+		updateControls();
 	}
 	@Override
 	protected void renderSpecifics(){
 		Render.addToQueue(background);
-		Render.addToQueue(text);
+		Render.addToQueue(player);
+		fpsText.setText("FPS: " + Time.getFPS());
+		fpsText.position = new Vector2f(-GameWindow.ASPECT_RATIO + fpsText.getWidth() / 2f, 1f - fpsText.getHeight() / 2f);
+		Render.addToQueue(fpsText);
 	}
 	@Override
 	protected void stopSpecifics(){
@@ -54,9 +70,22 @@ public class GameplayScene extends SceneStruct{
 	@Override
 	protected void disposeSpecifics(){
 		ResourceStorage.disposeTexture("bgTex");
+		ResourceStorage.disposeTexture("playerTex");
+		ResourceStorage.disposeTexture("bulletTex");
 		ResourceStorage.disposeMusic("bgm");
 	}
 	public void updateControls(){
-		
+		float walkDistance = 0;
+		if(controls.isDown(controls.getMoveLeft())){
+			walkDistance += -1f;
+		}
+		if(controls.isDown(controls.getMoveRight())){
+			walkDistance += 1f;
+		}
+		if(controls.isPressed(controls.getHit())){
+			player.hit();
+		}
+		player.walk(walkDistance * Main.getDeltaTime());
+		player.update();
 	}
 }

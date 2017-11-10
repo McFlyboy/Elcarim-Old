@@ -21,6 +21,7 @@ public class Main{
 	public static final String PRE_VERSION_SUFFIX = "a";
 	public static final String TITLE = "Project 1996";
 	private DeltaTimer systemDelta;
+	private static double deltaTime;
 	private GlobalScene globalScene;
 	public static String getVersion(){
 		StringBuilder version = new StringBuilder();
@@ -32,6 +33,9 @@ public class Main{
 		version.append(PRE_VERSION_SUFFIX);
 		return version.toString();
 	}
+	public static float getDeltaTime(){
+		return (float)deltaTime;
+	}
 	private void start(){
 		ErrorHandler.init();
 		try{
@@ -42,7 +46,7 @@ public class Main{
 			GameWindow.setVSync(false);
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
-			ControlScheme.setActiveInput(Gamepad.isPresent() ? ControlScheme.ACTIVE_GAMEPAD : ControlScheme.ACTIVE_KEYBOARD);
+			ControlScheme.setActiveInput(Gamepad.isPresent() ? ControlScheme.ActiveInput.ACTIVE_GAMEPAD : ControlScheme.ActiveInput.ACTIVE_KEYBOARD);
 			AudioSystem.init();
 			ResourceStorage.add("font", new TextFont("consola.ttf", 28));
 			Render.setAlphaBlend(true);
@@ -63,13 +67,14 @@ public class Main{
 		double targetFrameTime = 1.0 / GameWindow.getMonitorRefreshRate();
 		double renderTimeRemaining = 0.0;
 		while(!GameWindow.shouldClose()){
+			deltaTime = systemDelta.getTime();
 			boolean renderReady = false;
 			update();
 			if(renderTimeRemaining <= 0.0){
 				renderReady = true;
 				renderTimeRemaining += targetFrameTime;
 			}
-			renderTimeRemaining -= systemDelta.getTime();
+			renderTimeRemaining -= deltaTime;
 			if(renderReady){
 				render();
 			}

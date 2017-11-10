@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryUtil;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.font.TextFont;
 import com.nyhammer.p96.graphics.font.TextFont.Glyph;
-import com.nyhammer.p96.graphics.shading.shaders.P96Shader;
+import com.nyhammer.p96.graphics.shading.shaders.S96;
 import com.nyhammer.p96.structure.ResourceStorage;
 
 public class BatchRender{
@@ -46,8 +46,9 @@ public class BatchRender{
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glActiveTexture(GL_TEXTURE0);
 	}
-	public void render(P96Shader shader, TextField textField){
+	public void render(S96 shader, TextField textField){
 		glBindTexture(GL_TEXTURE_2D, font.getFontTexture().getTexture());
+		shader.loadTextureInfo(1, 1, 0, 0);
 		int fontHeight = font.getFontHeight();
 		int textHeight = textField.getBaseHeight();
 		String text = textField.getText();
@@ -68,8 +69,8 @@ public class BatchRender{
 			drawX += glyph.getWidth();
 		}
 		vertices.flip();
-		shader.loadTransformation(textField.getPosition(), textField.getAngle(), textField.getScale());
-		shader.loadColors(true, textField.getRed(), textField.getGreen(), textField.getBlue());
+		shader.loadTransformation(textField.position, textField.angle, textField.scale);
+		shader.loadColors(true, textField.red, textField.green, textField.blue);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 		glDrawArrays(GL_TRIANGLES, 0, numVertices);
 		vertices.clear();

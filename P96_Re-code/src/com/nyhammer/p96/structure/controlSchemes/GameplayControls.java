@@ -14,6 +14,7 @@ public class GameplayControls extends ControlScheme{
 	private int moveRight;
 	private int moveUp;
 	private int moveDown;
+	
 	private int moveAxisX;
 	private int moveAxisY;
 	public GameplayControls(){

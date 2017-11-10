@@ -162,7 +162,7 @@ public class Keyboard{
 		glfwSetKeyCallback(GameWindow.getWindow(), keyCallback = new GLFWKeyCallback(){
 			@Override
 			public void invoke(long window, int key, int scancode, int action, int mods){
-				ControlScheme.setActiveInput(ControlScheme.ACTIVE_KEYBOARD);
+				ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_KEYBOARD);
 				if(action == GLFW_PRESS){
 					keys[key] = KEY_PRESSED;
 				}

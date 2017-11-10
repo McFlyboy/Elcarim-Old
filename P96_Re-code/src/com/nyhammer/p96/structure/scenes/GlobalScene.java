@@ -41,5 +41,9 @@ public class GlobalScene extends SceneStruct{
 		if(controls.isPressed(controls.getPause())){
 			GameWindow.close();
 		}
+		if(controls.isPressed(controls.getFullscreen())){
+			boolean fullscreen = GameWindow.isFullscreen();
+			GameWindow.setFullscreen(!fullscreen);
+		}
 	}
 }

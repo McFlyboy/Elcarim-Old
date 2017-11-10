@@ -7,20 +7,21 @@ import com.nyhammer.p96.input.Gamepad;
 import com.nyhammer.p96.input.Keyboard;
 
 public abstract class ControlScheme{
-	public static final int ACTIVE_KEYBOARD = 0;
-	public static final int ACTIVE_GAMEPAD = 1;
-	private static int activeInput;
+	private static ActiveInput activeInput;
 	protected List<Input> inputs = new ArrayList<Input>();
 	protected List<AxisInput> axisInputs = new ArrayList<AxisInput>();
-	public static int getActiveInput(){
+	public static enum ActiveInput{
+		ACTIVE_KEYBOARD, ACTIVE_GAMEPAD;
+	}
+	public static ActiveInput getActiveInput(){
 		return activeInput;
 	}
-	public static void setActiveInput(int activeInput){
+	public static void setActiveInput(ActiveInput activeInput){
 		ControlScheme.activeInput = activeInput;
 	}
 	public boolean isPressed(int index){
 		Input input = inputs.get(index);
-		if(activeInput == ACTIVE_GAMEPAD){
+		if(activeInput == ActiveInput.ACTIVE_GAMEPAD){
 			return Gamepad.isButtonPressed(input.getButton());
 		}
 		else{
@@ -29,7 +30,7 @@ public abstract class ControlScheme{
 	}
 	public boolean isDown(int inputIndex){
 		Input input = inputs.get(inputIndex);
-		if(activeInput == ACTIVE_GAMEPAD){
+		if(activeInput == ActiveInput.ACTIVE_GAMEPAD){
 			return Gamepad.isButtonDown(input.getButton());
 		}
 		else{

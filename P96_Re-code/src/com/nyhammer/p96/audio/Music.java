@@ -90,15 +90,22 @@ public class Music{
 				return 0;
 		}
 	}
+	public float getVolume(){
+		return alGetSourcef(source, AL_GAIN);
+	}
+	public void setVolume(float volume){
+		alSourcef(source, AL_GAIN, volume);
+	}
 	public void play(){
 		if(playing){
 			return;
 		}
 		for(int i = 0; i < buffers.limit(); i++){
-			if(!stream(buffers.get(i))){
+			if(stream() == 0){
 				ErrorHandler.printError("Error in music-stream!", true);
 				GameWindow.close();
 			}
+			alBufferData(buffers.get(i), format, pcm, sampleRate);
 		}
 		alSourceQueueBuffers(source, buffers);
 		alSourcePlay(source);
@@ -122,15 +129,8 @@ public class Music{
 		}
 		playing = false;
 	}
-	private boolean stream(int buffer){
-		pcm.position(0);
-		int samplesPerChannel = stb_vorbis_get_samples_short_interleaved(parts[activePart].decoder, channels, pcm);
-		if(samplesPerChannel == 0){
-			return false;
-		}
-		pcm.position(0);
-		alBufferData(buffer, format, pcm, sampleRate);
-		return true;
+	private int stream(){
+		return stb_vorbis_get_samples_short_interleaved(parts[activePart].decoder, channels, pcm);
 	}
 	private void rewind(){
 		stb_vorbis_seek_start(parts[activePart].decoder);
@@ -142,25 +142,30 @@ public class Music{
 		int processed = alGetSourcei(source, AL_BUFFERS_PROCESSED);
 		for(int i = 0; i < processed; i++){
 			int buffer = alSourceUnqueueBuffers(source);
-			if(!stream(buffer)){
-				boolean nextPart = true;
+			pcm.position(0);
+			int samplesPerChannel;
+			if((samplesPerChannel = stream()) != BUFFER_SIZE / channels){
+				pcm.position(samplesPerChannel * channels);
 				if(parts[activePart].looping){
 					rewind();
-					nextPart = !stream(buffer);
+					stream();
 				}
-				if(nextPart){
+				else{
 					rewind();
 					activePart++;
 					if(activePart < parts.length){
-						stream(buffer);
+						stream();
 					}
 					else{
 						activePart = 0;
 						playing = false;
+						pcm.position(0);
 						return;
 					}
 				}
 			}
+			pcm.position(0);
+			alBufferData(buffer, format, pcm, sampleRate);
 			alSourceQueueBuffers(source, buffer);
 		}
 		if(processed == 2){

@@ -20,11 +20,20 @@ public class Texture{
 	private int height;
 	private int colorComp;
 	private int texture;
+	private int horizontalCount;
+	private int verticalCount;
+	private int offsetX;
+	private int offsetY;
 	public Texture(String filename){
-		this(filename, false);
+		this(filename, 1, 1, false);
 	}
-	public Texture(String filename, boolean linear){
+	public Texture(String filename, int horizontalCount, int verticalCount){
+		this(filename, horizontalCount, verticalCount, false);
+	}
+	public Texture(String filename, int horizontalCount, int verticalCount, boolean linear){
 		ByteBuffer buffer = loadImage(filename);
+		this.horizontalCount = horizontalCount;
+		this.verticalCount = verticalCount;
 		initTexture(buffer, linear);
 	}
 	public Texture(BufferedImage img){
@@ -32,6 +41,8 @@ public class Texture{
 	}
 	public Texture(BufferedImage img, boolean linear){
 		ByteBuffer buffer = createByteBuffer(img);
+		horizontalCount = 1;
+		verticalCount = 1;
 		initTexture(buffer, linear);
 	}
 	public int getWidth(){
@@ -45,6 +56,22 @@ public class Texture{
 	}
 	public int getTexture(){
 		return texture;
+	}
+	public int getHorizontalCount(){
+		return horizontalCount;
+	}
+	public int getVerticalCount(){
+		return verticalCount;
+	}
+	public int getOffsetX(){
+		return offsetX;
+	}
+	public int getOffsetY(){
+		return offsetY;
+	}
+	public void setOffset(int x, int y){
+		offsetX = x;
+		offsetY = y;
 	}
 	private void initTexture(ByteBuffer buffer, boolean linear){
 		texture = glGenTextures();

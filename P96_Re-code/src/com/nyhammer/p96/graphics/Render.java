@@ -1,8 +1,7 @@
 package com.nyhammer.p96.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.util.ArrayList;
@@ -11,47 +10,47 @@ import java.util.List;
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.shading.ShaderProgram;
-import com.nyhammer.p96.graphics.shading.shaders.P96Shader;
+import com.nyhammer.p96.graphics.shading.shaders.S96;
 
 public class Render{
-	private static final int MODEL_ENTITY_ENTRY = 0;
-	private static final int TEXT_FIELD_ENTRY = 1;
 	private static StaticRender sRender;
 	private static BatchRender bRender;
-	private static P96Shader shader;
-	private static List<Integer> masterQueue = new ArrayList<Integer>();
+	private static S96 shader;
+	private static List<Entry> masterQueue = new ArrayList<Entry>();
 	private static List<ModelEntity> entityQueue = new ArrayList<ModelEntity>();
 	private static List<TextField> textQueue = new ArrayList<TextField>();
+	private enum Entry{
+		MODEL_ENTITY_ENTRY, TEXT_FIELD_ENTRY;
+	}
 	public static void init(){
 		sRender = new StaticRender();
 		bRender = new BatchRender();
-		shader = new P96Shader();
+		shader = new S96();
 		shader.start();
 	}
 	public static void addToQueue(ModelEntity entity){
 		entityQueue.add(entity);
-		masterQueue.add(MODEL_ENTITY_ENTRY);
+		masterQueue.add(Entry.MODEL_ENTITY_ENTRY);
 	}
 	public static void addToQueue(TextField text){
 		textQueue.add(text);
-		masterQueue.add(TEXT_FIELD_ENTRY);
+		masterQueue.add(Entry.TEXT_FIELD_ENTRY);
 	}
 	public static void renderQueue(){
 		int lastVAO = 0;
 		int bVAO = bRender.getVAO();
-		for(int masterEntry : masterQueue){
-			if(masterEntry == MODEL_ENTITY_ENTRY){
+		for(Entry masterEntry : masterQueue){
+			if(masterEntry == Entry.MODEL_ENTITY_ENTRY){
 				ModelEntity entity = entityQueue.remove(0);
-				Model model = entity.getModel();
-				int vao = model.getVAO();
+				int vao = entity.model.getVAO();
 				if(lastVAO != vao){
 					unprepare();
-					sRender.prepareModel(model);
+					sRender.prepareModel(entity.model);
 					lastVAO = vao;
 				}
 				sRender.render(shader, entity);
 			}
-			else if(masterEntry == TEXT_FIELD_ENTRY){
+			else if(masterEntry == Entry.TEXT_FIELD_ENTRY){
 				TextField text = textQueue.remove(0);
 				if(lastVAO != bVAO){
 					unprepare();

@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL20.*;
 
 import com.nyhammer.p96.entities.ModelEntity;
-import com.nyhammer.p96.graphics.shading.shaders.P96Shader;
+import com.nyhammer.p96.graphics.shading.shaders.S96;
 
 public class StaticRender{
 	public void prepareModel(Model model){
@@ -14,10 +14,11 @@ public class StaticRender{
 		glEnableVertexAttribArray(1);
 		glActiveTexture(GL_TEXTURE0);
 	}
-	public void render(P96Shader shader, ModelEntity entity){
-		glBindTexture(GL_TEXTURE_2D, entity.getTexture().getTexture());
-		shader.loadTransformation(entity.getPosition(), entity.getAngle(), entity.getScale());
-		shader.loadColors(entity.isColorActive(), entity.getRed(), entity.getGreen(), entity.getBlue());
-		glDrawElements(GL_TRIANGLES, entity.getModel().getIndexCount(), GL_UNSIGNED_INT, 0L);
+	public void render(S96 shader, ModelEntity entity){
+		glBindTexture(GL_TEXTURE_2D, entity.texture.getTexture());
+		shader.loadTextureInfo(entity.texture.getHorizontalCount(), entity.texture.getVerticalCount(), entity.texture.getOffsetX(), entity.texture.getOffsetY());
+		shader.loadTransformation(entity.position, entity.angle, entity.scale);
+		shader.loadColors(entity.colorActive, entity.red, entity.green, entity.blue);
+		glDrawElements(GL_TRIANGLES, entity.model.getIndexCount(), GL_UNSIGNED_INT, 0L);
 	}
 }
