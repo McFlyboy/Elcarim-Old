@@ -12,9 +12,9 @@ public class TextField extends Entity{
 		super();
 		super.scale.x = 0.005f;
 		super.scale.y = 0.005f;
-		red = 0f;
-		green = 0f;
-		blue = 0f;
+		red = 1f;
+		green = 1f;
+		blue = 1f;
 		text = "";
 		baseWidth = 0;
 		baseHeight = ResourceStorage.getTextFont("font").getFontHeight();
