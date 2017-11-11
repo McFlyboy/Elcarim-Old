@@ -37,7 +37,7 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.add("bgm", bgm);
 		fpsText = new TextField();
 		fpsText.scale = new Vector2f(0.003f, 0.003f);
-		fpsText.blue = 0f;
+		fpsText.mainBlue = 0f;
 		Texture playerTex = new Texture("char/player.png", 3, 3);
 		player = new Player(this.sceneTimer);
 		player.model = ResourceStorage.getModel("square");

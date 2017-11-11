@@ -20,7 +20,6 @@ public class BatchRender{
 	private int vao;
 	private int vbo;
 	private FloatBuffer vertices;
-	private int numVertices;
 	private TextFont font;
 	public BatchRender(){
 		vao = glGenVertexArrays();
@@ -33,7 +32,6 @@ public class BatchRender{
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, Float.BYTES * 4, Float.BYTES * 2);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
-		numVertices = 0;
 		font = ResourceStorage.getTextFont("font");
 	}
 	public int getVAO(){
@@ -70,11 +68,12 @@ public class BatchRender{
 		}
 		vertices.flip();
 		shader.loadTransformation(textField.position, textField.angle, textField.scale);
-		shader.loadColors(true, textField.red, textField.green, textField.blue);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
-		glDrawArrays(GL_TRIANGLES, 0, numVertices);
+		for(int i = 0; i < text.length(); i++){
+			shader.loadColors(true, textField.charReds[i], textField.charGreens[i], textField.charBlues[i]);
+			glDrawArrays(GL_TRIANGLES, i * 6, 6);
+		}
 		vertices.clear();
-		numVertices = 0;
 	}
 	private void drawTextureRegion(float x, float y, Glyph glyph){
 		float fontWidth = (float)font.getFontWidth();
@@ -93,7 +92,6 @@ public class BatchRender{
 		vertices.put(x1).put(y1).put(s1).put(t1);
 		vertices.put(x2).put(y2).put(s2).put(t2);
 		vertices.put(x2).put(y1).put(s2).put(t1);
-		numVertices += 6;
 	}
 	public void dispose(){
 		MemoryUtil.memFree(vertices);
