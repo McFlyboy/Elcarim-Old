@@ -2,6 +2,7 @@ package com.nyhammer.p96.entities;
 
 import com.nyhammer.p96.Main;
 import com.nyhammer.p96.structure.Animation;
+import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
 import com.nyhammer.p96.util.math.vector.Vector2f;
@@ -15,9 +16,14 @@ public class Player extends ModelEntity{
 	public CC cc;
 	public CC hitCC;
 	private boolean jumping;
+	public boolean alive;
 	public boolean holdJumping;
 	public Vector2f direction;
 	public boolean hitting;
+	public int lives;
+	public boolean invinsible;
+	private TargetTimer invinsibilityTimer;
+	private TargetTimer visibilityTimer;
 	public Player(Timer timer){
 		super();
 		direction = new Vector2f();
@@ -28,8 +34,48 @@ public class Player extends ModelEntity{
 				new Animation(0, 1, 2)
 		};
 		hitTimer = new TargetTimer(timer, 1.0);
+		invinsibilityTimer = new TargetTimer(timer, 2.0);
+		visibilityTimer = new TargetTimer(timer, 0.1 / 3.0);
+		alive = true;
+		lives = 4;
 	}
 	public void update(){
+		if(!alive){
+			direction.y -= 0.005f * Main.getDeltaTime();
+			if(position.y < -2f){
+				if(lives > 0){
+					lives--;
+					direction.y = 0f;
+					position.x = 0f;
+					position.y = -1f + scale.y;
+					texture.setOffset(animations[0].getFrame(0), animations[0].getTextureRow());
+					alive = true;
+					invinsible = true;
+					invinsibilityTimer.resume();
+					visibilityTimer.resume();
+				}
+				else{
+					GameWindow.close();
+				}
+			}
+		}
+		if(visibilityTimer.targetReached()){
+			visible = !visible;
+		}
+		if(invinsibilityTimer.targetReached()){
+			if(invinsibilityTimer.getTargetTime() == 2.0){
+				invinsibilityTimer.setTargetTime(1.0);
+				visibilityTimer.setTargetTime(0.2 / 3.0);
+			}
+			else{
+				invinsible = false;
+				visible = true;
+				invinsibilityTimer.reset();
+				invinsibilityTimer.setTargetTime(2.0);
+				visibilityTimer.reset();
+				visibilityTimer.setTargetTime(0.1 / 3.0);
+			}
+		}
 		if(hitTimer.targetReached()){
 			hitTimer.reset();
 			hitting = false;
@@ -81,5 +127,18 @@ public class Player extends ModelEntity{
 		animations[0].setTextureRow(1);
 		animations[1].setTextureRow(1);
 		hitTimer.resume();
+	}
+	public void die(){
+		if(!alive || invinsible){
+			return;
+		}
+		alive = false;
+		jumping = false;
+		hitting = false;
+		hitTimer.reset();
+		animations[0].setTextureRow(0);
+		texture.setOffset(animations[0].getFrame(0), 2);
+		direction.y = 0.002f;
+		ResourceStorage.getSound("deathSound").play();
 	}
 }

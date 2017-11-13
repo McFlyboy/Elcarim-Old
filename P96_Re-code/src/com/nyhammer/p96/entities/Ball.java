@@ -16,15 +16,13 @@ public class Ball extends ModelEntity{
 		scale.y = 0.07f;
 		cc = new CC(position, 0.07f);
 		direction = new Vector2f(-7f, 5f);
-		red = 0f;
-		green = 0f;
-		blue = 0f;
+		color.red = 0f;
+		color.green = 0f;
+		color.blue = 0f;
 	}
 	public void update(){
 		direction.x *= 0.99998f;
 		direction.y -= 0.012f;
-		Vector2f deltaBallPosition = direction.getMul(0.2f * Main.getDeltaTime());
-		position.add(deltaBallPosition);
 		if(Math.abs(position.y) > 1f - scale.y){
 			position.y *= (1f - scale.y) / Math.abs(position.y);
 			direction.y *= -0.9f;
@@ -35,6 +33,8 @@ public class Ball extends ModelEntity{
 			direction.x *= -0.9f;
 			direction.y *= 0.992f;
 		}
+		Vector2f deltaBallPosition = direction.getMul(0.2f * Main.getDeltaTime());
+		position.add(deltaBallPosition);
 		angle -= 360.0 * deltaBallPosition.x / 2.0 * Math.PI * scale.x;
 	}
 }

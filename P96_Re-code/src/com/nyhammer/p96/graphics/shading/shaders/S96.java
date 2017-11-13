@@ -1,6 +1,7 @@
 package com.nyhammer.p96.graphics.shading.shaders;
 
 import com.nyhammer.p96.graphics.shading.ShaderProgram;
+import com.nyhammer.p96.util.Color3f;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 
 public class S96 extends ShaderProgram{
@@ -46,8 +47,8 @@ public class S96 extends ShaderProgram{
 		super.loadInt(textureOffsetXLocation, textureOffsetX);
 		super.loadInt(textureOffsetYLocation, textureOffsetY);
 	}
-	public void loadColors(boolean colorActive, float red, float green, float blue){
+	public void loadColors(boolean colorActive, Color3f color){
 		super.loadBoolean(colorActiveLocation, colorActive);
-		super.loadVector3f(colorLocation, red, green, blue);
+		super.loadColor3f(colorLocation, color);
 	}
 }

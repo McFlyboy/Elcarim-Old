@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 import com.nyhammer.p96.ErrorHandler;
 import com.nyhammer.p96.ui.GameWindow;
+import com.nyhammer.p96.util.Color3f;
 import com.nyhammer.p96.util.io.TextIO;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 
@@ -41,8 +42,8 @@ public abstract class ShaderProgram{
 	protected void loadVector2f(int location, Vector2f vec){
 		glUniform2f(location, vec.x, vec.y);
 	}
-	protected void loadVector3f(int location, float x, float y, float z){
-		glUniform3f(location, x, y, z);
+	protected void loadColor3f(int location, Color3f color){
+		glUniform3f(location, color.red, color.green, color.blue);
 	}
 	protected abstract void getUniformLocations();
 	protected int getUniformLocation(String varName){

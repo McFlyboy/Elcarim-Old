@@ -2,6 +2,7 @@ package com.nyhammer.p96.structure.scenes;
 
 import com.nyhammer.p96.Main;
 import com.nyhammer.p96.audio.Music;
+import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.Ball;
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.Player;
@@ -35,9 +36,11 @@ public class GameplayScene extends SceneStruct{
 		});
 		bgm.setPartLooping(0, false);
 		ResourceStorage.add("bgm", bgm);
+		Sound deathSound = new Sound("player_death.ogg");
+		ResourceStorage.add("deathSound", deathSound);
 		fpsText = new TextField();
-		fpsText.scale = new Vector2f(0.003f, 0.003f);
-		fpsText.mainBlue = 0f;
+		fpsText.scale = new Vector2f(0.0015f, 0.0015f);
+		fpsText.mainColor.blue = 0f;
 		Texture playerTex = new Texture("char/player.png", 3, 3);
 		player = new Player(this.sceneTimer);
 		player.model = ResourceStorage.getModel("square");
@@ -60,7 +63,9 @@ public class GameplayScene extends SceneStruct{
 	@Override
 	protected void updateSpecifics(){
 		ResourceStorage.getMusic("bgm").update();
-		updateControls();
+		if(player.alive){
+			updateControls();
+		}
 		player.update();
 		ball.update();
 		if(player.hitting){
@@ -70,7 +75,7 @@ public class GameplayScene extends SceneStruct{
 		}
 		else{
 			if(CC.checkCollision(player.cc, ball.cc)){
-				
+				player.die();
 			}
 		}
 	}
@@ -80,7 +85,7 @@ public class GameplayScene extends SceneStruct{
 		Render.addToQueue(player);
 		Render.addToQueue(ball);
 		fpsText.setText("FPS: " + Time.getFPS());
-		fpsText.position = new Vector2f(-GameWindow.ASPECT_RATIO + fpsText.getWidth() / 2f, 1f - fpsText.getHeight() / 2f);
+		fpsText.position = new Vector2f(GameWindow.ASPECT_RATIO - fpsText.getWidth() / 2f, -1f + fpsText.getHeight() / 2f);
 		Render.addToQueue(fpsText);
 	}
 	@Override
@@ -94,6 +99,7 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.disposeTexture("bulletTex");
 		ResourceStorage.disposeTexture("ballTex");
 		ResourceStorage.disposeMusic("bgm");
+		ResourceStorage.disposeSound("deathSound");
 	}
 	public void updateControls(){
 		float walkDistance = 0;

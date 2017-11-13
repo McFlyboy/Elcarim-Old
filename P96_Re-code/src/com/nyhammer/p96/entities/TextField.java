@@ -2,32 +2,23 @@ package com.nyhammer.p96.entities;
 
 import com.nyhammer.p96.graphics.font.TextFont;
 import com.nyhammer.p96.structure.ResourceStorage;
+import com.nyhammer.p96.util.Color3f;
 
 public class TextField extends Entity{
 	private String text;
-	public float[] charReds;
-	public float[] charGreens;
-	public float[] charBlues;
-	public float mainRed;
-	public float mainGreen;
-	public float mainBlue;
+	public Color3f[] charColors;
+	public Color3f mainColor;
 	private int baseWidth, baseHeight;
 	public TextField(){
 		super();
-		super.scale.x = 0.005f;
-		super.scale.y = 0.005f;
+		scale.x = 0.005f;
+		scale.y = 0.005f;
 		text = "";
 		baseWidth = 0;
 		baseHeight = ResourceStorage.getTextFont("font").getFontHeight();
-		mainRed = 1f;
-		mainGreen = 1f;
-		mainBlue = 1f;
-		charReds = new float[1];
-		charReds[0] = mainRed;
-		charGreens = new float[1];
-		charGreens[0] = mainGreen;
-		charBlues = new float[1];
-		charBlues[0] = mainBlue;
+		mainColor = new Color3f(1f, 1f, 1f);
+		charColors = new Color3f[1];
+		charColors[0] = new Color3f(mainColor.red, mainColor.green, mainColor.blue);
 	}
 	public String getText(){
 		return text;
@@ -38,13 +29,9 @@ public class TextField extends Entity{
 		}
 		this.text = text;
 		calculateBaseSize();
-		charReds = new float[text.length()];
-		charGreens = new float[text.length()];
-		charBlues = new float[text.length()];
+		charColors = new Color3f[text.length()];
 		for(int i = 0; i < text.length(); i++){
-			charReds[i] = mainRed;
-			charGreens[i] = mainGreen;
-			charBlues[i] = mainBlue;
+			charColors[i] = new Color3f(mainColor.red, mainColor.green, mainColor.blue);
 		}
 	}
 	public int getBaseWidth(){
@@ -59,19 +46,11 @@ public class TextField extends Entity{
 	public float getHeight(){
 		return (float)baseHeight * scale.y;
 	}
-	public void setReds(float red){
-		for(int i = 0; i < charReds.length; i++){
-			charReds[i] = red;
-		}
-	}
-	public void setGreens(float green){
-		for(int i = 0; i < charGreens.length; i++){
-			charGreens[i] = green;
-		}
-	}
-	public void setBlues(float blue){
-		for(int i = 0; i < charBlues.length; i++){
-			charBlues[i] = blue;
+	public void setColors(Color3f color){
+		for(int i = 0; i < charColors.length; i++){
+			charColors[i].red = color.red;
+			charColors[i].green = color.green;
+			charColors[i].blue = color.blue;
 		}
 	}
 	private void calculateBaseSize(){

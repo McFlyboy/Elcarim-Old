@@ -18,7 +18,7 @@ public class StaticRender{
 		glBindTexture(GL_TEXTURE_2D, entity.texture.getTexture());
 		shader.loadTextureInfo(entity.texture.getHorizontalCount(), entity.texture.getVerticalCount(), entity.texture.getOffsetX(), entity.texture.getOffsetY());
 		shader.loadTransformation(entity.position, entity.angle, entity.scale);
-		shader.loadColors(entity.colorActive, entity.red, entity.green, entity.blue);
+		shader.loadColors(entity.colorActive, entity.color);
 		glDrawElements(GL_TRIANGLES, entity.model.getIndexCount(), GL_UNSIGNED_INT, 0L);
 	}
 }

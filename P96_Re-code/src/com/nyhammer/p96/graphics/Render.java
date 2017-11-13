@@ -11,6 +11,7 @@ import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.shading.ShaderProgram;
 import com.nyhammer.p96.graphics.shading.shaders.S96;
+import com.nyhammer.p96.util.Color3f;
 
 public class Render{
 	private static StaticRender sRender;
@@ -29,6 +30,9 @@ public class Render{
 		shader.start();
 	}
 	public static void addToQueue(ModelEntity entity){
+		if(!entity.visible){
+			return;
+		}
 		entityQueue.add(entity);
 		masterQueue.add(Entry.MODEL_ENTITY_ENTRY);
 	}
@@ -71,6 +75,9 @@ public class Render{
 	}
 	public static void setClearColor(float red, float green, float blue){
 		glClearColor(red, green, blue, 1f);
+	}
+	public static void setClearColor(Color3f color){
+		setClearColor(color.red, color.green, color.blue);
 	}
 	public static void clear(){
 		glClear(GL_COLOR_BUFFER_BIT);
