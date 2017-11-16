@@ -15,10 +15,11 @@ public class Player extends ModelEntity{
 	private TargetTimer hitTimer;
 	public CC cc;
 	public CC hitCC;
-	private boolean jumping;
+	public boolean jumping;
 	public boolean alive;
 	public boolean holdJumping;
 	public Vector2f direction;
+	public float lastXDirection;
 	public boolean hitting;
 	public int lives;
 	public boolean invinsible;
@@ -91,29 +92,35 @@ public class Player extends ModelEntity{
 			}
 		}
 		position.add(direction);
-		if(jumping && position.y < -1f + scale.y){
-			position.y = -1f + scale.y;
-			direction.y = 0f;
-			jumping = false;
+		if(direction.x != 0f){
+			lastXDirection = direction.x;
+		}
+		if(alive){
+			if(Math.abs(position.x) > GameWindow.ASPECT_RATIO - scale.x){
+				position.x *= (GameWindow.ASPECT_RATIO - scale.x) / Math.abs(position.x);
+				direction.x = 0f;
+			}
+			float xMovement = direction.x;
+			if(jumping){
+				xMovement = 0f;
+			}
+			if(xMovement != 0f){
+				walkingDistance += xMovement;
+				texture.setOffset(animations[1].getFrame((int)(walkingDistance * 10)), animations[1].getTextureRow());
+			}
+			else{
+				walkingDistance = 0f;
+				texture.setOffset(animations[0].getFrame(0), animations[0].getTextureRow());
+			}
+			if(jumping && position.y < -1f + scale.y){
+				position.y = -1f + scale.y;
+				direction.y = 0f;
+				jumping = false;
+			}
 		}
 	}
 	public void walk(float movement){
-		position.x += movement;
-		if(Math.abs(position.x) > GameWindow.ASPECT_RATIO - scale.x){
-			position.x *= (GameWindow.ASPECT_RATIO - scale.x) / Math.abs(position.x);
-			movement = 0f;
-		}
-		if(jumping){
-			movement = 0f;
-		}
-		if(movement != 0f){
-			walkingDistance += movement;
-			texture.setOffset(animations[1].getFrame((int)(walkingDistance * 10)), animations[1].getTextureRow());
-		}
-		else{
-			walkingDistance = 0f;
-			texture.setOffset(animations[0].getFrame(0), animations[0].getTextureRow());
-		}
+		direction.x = movement;
 	}
 	public void jump(){
 		if(jumping){
@@ -139,6 +146,7 @@ public class Player extends ModelEntity{
 		animations[0].setTextureRow(0);
 		texture.setOffset(animations[0].getFrame(0), 2);
 		direction.y = 0.002f;
+		direction.x = 0f;
 		ResourceStorage.getSound("deathSound").play();
 	}
 }

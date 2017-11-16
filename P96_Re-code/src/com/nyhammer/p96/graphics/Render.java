@@ -37,6 +37,9 @@ public class Render{
 		masterQueue.add(Entry.MODEL_ENTITY_ENTRY);
 	}
 	public static void addToQueue(TextField text){
+		if(!text.visible){
+			return;
+		}
 		textQueue.add(text);
 		masterQueue.add(Entry.TEXT_FIELD_ENTRY);
 	}

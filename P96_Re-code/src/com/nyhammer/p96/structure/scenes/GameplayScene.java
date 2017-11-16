@@ -6,7 +6,6 @@ import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.Ball;
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.Player;
-import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ResourceStorage;
@@ -15,12 +14,10 @@ import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
 import com.nyhammer.p96.util.math.vector.Vector2f;
-import com.nyhammer.p96.util.timing.Time;
 import com.nyhammer.p96.util.timing.Timer;
 
 public class GameplayScene extends SceneStruct{
 	private ModelEntity background;
-	private TextField fpsText;
 	private GameplayControls controls;
 	private Player player;
 	private Ball ball;
@@ -38,9 +35,6 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.add("bgm", bgm);
 		Sound deathSound = new Sound("player_death.ogg");
 		ResourceStorage.add("deathSound", deathSound);
-		fpsText = new TextField();
-		fpsText.scale = new Vector2f(0.0015f, 0.0015f);
-		fpsText.mainColor.blue = 0f;
 		Texture playerTex = new Texture("char/player.png", 3, 3);
 		player = new Player(this.sceneTimer);
 		player.model = ResourceStorage.getModel("square");
@@ -70,7 +64,12 @@ public class GameplayScene extends SceneStruct{
 		ball.update();
 		if(player.hitting){
 			if(CC.checkCollision(player.hitCC, ball.cc)){
-				
+				if(player.direction.x == 0f){
+					ball.direction = new Vector2f(player.lastXDirection / Math.abs(player.lastXDirection), 2f).getNormalize().getMul(player.jumping ? 15f : 12f);
+				}
+				else{
+					ball.direction = new Vector2f(player.direction.x / Math.abs(player.direction.x), 2f).getNormalize().getMul(15f);
+				}
 			}
 		}
 		else{
@@ -84,9 +83,6 @@ public class GameplayScene extends SceneStruct{
 		Render.addToQueue(background);
 		Render.addToQueue(player);
 		Render.addToQueue(ball);
-		fpsText.setText("FPS: " + Time.getFPS());
-		fpsText.position = new Vector2f(GameWindow.ASPECT_RATIO - fpsText.getWidth() / 2f, -1f + fpsText.getHeight() / 2f);
-		Render.addToQueue(fpsText);
 	}
 	@Override
 	protected void stopSpecifics(){
