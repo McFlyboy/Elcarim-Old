@@ -12,8 +12,8 @@ public class TextField extends Entity{
 	public boolean visible;
 	public TextField(){
 		super();
-		scale.x = 0.005f;
-		scale.y = 0.005f;
+		scale.x = 0.004f;
+		scale.y = 0.004f;
 		text = "";
 		baseWidth = 0;
 		baseHeight = ResourceStorage.getTextFont("font").getFontHeight();

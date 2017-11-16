@@ -1,11 +1,15 @@
 package com.nyhammer.p96.structure.scenes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.nyhammer.p96.Main;
 import com.nyhammer.p96.audio.Music;
 import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.Ball;
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.Player;
+import com.nyhammer.p96.entities.Shot;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
@@ -23,6 +27,7 @@ public class GameplayScene extends SceneStruct{
 	private Player player;
 	private Ball ball;
 	private TextField livesText;
+	private List<Shot> shots;
 	public GameplayScene(Timer timer){
 		super(timer);
 		controls = new GameplayControls();
@@ -37,12 +42,12 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.add("bgm", bgm);
 		Sound deathSound = new Sound("player_death.ogg");
 		ResourceStorage.add("deathSound", deathSound);
+		Sound shotSound = new Sound("shot.ogg");
+		ResourceStorage.add("shotSound", shotSound);
 		Texture playerTex = new Texture("char/player.png", 3, 3);
 		player = new Player(this.sceneTimer);
 		player.model = ResourceStorage.getModel("square");
 		player.texture = playerTex;
-		player.scale = new Vector2f(0.05f, 0.05f);
-		player.position.y = -1f + player.scale.y;
 		ResourceStorage.add("playerTex", playerTex);
 		Texture bulletTex = new Texture("bullet/bullet.png");
 		ResourceStorage.add("bulletTex", bulletTex);
@@ -54,10 +59,13 @@ public class GameplayScene extends SceneStruct{
 		livesText = new TextField();
 		livesText.mainColor.green = 0.5f;
 		livesText.mainColor.blue = 0.5f;
+		shots = new ArrayList<Shot>();
+		Texture shotTex = new Texture("shot/shot.png");
+		ResourceStorage.add("shotTex", shotTex);
 	}
 	@Override
 	protected void startSpecifics(){
-		//ResourceStorage.getMusic("bgm").play();
+		ResourceStorage.getMusic("bgm").play();
 	}
 	@Override
 	protected void updateSpecifics(){
@@ -82,12 +90,28 @@ public class GameplayScene extends SceneStruct{
 				player.die();
 			}
 		}
+		for(int i = 0; i < shots.size(); i++){
+			Shot shot = shots.get(i);
+			shot.update();
+			if(CC.checkCollision(shot.cc, ball.cc)){
+				Vector2f shotAngle = ball.position.getSub(shot.position).getNormalize();
+				ball.direction.add(shotAngle.getMul(12f * shotAngle.y));
+				shot.intact = false;
+			}
+			if(!shot.intact){
+				shots.remove(i);
+				i--;
+			}
+		}
 	}
 	@Override
 	protected void renderSpecifics(){
 		Render.addToQueue(background);
 		Render.addToQueue(player);
 		Render.addToQueue(ball);
+		for(Shot shot : shots){
+			Render.addToQueue(shot);
+		}
 		livesText.setText("Lives: " + player.lives);
 		livesText.position.x = GameWindow.ASPECT_RATIO - livesText.getWidth() / 2f;
 		livesText.position.y = 1f - livesText.getHeight() / 2f;
@@ -103,8 +127,10 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.disposeTexture("playerTex");
 		ResourceStorage.disposeTexture("bulletTex");
 		ResourceStorage.disposeTexture("ballTex");
+		ResourceStorage.disposeTexture("shotTex");
 		ResourceStorage.disposeMusic("bgm");
 		ResourceStorage.disposeSound("deathSound");
+		ResourceStorage.disposeSound("shotSound");
 	}
 	public void updateControls(){
 		float walkDistance = 0;
@@ -120,6 +146,9 @@ public class GameplayScene extends SceneStruct{
 		player.holdJumping = controls.isDown(controls.getJump());
 		if(controls.isPressed(controls.getHit())){
 			player.hit();
+		}
+		if(controls.isPressed(controls.getShootLeft()) || controls.isPressed(controls.getShootRight())){
+			player.shoot(shots);
 		}
 		player.walk(walkDistance * Main.getDeltaTime());
 	}

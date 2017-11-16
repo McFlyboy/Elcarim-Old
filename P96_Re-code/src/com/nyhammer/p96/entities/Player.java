@@ -1,5 +1,7 @@
 package com.nyhammer.p96.entities;
 
+import java.util.List;
+
 import com.nyhammer.p96.Main;
 import com.nyhammer.p96.structure.Animation;
 import com.nyhammer.p96.structure.ResourceStorage;
@@ -27,6 +29,8 @@ public class Player extends ModelEntity{
 	private TargetTimer visibilityTimer;
 	public Player(Timer timer){
 		super();
+		scale = new Vector2f(0.05f, 0.05f);
+		position.y = -1f + scale.y;
 		direction = new Vector2f();
 		cc = new CC(position, 0.035f);
 		hitCC = new CC(position, 0.07f);
@@ -134,6 +138,14 @@ public class Player extends ModelEntity{
 		animations[0].setTextureRow(1);
 		animations[1].setTextureRow(1);
 		hitTimer.resume();
+	}
+	public void shoot(List<Shot> shots){
+		Shot shot = new Shot();
+		shot.model = ResourceStorage.getModel("square");
+		shot.texture = ResourceStorage.getTexture("shotTex");
+		shot.position.x = position.x;
+		shot.position.y = position.y;
+		shots.add(shot);
 	}
 	public void die(){
 		if(!alive || invinsible){

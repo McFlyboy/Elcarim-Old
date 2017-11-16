@@ -16,6 +16,9 @@ public class TargetTimer{
 	public void setTargetTime(double targetTime){
 		this.targetTime = targetTime;
 	}
+	public double getProgression(){
+		return timer.getTime() / targetTime;
+	}
 	public void resume(){
 		timer.resume();
 	}
