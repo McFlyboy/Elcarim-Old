@@ -120,7 +120,7 @@ public class Player extends ModelEntity{
 		}
 	}
 	public void walk(float movement){
-		direction.x = movement;
+		direction.x = movement * Main.getDeltaTime() * 800f;
 	}
 	public void jump(){
 		if(jumping){

@@ -6,6 +6,7 @@ import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.Ball;
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.Player;
+import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ResourceStorage;
@@ -21,6 +22,7 @@ public class GameplayScene extends SceneStruct{
 	private GameplayControls controls;
 	private Player player;
 	private Ball ball;
+	private TextField livesText;
 	public GameplayScene(Timer timer){
 		super(timer);
 		controls = new GameplayControls();
@@ -49,6 +51,9 @@ public class GameplayScene extends SceneStruct{
 		Texture ballTex = new Texture("ball/ball.png");
 		ball.texture = ballTex;
 		ResourceStorage.add("ballTex", ballTex);
+		livesText = new TextField();
+		livesText.mainColor.green = 0.5f;
+		livesText.mainColor.blue = 0.5f;
 	}
 	@Override
 	protected void startSpecifics(){
@@ -83,6 +88,10 @@ public class GameplayScene extends SceneStruct{
 		Render.addToQueue(background);
 		Render.addToQueue(player);
 		Render.addToQueue(ball);
+		livesText.setText("Lives: " + player.lives);
+		livesText.position.x = GameWindow.ASPECT_RATIO - livesText.getWidth() / 2f;
+		livesText.position.y = 1f - livesText.getHeight() / 2f;
+		Render.addToQueue(livesText);
 	}
 	@Override
 	protected void stopSpecifics(){
