@@ -16,6 +16,7 @@ import com.nyhammer.p96.ui.GameWindow;
 public class Sound{
 	private int buffer;
 	private int source;
+	private float length;
 	public Sound(String filename){
 		STBVorbisInfo info = STBVorbisInfo.malloc();
 		ShortBuffer pcm = readVorbis(filename, info);
@@ -40,6 +41,9 @@ public class Sound{
 			ErrorHandler.printError("Return at source-binding!");
 			return;
 		}
+	}
+	public float getLength(){
+		return length;
 	}
 	public float getVolume(){
 		return alGetSourcef(source, AL_GAIN);
@@ -75,6 +79,7 @@ public class Sound{
 		STBVorbis.stb_vorbis_get_info(decoder, info);
 		int channels = info.channels();
 		int lengthSamples = STBVorbis.stb_vorbis_stream_length_in_samples(decoder) * channels;
+		length = STBVorbis.stb_vorbis_stream_length_in_seconds(decoder);
 		ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples);
 		STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm);
 		STBVorbis.stb_vorbis_close(decoder);
