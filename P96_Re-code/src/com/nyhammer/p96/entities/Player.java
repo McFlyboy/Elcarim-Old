@@ -32,6 +32,7 @@ public class Player extends ModelEntity{
 		scale = new Vector2f(0.05f, 0.05f);
 		position.y = -1f + scale.y;
 		direction = new Vector2f();
+		lastXDirection = 1f;
 		cc = new CC(position, 0.035f);
 		hitCC = new CC(position, 0.07f);
 		animations = new Animation[]{
@@ -124,7 +125,7 @@ public class Player extends ModelEntity{
 		}
 	}
 	public void walk(float movement){
-		direction.x = movement * Main.getDeltaTime() * 800f;
+		direction.x = movement * Main.getDeltaTime() * 1.1f;
 	}
 	public void jump(){
 		if(jumping){

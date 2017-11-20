@@ -3,10 +3,10 @@ package com.nyhammer.p96.structure.scenes;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nyhammer.p96.Main;
 import com.nyhammer.p96.audio.Music;
 import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.Ball;
+import com.nyhammer.p96.entities.Bullet;
 import com.nyhammer.p96.entities.Enemy;
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.Player;
@@ -31,6 +31,7 @@ public class GameplayScene extends SceneStruct{
 	private TextField livesText;
 	private List<Shot> shots;
 	private List<Enemy> enemies;
+	private List<Bullet> bullets;
 	public GameplayScene(Timer timer){
 		super(timer);
 		controls = new GameplayControls();
@@ -54,8 +55,8 @@ public class GameplayScene extends SceneStruct{
 		player.model = ResourceStorage.getModel("square");
 		player.texture = playerTex;
 		ResourceStorage.add("playerTex", playerTex);
-		Texture bulletTex = new Texture("bullet/bullet.png");
-		ResourceStorage.add("bulletTex", bulletTex);
+		Texture bulletRedTex = new Texture("bullet/bulletRed.png");
+		ResourceStorage.add("bulletRedTex", bulletRedTex);
 		ball = new Ball();
 		ball.model = ResourceStorage.getModel("square");
 		Texture ballTex = new Texture("ball/ball.png");
@@ -69,8 +70,9 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.add("shotTex", shotTex);
 		Texture todderTex = new Texture("enemy/todder.png");
 		ResourceStorage.add("todderTex", todderTex);
+		bullets = new ArrayList<Bullet>();
 		enemies = new ArrayList<Enemy>();
-		Todder todder = new Todder(sceneTimer);
+		Todder todder = new Todder(bullets, sceneTimer);
 		todder.model = ResourceStorage.getModel("square");
 		todder.texture = todderTex;
 		todder.position.y = 0.3f;
@@ -108,6 +110,7 @@ public class GameplayScene extends SceneStruct{
 		}
 		for(int i = 0; i < enemies.size(); i++){
 			Enemy enemy = enemies.get(i);
+			enemy.update();
 			if(CC.checkCollision(enemy.cc, ball.cc)){
 				if(!enemy.hit){
 					enemy.hit = true;
@@ -133,6 +136,20 @@ public class GameplayScene extends SceneStruct{
 				}
 			}
 		}
+		for(int i = 0; i < bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+			bullet.update();
+			if(CC.checkCollision(bullet.cc, player.cc)){
+				player.die();
+			}
+			if(CC.checkCollision(bullet.cc, ball.cc)){
+				bullet.hp = 0;
+			}
+			if(bullet.hp == 0){
+				bullets.remove(i);
+				i--;
+			}
+		}
 		for(int i = 0; i < shots.size(); i++){
 			Shot shot = shots.get(i);
 			shot.update();
@@ -140,6 +157,15 @@ public class GameplayScene extends SceneStruct{
 				Vector2f shotAngle = ball.position.getSub(shot.position).getNormalize();
 				ball.direction.add(shotAngle.getMul(12f * shotAngle.y));
 				shot.intact = false;
+			}
+			for(int j = 0; j < bullets.size(); j++){
+				Bullet bullet = bullets.get(j);
+				if(CC.checkCollision(shot.cc, bullet.cc)){
+					shot.intact = false;
+					bullet.hp = 0;
+					bullets.remove(j);
+					j--;
+				}
 			}
 			if(!shot.intact){
 				shots.remove(i);
@@ -155,6 +181,9 @@ public class GameplayScene extends SceneStruct{
 			Render.addToQueue(enemy);
 		}
 		Render.addToQueue(ball);
+		for(Bullet bullet : bullets){
+			Render.addToQueue(bullet);
+		}
 		for(Shot shot : shots){
 			Render.addToQueue(shot);
 		}
@@ -171,7 +200,7 @@ public class GameplayScene extends SceneStruct{
 	protected void disposeSpecifics(){
 		ResourceStorage.disposeTexture("bgTex");
 		ResourceStorage.disposeTexture("playerTex");
-		ResourceStorage.disposeTexture("bulletTex");
+		ResourceStorage.disposeTexture("bulletRedTex");
 		ResourceStorage.disposeTexture("ballTex");
 		ResourceStorage.disposeTexture("shotTex");
 		ResourceStorage.disposeTexture("todderTex");
@@ -198,6 +227,6 @@ public class GameplayScene extends SceneStruct{
 		if(controls.isPressed(controls.getShootLeft()) || controls.isPressed(controls.getShootRight())){
 			player.shoot(shots);
 		}
-		player.walk(walkDistance * Main.getDeltaTime());
+		player.walk(walkDistance);
 	}
 }

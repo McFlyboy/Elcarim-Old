@@ -1,6 +1,7 @@
 package com.nyhammer.p96.entities;
 
 import com.nyhammer.p96.Main;
+import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 
@@ -18,5 +19,8 @@ public class Bullet extends ModelEntity{
 	}
 	public void update(){
 		position.add(direction.getMul(Main.getDeltaTime()));
+		if(Math.abs(position.x) > GameWindow.ASPECT_RATIO + scale.x || Math.abs(position.y) > 1f + scale.y){
+			hp = 0;
+		}
 	}
 }

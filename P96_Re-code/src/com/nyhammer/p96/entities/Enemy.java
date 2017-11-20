@@ -1,5 +1,6 @@
 package com.nyhammer.p96.entities;
 
+import com.nyhammer.p96.structure.Attack;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.util.math.collision.CC;
 import com.nyhammer.p96.util.timing.TargetTimer;
@@ -10,6 +11,7 @@ public abstract class Enemy extends ModelEntity{
 	public int lives;
 	public TargetTimer hitTimer;
 	public boolean hit;
+	public Attack[] attacks;
 	public Enemy(Timer baseTimer){
 		super();
 		cc = new CC(position, 1f);

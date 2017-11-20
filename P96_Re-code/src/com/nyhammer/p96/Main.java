@@ -1,5 +1,7 @@
 package com.nyhammer.p96;
 
+import java.util.Random;
+
 import com.nyhammer.p96.audio.AudioSystem;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.font.TextFont;
@@ -22,6 +24,7 @@ public class Main{
 	public static final String TITLE = "Project 1996";
 	private DeltaTimer systemDelta;
 	private static double deltaTime;
+	private static final Random RANDOM = new Random();
 	private GlobalScene globalScene;
 	public static String getVersion(){
 		StringBuilder version = new StringBuilder();
@@ -35,6 +38,9 @@ public class Main{
 	}
 	public static float getDeltaTime(){
 		return (float)deltaTime;
+	}
+	public static Random getRandom(){
+		return RANDOM;
 	}
 	private void start(){
 		ErrorHandler.init();
