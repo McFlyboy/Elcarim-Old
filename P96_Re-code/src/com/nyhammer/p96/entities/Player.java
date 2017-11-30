@@ -2,7 +2,6 @@ package com.nyhammer.p96.entities;
 
 import java.util.List;
 
-import com.nyhammer.p96.Main;
 import com.nyhammer.p96.structure.Animation;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.ui.GameWindow;
@@ -24,6 +23,7 @@ public class Player extends ModelEntity{
 	public float lastXDirection;
 	public boolean hitting;
 	public int lives;
+	public int miracles;
 	public boolean invinsible;
 	private TargetTimer invinsibilityTimer;
 	private TargetTimer visibilityTimer;
@@ -44,10 +44,11 @@ public class Player extends ModelEntity{
 		visibilityTimer = new TargetTimer(timer, 0.1 / 3.0);
 		alive = true;
 		lives = 4;
+		miracles = 3;
 	}
-	public void update(){
+	public void update(float deltaTime){
 		if(!alive){
-			direction.y -= 0.005f * Main.getDeltaTime();
+			direction.y -= 5f * deltaTime;
 			if(position.y < -2f){
 				if(lives > 0){
 					lives--;
@@ -90,13 +91,13 @@ public class Player extends ModelEntity{
 		}
 		if(jumping){
 			if(holdJumping){
-				direction.y -= 0.008f * Main.getDeltaTime();
+				direction.y -= 8f * deltaTime;
 			}
 			else{
-				direction.y -= 0.015f * Main.getDeltaTime();
+				direction.y -= 15f * deltaTime;
 			}
 		}
-		position.add(direction);
+		position.add(direction.getMul(deltaTime));
 		if(direction.x != 0f){
 			lastXDirection = direction.x;
 		}
@@ -105,7 +106,7 @@ public class Player extends ModelEntity{
 				position.x *= (GameWindow.ASPECT_RATIO - scale.x) / Math.abs(position.x);
 				direction.x = 0f;
 			}
-			float xMovement = direction.x;
+			float xMovement = direction.x * deltaTime * 1.1f;
 			if(jumping){
 				xMovement = 0f;
 			}
@@ -125,14 +126,14 @@ public class Player extends ModelEntity{
 		}
 	}
 	public void walk(float movement){
-		direction.x = movement * Main.getDeltaTime() * 1.1f;
+		direction.x = movement;
 	}
 	public void jump(){
 		if(jumping){
 			return;
 		}
 		jumping = true;
-		direction.y = 0.0023f;
+		direction.y = 2.3f;
 	}
 	public void hit(){
 		hitting = true;
@@ -158,7 +159,7 @@ public class Player extends ModelEntity{
 		hitTimer.reset();
 		animations[0].setTextureRow(0);
 		texture.setOffset(animations[0].getFrame(0), 2);
-		direction.y = 0.002f;
+		direction.y = 2f;
 		direction.x = 0f;
 		ResourceStorage.getSound("deathSound").play();
 	}

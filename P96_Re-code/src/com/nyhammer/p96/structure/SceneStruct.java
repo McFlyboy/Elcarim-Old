@@ -1,18 +1,21 @@
 package com.nyhammer.p96.structure;
 
+import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
 public abstract class SceneStruct{
 	private boolean running;
 	protected Timer sceneTimer;
+	protected DeltaTimer deltaSceneTimer;
 	public SceneStruct(Timer timer){
 		sceneTimer = new Timer(timer);
+		deltaSceneTimer = new DeltaTimer(sceneTimer);
 	}
 	public boolean isRunning(){
 		return running;
 	}
 	protected abstract void startSpecifics();
-	protected abstract void updateSpecifics();
+	protected abstract void updateSpecifics(float deltaTime);
 	protected abstract void renderSpecifics();
 	protected abstract void stopSpecifics();
 	protected abstract void disposeSpecifics();
@@ -28,7 +31,7 @@ public abstract class SceneStruct{
 		if(!running){
 			return;
 		}
-		updateSpecifics();
+		updateSpecifics((float)deltaSceneTimer.getTime());
 	}
 	public void render(){
 		renderSpecifics();

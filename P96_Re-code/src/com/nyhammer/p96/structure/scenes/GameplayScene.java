@@ -13,6 +13,7 @@ import com.nyhammer.p96.entities.Player;
 import com.nyhammer.p96.entities.Shot;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.entities.Todder;
+import com.nyhammer.p96.entities.World;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ResourceStorage;
@@ -21,28 +22,40 @@ import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
 import com.nyhammer.p96.util.math.vector.Vector2f;
+import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
 public class GameplayScene extends SceneStruct{
+	private World world;
 	private ModelEntity background;
 	private GameplayControls controls;
 	private Player player;
 	private Ball ball;
 	private TextField livesText;
+	private TextField miraclesText;
 	private List<Shot> shots;
 	private List<Enemy> enemies;
 	private List<Bullet> bullets;
+	private Timer normalTimer;
+	private DeltaTimer normalDeltaTimer;
 	public GameplayScene(Timer timer){
 		super(timer);
+		normalTimer = new Timer(sceneTimer, true);
+		normalDeltaTimer = new DeltaTimer(normalTimer);
 		controls = new GameplayControls();
+		world = new World();
 		Texture bgTex = new Texture("background/background.png");
 		ResourceStorage.add("bgTex", bgTex);
 		background = new ModelEntity(ResourceStorage.getModel("square"), bgTex, new Vector2f(), new Vector2f(GameWindow.ASPECT_RATIO, 1f), 0f);
 		Music bgm = new Music(new String[]{
 				"P96_1_intro.ogg",
-				"P96_1_main.ogg"
+				"P96_1_main.ogg",
+				"P96_1_Miracle_intro.ogg",
+				"P96_1_Miracle_main.ogg"
 		});
 		bgm.setPartLooping(0, false);
+		bgm.setPartLooping(2, false);
+		bgm.setNextPart(1, 4);
 		ResourceStorage.add("bgm", bgm);
 		Sound deathSound = new Sound("player_death.ogg");
 		ResourceStorage.add("deathSound", deathSound);
@@ -50,14 +63,16 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.add("hitSound", hitSound);
 		Sound shotSound = new Sound("shot.ogg");
 		ResourceStorage.add("shotSound", shotSound);
+		Sound miracleSound = new Sound("miracle.ogg");
+		ResourceStorage.add("miracleSound", miracleSound);
 		Texture playerTex = new Texture("char/player.png", 3, 3);
-		player = new Player(this.sceneTimer);
+		player = new Player(sceneTimer);
 		player.model = ResourceStorage.getModel("square");
 		player.texture = playerTex;
 		ResourceStorage.add("playerTex", playerTex);
 		Texture bulletRedTex = new Texture("bullet/bulletRed.png");
 		ResourceStorage.add("bulletRedTex", bulletRedTex);
-		ball = new Ball();
+		ball = new Ball(sceneTimer);
 		ball.model = ResourceStorage.getModel("square");
 		Texture ballTex = new Texture("ball/ball.png");
 		ball.texture = ballTex;
@@ -65,6 +80,9 @@ public class GameplayScene extends SceneStruct{
 		livesText = new TextField();
 		livesText.mainColor.green = 0.5f;
 		livesText.mainColor.blue = 0.5f;
+		miraclesText = new TextField();
+		miraclesText.mainColor.red = 0.3f;
+		miraclesText.mainColor.green = 0.8f;
 		shots = new ArrayList<Shot>();
 		Texture shotTex = new Texture("shot/shot.png");
 		ResourceStorage.add("shotTex", shotTex);
@@ -72,7 +90,7 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.add("todderTex", todderTex);
 		bullets = new ArrayList<Bullet>();
 		enemies = new ArrayList<Enemy>();
-		Todder todder = new Todder(bullets, sceneTimer);
+		Todder todder = new Todder(bullets, normalTimer);
 		todder.model = ResourceStorage.getModel("square");
 		todder.texture = todderTex;
 		todder.position.y = 0.3f;
@@ -83,16 +101,17 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.getMusic("bgm").play();
 	}
 	@Override
-	protected void updateSpecifics(){
+	protected void updateSpecifics(float deltaTime){
+		float normaldeltaTime = (float)normalDeltaTimer.getTime();
 		ResourceStorage.getMusic("bgm").update();
 		if(player.alive){
 			updateControls();
 		}
-		player.update();
+		player.update(deltaTime);
 		for(Enemy enemy : enemies){
 			enemy.update();
 		}
-		ball.update();
+		ball.update(normaldeltaTime, normalTimer);
 		if(player.hitting){
 			if(CC.checkCollision(player.hitCC, ball.cc)){
 				if(player.direction.x == 0f){
@@ -138,7 +157,15 @@ public class GameplayScene extends SceneStruct{
 		}
 		for(int i = 0; i < bullets.size(); i++){
 			Bullet bullet = bullets.get(i);
-			bullet.update();
+			if(!ball.miracleActive){
+				bullet.update(normaldeltaTime);
+			}
+			else{
+				bullet.position.add(ball.position.getSub(bullet.position).getNormalize().getMul(deltaTime * 0.3f));
+				if(Math.abs(bullet.position.x) > GameWindow.ASPECT_RATIO + bullet.scale.x || Math.abs(bullet.position.y) > 1f + bullet.scale.y){
+					bullet.hp = 0;
+				}
+			}
 			if(CC.checkCollision(bullet.cc, player.cc)){
 				player.die();
 			}
@@ -152,10 +179,12 @@ public class GameplayScene extends SceneStruct{
 		}
 		for(int i = 0; i < shots.size(); i++){
 			Shot shot = shots.get(i);
-			shot.update();
+			shot.update(deltaTime);
 			if(CC.checkCollision(shot.cc, ball.cc)){
-				Vector2f shotAngle = ball.position.getSub(shot.position).getNormalize();
-				ball.direction.add(shotAngle.getMul(12f * shotAngle.y));
+				if(!ball.miracleActive){
+					Vector2f shotAngle = ball.position.getSub(shot.position).getNormalize();
+					ball.direction.add(shotAngle.getMul(12f * shotAngle.y));
+				}
 				shot.intact = false;
 			}
 			for(int j = 0; j < bullets.size(); j++){
@@ -172,9 +201,14 @@ public class GameplayScene extends SceneStruct{
 				i--;
 			}
 		}
+		double miracleTime = ball.miracleTimer.getTime();
+		double progress = miracleTime / ball.miracleTimer.getTargetTime();
+		world.position.x = (float)(Math.sin(miracleTime * 1000.0 / 15.0) * 0.01f * progress);
+		world.position.y = (float)(Math.sin(miracleTime * 1000.0 / 25.0) * 0.025f * progress);
 	}
 	@Override
 	protected void renderSpecifics(){
+		Render.setWorld(world);
 		Render.addToQueue(background);
 		Render.addToQueue(player);
 		for(Enemy enemy : enemies){
@@ -191,6 +225,10 @@ public class GameplayScene extends SceneStruct{
 		livesText.position.x = GameWindow.ASPECT_RATIO - livesText.getWidth() / 2f;
 		livesText.position.y = 1f - livesText.getHeight() / 2f;
 		Render.addToQueue(livesText);
+		miraclesText.setText("Miracle: " + player.miracles);
+		miraclesText.position.x = GameWindow.ASPECT_RATIO - miraclesText.getWidth() / 2f;
+		miraclesText.position.y = 1f - livesText.getHeight() / 2f - miraclesText.getHeight();
+		Render.addToQueue(miraclesText);
 	}
 	@Override
 	protected void stopSpecifics(){
@@ -208,6 +246,7 @@ public class GameplayScene extends SceneStruct{
 		ResourceStorage.disposeSound("deathSound");
 		ResourceStorage.disposeSound("hitSound");
 		ResourceStorage.disposeSound("shotSound");
+		ResourceStorage.disposeSound("miracleSound");
 	}
 	public void updateControls(){
 		float walkDistance = 0;
@@ -226,6 +265,13 @@ public class GameplayScene extends SceneStruct{
 		}
 		if(controls.isPressed(controls.getShootLeft()) || controls.isPressed(controls.getShootRight())){
 			player.shoot(shots);
+		}
+		if(controls.isPressed(controls.getMiracle())){
+			if(player.miracles > 0 && ball.miracleActive == false){
+				player.miracles--;
+				normalTimer.pause();
+				ball.activateMiracle();
+			}
 		}
 		player.walk(walkDistance);
 	}

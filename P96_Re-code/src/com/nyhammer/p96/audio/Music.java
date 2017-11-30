@@ -40,7 +40,7 @@ public class Music{
 		alSourcei(source, AL_DIRECT_CHANNELS_SOFT, AL_TRUE);
 		parts = new MusicPart[filenames.length];
 		for(int i = 0; i < filenames.length; i++){
-			parts[i] = new MusicPart(filenames[i]);
+			parts[i] = new MusicPart(filenames[i], i);
 		}
 		for(MusicPart part : parts){
 			if(channels != 0){
@@ -66,6 +66,15 @@ public class Music{
 		activePart = 0;
 		pcm = BufferUtils.createShortBuffer(BUFFER_SIZE);
 	}
+	public int getActivePart(){
+		return activePart;
+	}
+	public void setActivePart(int part, boolean keepProgress){
+		float progress = keepProgress ? getPartProgress() : 0f;
+		rewind();
+		activePart = part;
+		skipTo(progress);
+	}
 	public int getPartLengthInSamples(int part){
 		return parts[part].lengthInSamples;
 	}
@@ -77,6 +86,9 @@ public class Music{
 	}
 	public void setPartLooping(int part, boolean loop){
 		parts[part].looping = loop;
+	}
+	public void setNextPart(int targetPart, int nextPart){
+		parts[targetPart].nextPart = nextPart;
 	}
 	private int getFormat(int channels){
 		switch(channels){
@@ -95,6 +107,9 @@ public class Music{
 	}
 	public void setVolume(float volume){
 		alSourcef(source, AL_GAIN, volume);
+	}
+	public float getPartProgress(){
+		return 1f - (float)parts[activePart].samplesLeft / (float)parts[activePart].lengthInSamples;
 	}
 	public void play(){
 		if(playing){
@@ -134,6 +149,14 @@ public class Music{
 	}
 	private void rewind(){
 		stb_vorbis_seek_start(parts[activePart].decoder);
+		parts[activePart].samplesLeft = parts[activePart].lengthInSamples;
+	}
+	private void seek(int sampleNumber){
+		stb_vorbis_seek(parts[activePart].decoder, sampleNumber);
+		parts[activePart].samplesLeft = parts[activePart].lengthInSamples - sampleNumber;
+	}
+	public void skipTo(float offset){
+		seek(Math.round((float)parts[activePart].lengthInSamples * offset));
 	}
 	public void update(){
 		if(!playing){
@@ -148,13 +171,13 @@ public class Music{
 				pcm.position(samplesPerChannel * channels);
 				if(parts[activePart].looping){
 					rewind();
-					stream();
+					parts[activePart].samplesLeft -= stream();
 				}
 				else{
 					rewind();
-					activePart++;
+					activePart = parts[activePart].nextPart;
 					if(activePart < parts.length){
-						stream();
+						parts[activePart].samplesLeft -= stream();
 					}
 					else{
 						activePart = 0;
@@ -163,6 +186,9 @@ public class Music{
 						return;
 					}
 				}
+			}
+			else{
+				parts[activePart].samplesLeft -= samplesPerChannel;
 			}
 			pcm.position(0);
 			alBufferData(buffer, format, pcm, sampleRate);
@@ -183,9 +209,11 @@ public class Music{
 		private final int channels;
 		private final int sampleRate;
 		private final int lengthInSamples;
+		private int samplesLeft;
 		private final float lengthInSeconds;
 		private boolean looping;
-		public MusicPart(String filename){
+		private int nextPart;
+		public MusicPart(String filename, int number){
 			try{
 				vorbis = ResourceLoader.resourceToByteBuffer("assets/audio/bgm/" + filename, 256 * 1024);
 			}
@@ -207,8 +235,10 @@ public class Music{
 				sampleRate = info.sample_rate();
 			}
 			lengthInSamples = stb_vorbis_stream_length_in_samples(decoder);
+			samplesLeft = lengthInSamples;
 			lengthInSeconds = stb_vorbis_stream_length_in_seconds(decoder);
 			looping = true;
+			nextPart = number + 1;
 		}
 	}
 }

@@ -11,10 +11,12 @@ import java.nio.FloatBuffer;
 import org.lwjgl.system.MemoryUtil;
 
 import com.nyhammer.p96.entities.TextField;
+import com.nyhammer.p96.entities.World;
 import com.nyhammer.p96.graphics.font.TextFont;
 import com.nyhammer.p96.graphics.font.TextFont.Glyph;
 import com.nyhammer.p96.graphics.shading.shaders.S96;
 import com.nyhammer.p96.structure.ResourceStorage;
+import com.nyhammer.p96.util.math.vector.Vector2f;
 
 public class BatchRender{
 	private int vao;
@@ -44,7 +46,7 @@ public class BatchRender{
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glActiveTexture(GL_TEXTURE0);
 	}
-	public void render(S96 shader, TextField textField){
+	public void render(S96 shader, World world, TextField textField){
 		glBindTexture(GL_TEXTURE_2D, font.getFontTexture().getTexture());
 		shader.loadTextureInfo(1, 1, 0, 0);
 		int fontHeight = font.getFontHeight();
@@ -67,7 +69,7 @@ public class BatchRender{
 			drawX += glyph.getWidth();
 		}
 		vertices.flip();
-		shader.loadTransformation(textField.position, textField.angle, textField.scale);
+		shader.loadTransformation(textField.position, textField.angle, textField.scale, world != null ? world.position : new Vector2f());
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 		for(int i = 0; i < text.length(); i++){
 			shader.loadColors(true, textField.charColors[i]);

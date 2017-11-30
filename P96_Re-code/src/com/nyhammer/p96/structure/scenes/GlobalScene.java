@@ -29,7 +29,7 @@ public class GlobalScene extends SceneStruct{
 		gameplayScene.start();
 	}
 	@Override
-	protected void updateSpecifics(){
+	protected void updateSpecifics(float deltaTime){
 		updateControls();
 		gameplayScene.update();
 	}

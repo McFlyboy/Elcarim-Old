@@ -23,7 +23,6 @@ public class Main{
 	public static final String PRE_VERSION_SUFFIX = "a";
 	public static final String TITLE = "Project 1996";
 	private DeltaTimer systemDelta;
-	private static double deltaTime;
 	private static final Random RANDOM = new Random();
 	private GlobalScene globalScene;
 	public static String getVersion(){
@@ -35,9 +34,6 @@ public class Main{
 		}
 		version.append(PRE_VERSION_SUFFIX);
 		return version.toString();
-	}
-	public static float getDeltaTime(){
-		return (float)deltaTime;
 	}
 	public static Random getRandom(){
 		return RANDOM;
@@ -73,14 +69,13 @@ public class Main{
 		double targetFrameTime = 1.0 / GameWindow.getMonitorRefreshRate();
 		double renderTimeRemaining = 0.0;
 		while(!GameWindow.shouldClose()){
-			deltaTime = systemDelta.getTime();
 			boolean renderReady = false;
 			update();
 			if(renderTimeRemaining <= 0.0){
 				renderReady = true;
 				renderTimeRemaining += targetFrameTime;
 			}
-			renderTimeRemaining -= deltaTime;
+			renderTimeRemaining -= systemDelta.getTime();
 			if(renderReady){
 				render();
 			}

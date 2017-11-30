@@ -5,11 +5,12 @@ import com.nyhammer.p96.util.Color3f;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 
 public class S96 extends ShaderProgram{
-	private static final String vshFilename = "p96.vsh";
-	private static final String fshFilename = "p96.fsh";
+	private static final String vshFilename = "s96.vsh";
+	private static final String fshFilename = "s96.fsh";
 	private int positionLocation;
 	private int angleLocation;
 	private int scaleLocation;
+	private int worldPositionLocation;
 	private int horizontalTextureCountLocation;
 	private int verticalTextureCountLocation;
 	private int textureOffsetXLocation;
@@ -29,6 +30,7 @@ public class S96 extends ShaderProgram{
 		positionLocation = super.getUniformLocation("position");
 		angleLocation = super.getUniformLocation("angle");
 		scaleLocation = super.getUniformLocation("scale");
+		worldPositionLocation = super.getUniformLocation("worldPosition");
 		horizontalTextureCountLocation = super.getUniformLocation("horizontalTextureCount");
 		verticalTextureCountLocation = super.getUniformLocation("verticalTextureCount");
 		textureOffsetXLocation = super.getUniformLocation("textureOffsetX");
@@ -36,10 +38,11 @@ public class S96 extends ShaderProgram{
 		colorActiveLocation = super.getUniformLocation("colorActive");
 		colorLocation = super.getUniformLocation("color");
 	}
-	public void loadTransformation(Vector2f position, float angle, Vector2f scale){
+	public void loadTransformation(Vector2f position, float angle, Vector2f scale, Vector2f worldPosition){
 		super.loadVector2f(positionLocation, position);
 		super.loadFloat(angleLocation, angle);
 		super.loadVector2f(scaleLocation, scale);
+		super.loadVector2f(worldPositionLocation, worldPosition);
 	}
 	public void loadTextureInfo(int horizontalTextureCount, int verticalTextureCount, int textureOffsetX, int textureOffsetY){
 		super.loadInt(horizontalTextureCountLocation, horizontalTextureCount);

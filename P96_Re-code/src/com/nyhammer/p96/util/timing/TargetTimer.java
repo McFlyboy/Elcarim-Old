@@ -10,13 +10,16 @@ public class TargetTimer{
 		timer = new Timer(baseTimer, false);
 		this.targetTime = targetTime;
 	}
+	public double getTime(){
+		return timer.getTime();
+	}
 	public double getTargetTime(){
 		return targetTime;
 	}
 	public void setTargetTime(double targetTime){
 		this.targetTime = targetTime;
 	}
-	public double getProgression(){
+	public double getProgress(){
 		return timer.getTime() / targetTime;
 	}
 	public void resume(){

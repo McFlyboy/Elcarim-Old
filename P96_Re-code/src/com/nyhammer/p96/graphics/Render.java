@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.TextField;
+import com.nyhammer.p96.entities.World;
 import com.nyhammer.p96.graphics.shading.ShaderProgram;
 import com.nyhammer.p96.graphics.shading.shaders.S96;
 import com.nyhammer.p96.util.Color3f;
@@ -17,6 +18,7 @@ public class Render{
 	private static StaticRender sRender;
 	private static BatchRender bRender;
 	private static S96 shader;
+	private static World world;
 	private static List<Entry> masterQueue = new ArrayList<Entry>();
 	private static List<ModelEntity> entityQueue = new ArrayList<ModelEntity>();
 	private static List<TextField> textQueue = new ArrayList<TextField>();
@@ -55,7 +57,7 @@ public class Render{
 					sRender.prepareModel(entity.model);
 					lastVAO = vao;
 				}
-				sRender.render(shader, entity);
+				sRender.render(shader, world, entity);
 			}
 			else if(masterEntry == Entry.TEXT_FIELD_ENTRY){
 				TextField text = textQueue.remove(0);
@@ -64,7 +66,7 @@ public class Render{
 					bRender.prepare();
 					lastVAO = bVAO;
 				}
-				bRender.render(shader, text);
+				bRender.render(shader, world, text);
 			}
 		}
 		masterQueue.clear();
@@ -96,6 +98,9 @@ public class Render{
 		else{
 			glDisable(GL_BLEND);
 		}
+	}
+	public static void setWorld(World world){
+		Render.world = world;
 	}
 	public static void terminate(){
 		ShaderProgram.stop();
