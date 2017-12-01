@@ -31,6 +31,8 @@ public class GameplayScene extends SceneStruct{
 	private GameplayControls controls;
 	private Player player;
 	private Ball ball;
+	private int score;
+	private TextField scoreText;
 	private TextField livesText;
 	private TextField miraclesText;
 	private List<Shot> shots;
@@ -77,6 +79,9 @@ public class GameplayScene extends SceneStruct{
 		Texture ballTex = new Texture("ball/ball.png");
 		ball.texture = ballTex;
 		ResourceStorage.add("ballTex", ballTex);
+		score = 0;
+		scoreText = new TextField();
+		scoreText.mainColor.blue = 0f;
 		livesText = new TextField();
 		livesText.mainColor.green = 0.5f;
 		livesText.mainColor.blue = 0.5f;
@@ -114,12 +119,20 @@ public class GameplayScene extends SceneStruct{
 		ball.update(normaldeltaTime, normalTimer);
 		if(player.hitting){
 			if(CC.checkCollision(player.hitCC, ball.cc)){
-				if(player.direction.x == 0f){
-					ball.direction = new Vector2f(player.lastXDirection / Math.abs(player.lastXDirection), 2f).getNormalize().getMul(player.jumping ? 15f : 12f);
+				if(!ball.hit){
+					ball.hit = true;
+					if(player.direction.x == 0f){
+						ball.direction = new Vector2f(player.lastXDirection / Math.abs(player.lastXDirection), 2f).getNormalize().getMul(player.jumping ? 15f : 12f);
+						score += 20;
+					}
+					else{
+						ball.direction = new Vector2f(player.direction.x / Math.abs(player.direction.x), 2f).getNormalize().getMul(15f);
+						score += 30;
+					}
 				}
-				else{
-					ball.direction = new Vector2f(player.direction.x / Math.abs(player.direction.x), 2f).getNormalize().getMul(15f);
-				}
+			}
+			else{
+				ball.hit = false;
 			}
 		}
 		else{
@@ -137,6 +150,7 @@ public class GameplayScene extends SceneStruct{
 					enemy.colorActive = true;
 					ball.direction.x *= -0.6f;
 					ball.direction.y *= 0.6f;
+					score += 1000;
 					ResourceStorage.getSound("hitSound").play();
 					enemy.hitTimer.resume();
 				}
@@ -171,6 +185,12 @@ public class GameplayScene extends SceneStruct{
 			}
 			if(CC.checkCollision(bullet.cc, ball.cc)){
 				bullet.hp = 0;
+				if(ball.miracleActive){
+					score += 150;
+				}
+				else{
+					score += 50;
+				}
 			}
 			if(bullet.hp == 0){
 				bullets.remove(i);
@@ -184,6 +204,10 @@ public class GameplayScene extends SceneStruct{
 				if(!ball.miracleActive){
 					Vector2f shotAngle = ball.position.getSub(shot.position).getNormalize();
 					ball.direction.add(shotAngle.getMul(12f * shotAngle.y));
+					score += 30;
+				}
+				else{
+					score += 100;
 				}
 				shot.intact = false;
 			}
@@ -194,6 +218,7 @@ public class GameplayScene extends SceneStruct{
 					bullet.hp = 0;
 					bullets.remove(j);
 					j--;
+					score += 10;
 				}
 			}
 			if(!shot.intact){
@@ -221,14 +246,19 @@ public class GameplayScene extends SceneStruct{
 		for(Shot shot : shots){
 			Render.addToQueue(shot);
 		}
+		scoreText.setText(String.format("Score: %08d", score));
+		scoreText.position.x = GameWindow.ASPECT_RATIO - scoreText.getWidth() / 2f;
+		scoreText.position.y = 1f - scoreText.getHeight() / 2f;
+		Render.addToQueue(scoreText);
 		livesText.setText("Lives: " + player.lives);
 		livesText.position.x = GameWindow.ASPECT_RATIO - livesText.getWidth() / 2f;
-		livesText.position.y = 1f - livesText.getHeight() / 2f;
+		livesText.position.y = 1f - scoreText.getHeight() / 2f - livesText.getHeight();
 		Render.addToQueue(livesText);
 		miraclesText.setText("Miracle: " + player.miracles);
 		miraclesText.position.x = GameWindow.ASPECT_RATIO - miraclesText.getWidth() / 2f;
-		miraclesText.position.y = 1f - livesText.getHeight() / 2f - miraclesText.getHeight();
+		miraclesText.position.y = 1f - scoreText.getHeight() / 2f - livesText.getHeight() - miraclesText.getHeight();
 		Render.addToQueue(miraclesText);
+		Render.setWorld(null);
 	}
 	@Override
 	protected void stopSpecifics(){

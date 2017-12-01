@@ -18,8 +18,9 @@ public class Render{
 	private static StaticRender sRender;
 	private static BatchRender bRender;
 	private static S96 shader;
-	private static World world;
+	private static World activeWorld;
 	private static List<Entry> masterQueue = new ArrayList<Entry>();
+	private static List<World> worldQueue = new ArrayList<World>();
 	private static List<ModelEntity> entityQueue = new ArrayList<ModelEntity>();
 	private static List<TextField> textQueue = new ArrayList<TextField>();
 	private enum Entry{
@@ -37,6 +38,7 @@ public class Render{
 		}
 		entityQueue.add(entity);
 		masterQueue.add(Entry.MODEL_ENTITY_ENTRY);
+		worldQueue.add(activeWorld);
 	}
 	public static void addToQueue(TextField text){
 		if(!text.visible){
@@ -44,6 +46,7 @@ public class Render{
 		}
 		textQueue.add(text);
 		masterQueue.add(Entry.TEXT_FIELD_ENTRY);
+		worldQueue.add(activeWorld);
 	}
 	public static void renderQueue(){
 		int lastVAO = 0;
@@ -57,7 +60,7 @@ public class Render{
 					sRender.prepareModel(entity.model);
 					lastVAO = vao;
 				}
-				sRender.render(shader, world, entity);
+				sRender.render(shader, worldQueue.remove(0), entity);
 			}
 			else if(masterEntry == Entry.TEXT_FIELD_ENTRY){
 				TextField text = textQueue.remove(0);
@@ -66,10 +69,11 @@ public class Render{
 					bRender.prepare();
 					lastVAO = bVAO;
 				}
-				bRender.render(shader, world, text);
+				bRender.render(shader, worldQueue.remove(0), text);
 			}
 		}
 		masterQueue.clear();
+		worldQueue.clear();
 		unprepare();
 	}
 	private static void unprepare(){
@@ -100,7 +104,7 @@ public class Render{
 		}
 	}
 	public static void setWorld(World world){
-		Render.world = world;
+		activeWorld = world;
 	}
 	public static void terminate(){
 		ShaderProgram.stop();

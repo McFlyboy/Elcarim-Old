@@ -13,6 +13,7 @@ public class Ball extends ModelEntity{
 	public Vector2f direction;
 	public TargetTimer miracleTimer;
 	public boolean miracleActive;
+	public boolean hit;
 	public Ball(Timer baseTimer){
 		super();
 		position.x = 0.8f * GameWindow.ASPECT_RATIO;
@@ -25,6 +26,7 @@ public class Ball extends ModelEntity{
 		color.green = 0f;
 		color.blue = 0f;
 		miracleTimer = new TargetTimer(baseTimer, ResourceStorage.getSound("miracleSound").getLength());
+		hit = false;
 	}
 	public void update(float deltaTime, Timer timer){
 		direction.x -= direction.x * 0.02f * deltaTime;
