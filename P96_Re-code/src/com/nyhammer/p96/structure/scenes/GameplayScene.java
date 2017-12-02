@@ -13,11 +13,10 @@ import com.nyhammer.p96.entities.Player;
 import com.nyhammer.p96.entities.Shot;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.entities.Todder;
-import com.nyhammer.p96.entities.World;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ResourceStorage;
-import com.nyhammer.p96.structure.SceneStruct;
+import com.nyhammer.p96.structure.Scene;
 import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
@@ -25,8 +24,7 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class GameplayScene extends SceneStruct{
-	private World world;
+public class GameplayScene extends Scene{
 	private ModelEntity background;
 	private GameplayControls controls;
 	private Player player;
@@ -42,10 +40,9 @@ public class GameplayScene extends SceneStruct{
 	private DeltaTimer normalDeltaTimer;
 	public GameplayScene(Timer timer){
 		super(timer);
-		normalTimer = new Timer(sceneTimer, true);
+		normalTimer = new Timer(this.timer, true);
 		normalDeltaTimer = new DeltaTimer(normalTimer);
 		controls = new GameplayControls();
-		world = new World();
 		Texture bgTex = new Texture("background/background.png");
 		ResourceStorage.add("bgTex", bgTex);
 		background = new ModelEntity(ResourceStorage.getModel("square"), bgTex, new Vector2f(), new Vector2f(GameWindow.ASPECT_RATIO, 1f), 0f);
@@ -68,13 +65,13 @@ public class GameplayScene extends SceneStruct{
 		Sound miracleSound = new Sound("miracle.ogg");
 		ResourceStorage.add("miracleSound", miracleSound);
 		Texture playerTex = new Texture("char/player.png", 3, 3);
-		player = new Player(sceneTimer);
+		player = new Player(this.timer);
 		player.model = ResourceStorage.getModel("square");
 		player.texture = playerTex;
 		ResourceStorage.add("playerTex", playerTex);
 		Texture bulletRedTex = new Texture("bullet/bulletRed.png");
 		ResourceStorage.add("bulletRedTex", bulletRedTex);
-		ball = new Ball(sceneTimer);
+		ball = new Ball(this.timer);
 		ball.model = ResourceStorage.getModel("square");
 		Texture ballTex = new Texture("ball/ball.png");
 		ball.texture = ballTex;
@@ -103,7 +100,7 @@ public class GameplayScene extends SceneStruct{
 	}
 	@Override
 	protected void startSpecifics(){
-		ResourceStorage.getMusic("bgm").play();
+		//ResourceStorage.getMusic("bgm").play();
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime){
@@ -228,12 +225,11 @@ public class GameplayScene extends SceneStruct{
 		}
 		double miracleTime = ball.miracleTimer.getTime();
 		double progress = miracleTime / ball.miracleTimer.getTargetTime();
-		world.position.x = (float)(Math.sin(miracleTime * 1000.0 / 15.0) * 0.01f * progress);
-		world.position.y = (float)(Math.sin(miracleTime * 1000.0 / 25.0) * 0.025f * progress);
+		this.position.x = (float)(Math.sin(miracleTime * 1000.0 / 15.0) * 0.01f * progress);
+		this.position.y = (float)(Math.sin(miracleTime * 1000.0 / 25.0) * 0.025f * progress);
 	}
 	@Override
 	protected void renderSpecifics(){
-		Render.setWorld(world);
 		Render.addToQueue(background);
 		Render.addToQueue(player);
 		for(Enemy enemy : enemies){
@@ -258,7 +254,6 @@ public class GameplayScene extends SceneStruct{
 		miraclesText.position.x = GameWindow.ASPECT_RATIO - miraclesText.getWidth() / 2f;
 		miraclesText.position.y = 1f - scoreText.getHeight() / 2f - livesText.getHeight() - miraclesText.getHeight();
 		Render.addToQueue(miraclesText);
-		Render.setWorld(null);
 	}
 	@Override
 	protected void stopSpecifics(){

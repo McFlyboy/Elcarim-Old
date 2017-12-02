@@ -4,13 +4,13 @@ import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Models;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.structure.ResourceStorage;
-import com.nyhammer.p96.structure.SceneStruct;
+import com.nyhammer.p96.structure.Scene;
 import com.nyhammer.p96.structure.controlSchemes.GlobalControls;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Time;
 
-public class GlobalScene extends SceneStruct{
+public class GlobalScene extends Scene{
 	private GlobalControls controls;
 	private GameplayScene gameplayScene;
 	private TextField fpsText;
@@ -25,7 +25,7 @@ public class GlobalScene extends SceneStruct{
 	}
 	@Override
 	protected void startSpecifics(){
-		gameplayScene = new GameplayScene(this.sceneTimer);
+		gameplayScene = new GameplayScene(this.timer);
 		gameplayScene.start();
 	}
 	@Override
@@ -36,6 +36,7 @@ public class GlobalScene extends SceneStruct{
 	@Override
 	protected void renderSpecifics(){
 		gameplayScene.render();
+		Render.setScene(this);
 		fpsText.setText("FPS: " + Time.getFPS());
 		fpsText.position = new Vector2f(GameWindow.ASPECT_RATIO - fpsText.getWidth() / 2f, 0f);
 		Render.addToQueue(fpsText);

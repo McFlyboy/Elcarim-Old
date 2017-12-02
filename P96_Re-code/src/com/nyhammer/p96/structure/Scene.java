@@ -1,15 +1,22 @@
 package com.nyhammer.p96.structure;
 
+import com.nyhammer.p96.graphics.Render;
+import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public abstract class SceneStruct{
+public abstract class Scene{
 	private boolean running;
-	protected Timer sceneTimer;
-	protected DeltaTimer deltaSceneTimer;
-	public SceneStruct(Timer timer){
-		sceneTimer = new Timer(timer);
-		deltaSceneTimer = new DeltaTimer(sceneTimer);
+	protected Timer timer;
+	protected DeltaTimer deltaTimer;
+	public Vector2f position;
+	public float brightness;
+	public Scene(Timer timer){
+		running = false;
+		this.timer = new Timer(timer);
+		deltaTimer = new DeltaTimer(this.timer);
+		position = new Vector2f();
+		brightness = 1f;
 	}
 	public boolean isRunning(){
 		return running;
@@ -23,7 +30,7 @@ public abstract class SceneStruct{
 		if(running){
 			return;
 		}
-		sceneTimer.resume();
+		timer.resume();
 		startSpecifics();
 		running = true;
 	}
@@ -31,16 +38,17 @@ public abstract class SceneStruct{
 		if(!running){
 			return;
 		}
-		updateSpecifics((float)deltaSceneTimer.getTime());
+		updateSpecifics((float)deltaTimer.getTime());
 	}
 	public void render(){
+		Render.setScene(this);
 		renderSpecifics();
 	}
 	public void stop(){
 		if(!running){
 			return;
 		}
-		sceneTimer.pause();
+		timer.pause();
 		stopSpecifics();
 		running = false;
 	}

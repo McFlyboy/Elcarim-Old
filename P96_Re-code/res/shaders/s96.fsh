@@ -4,6 +4,7 @@ in vec2 passTextureCoord;
 
 out vec4 out_Color;
 
+uniform float sceneBrightness;
 uniform sampler2D modelTexture;
 uniform int horizontalTextureCount;
 uniform int verticalTextureCount;
@@ -20,4 +21,5 @@ void main(void){
 	else{
 		out_Color = tex;
 	}
+	out_Color.rgb *= sceneBrightness;
 }

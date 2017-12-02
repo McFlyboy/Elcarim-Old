@@ -9,18 +9,18 @@ import java.util.List;
 
 import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.TextField;
-import com.nyhammer.p96.entities.World;
 import com.nyhammer.p96.graphics.shading.ShaderProgram;
 import com.nyhammer.p96.graphics.shading.shaders.S96;
+import com.nyhammer.p96.structure.Scene;
 import com.nyhammer.p96.util.Color3f;
 
 public class Render{
 	private static StaticRender sRender;
 	private static BatchRender bRender;
 	private static S96 shader;
-	private static World activeWorld;
+	private static Scene activeScene;
 	private static List<Entry> masterQueue = new ArrayList<Entry>();
-	private static List<World> worldQueue = new ArrayList<World>();
+	private static List<Scene> sceneQueue = new ArrayList<Scene>();
 	private static List<ModelEntity> entityQueue = new ArrayList<ModelEntity>();
 	private static List<TextField> textQueue = new ArrayList<TextField>();
 	private enum Entry{
@@ -38,7 +38,7 @@ public class Render{
 		}
 		entityQueue.add(entity);
 		masterQueue.add(Entry.MODEL_ENTITY_ENTRY);
-		worldQueue.add(activeWorld);
+		sceneQueue.add(activeScene);
 	}
 	public static void addToQueue(TextField text){
 		if(!text.visible){
@@ -46,7 +46,7 @@ public class Render{
 		}
 		textQueue.add(text);
 		masterQueue.add(Entry.TEXT_FIELD_ENTRY);
-		worldQueue.add(activeWorld);
+		sceneQueue.add(activeScene);
 	}
 	public static void renderQueue(){
 		int lastVAO = 0;
@@ -60,7 +60,7 @@ public class Render{
 					sRender.prepareModel(entity.model);
 					lastVAO = vao;
 				}
-				sRender.render(shader, worldQueue.remove(0), entity);
+				sRender.render(shader, sceneQueue.remove(0), entity);
 			}
 			else if(masterEntry == Entry.TEXT_FIELD_ENTRY){
 				TextField text = textQueue.remove(0);
@@ -69,11 +69,11 @@ public class Render{
 					bRender.prepare();
 					lastVAO = bVAO;
 				}
-				bRender.render(shader, worldQueue.remove(0), text);
+				bRender.render(shader, sceneQueue.remove(0), text);
 			}
 		}
 		masterQueue.clear();
-		worldQueue.clear();
+		sceneQueue.clear();
 		unprepare();
 	}
 	private static void unprepare(){
@@ -103,8 +103,8 @@ public class Render{
 			glDisable(GL_BLEND);
 		}
 	}
-	public static void setWorld(World world){
-		activeWorld = world;
+	public static void setScene(Scene scene){
+		activeScene = scene;
 	}
 	public static void terminate(){
 		ShaderProgram.stop();
