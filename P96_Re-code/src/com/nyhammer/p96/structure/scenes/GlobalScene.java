@@ -1,5 +1,6 @@
 package com.nyhammer.p96.structure.scenes;
 
+import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Models;
 import com.nyhammer.p96.graphics.Render;
@@ -12,7 +13,9 @@ import com.nyhammer.p96.util.timing.Time;
 
 public class GlobalScene extends Scene{
 	private GlobalControls controls;
+	private PauseScene pauseScene;
 	private GameplayScene gameplayScene;
+	private boolean gamePaused;
 	private TextField fpsText;
 	public GlobalScene(){
 		super(null);
@@ -20,22 +23,39 @@ public class GlobalScene extends Scene{
 		fpsText.scale = new Vector2f(0.0015f, 0.0015f);
 		fpsText.mainColor.blue = 0f;
 		fpsText.visible = false;
+		gamePaused = false;
 		controls = new GlobalControls();
 		ResourceStorage.add("square", Models.createSquare());
+		ResourceStorage.add("optionSound", new Sound("system/option.ogg"));
+		ResourceStorage.add("confirmSound", new Sound("system/confirm.ogg"));
+		ResourceStorage.add("cancelSound", new Sound("system/cancel.ogg"));
 	}
 	@Override
 	protected void startSpecifics(){
+		pauseScene = new PauseScene(this.timer);
 		gameplayScene = new GameplayScene(this.timer);
 		gameplayScene.start();
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime){
 		updateControls();
-		gameplayScene.update();
+		if(!gamePaused){
+			gameplayScene.update();
+		}
+		else{
+			pauseScene.update();
+			if(pauseScene.checkMenus()){
+				gamePaused = false;
+				updateGameState();
+			}
+		}
 	}
 	@Override
 	protected void renderSpecifics(){
 		gameplayScene.render();
+		if(gamePaused){
+			pauseScene.render();
+		}
 		Render.setScene(this);
 		fpsText.setText("FPS: " + Time.getFPS());
 		fpsText.position = new Vector2f(GameWindow.ASPECT_RATIO - fpsText.getWidth() / 2f, 0f);
@@ -44,15 +64,21 @@ public class GlobalScene extends Scene{
 	@Override
 	protected void stopSpecifics(){
 		gameplayScene.stop();
+		pauseScene.stop();
 	}
 	@Override
 	protected void disposeSpecifics(){
 		gameplayScene.dispose();
+		pauseScene.dispose();
 		ResourceStorage.disposeModel("square");
+		ResourceStorage.disposeSound("optionSound");
+		ResourceStorage.disposeSound("confirmSound");
+		ResourceStorage.disposeSound("cancelSound");
 	}
-	public void updateControls(){
+	private void updateControls(){
 		if(controls.isPressed(controls.getPause())){
-			GameWindow.close();
+			gamePaused = !gamePaused;
+			updateGameState();
 		}
 		if(controls.isPressed(controls.getFPS())){
 			fpsText.visible = !fpsText.visible;
@@ -60,6 +86,16 @@ public class GlobalScene extends Scene{
 		if(controls.isPressed(controls.getFullscreen())){
 			boolean fullscreen = GameWindow.isFullscreen();
 			GameWindow.setFullscreen(!fullscreen);
+		}
+	}
+	private void updateGameState(){
+		if(!gamePaused){
+			pauseScene.stop();
+			gameplayScene.start();
+		}
+		else{
+			gameplayScene.stop();
+			pauseScene.start();
 		}
 	}
 }

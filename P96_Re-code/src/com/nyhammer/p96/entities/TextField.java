@@ -49,6 +49,9 @@ public class TextField extends Entity{
 		return (float)baseHeight * scale.y;
 	}
 	public void setColors(Color3f color){
+		mainColor.red = color.red;
+		mainColor.green = color.green;
+		mainColor.blue = color.blue;
 		for(int i = 0; i < charColors.length; i++){
 			charColors[i].red = color.red;
 			charColors[i].green = color.green;

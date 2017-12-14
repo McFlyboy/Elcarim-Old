@@ -100,7 +100,8 @@ public class GameplayScene extends Scene{
 	}
 	@Override
 	protected void startSpecifics(){
-		//ResourceStorage.getMusic("bgm").play();
+		ResourceStorage.getMusic("bgm").play();
+		brightness = 1f;
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime){
@@ -257,7 +258,8 @@ public class GameplayScene extends Scene{
 	}
 	@Override
 	protected void stopSpecifics(){
-		
+		ResourceStorage.getMusic("bgm").pause();
+		brightness = 0.5f;
 	}
 	@Override
 	protected void disposeSpecifics(){
@@ -273,7 +275,7 @@ public class GameplayScene extends Scene{
 		ResourceStorage.disposeSound("shotSound");
 		ResourceStorage.disposeSound("miracleSound");
 	}
-	public void updateControls(){
+	private void updateControls(){
 		float walkDistance = 0;
 		if(controls.isDown(controls.getMoveLeft())){
 			walkDistance += -1f;

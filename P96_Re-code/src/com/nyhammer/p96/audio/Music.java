@@ -130,7 +130,11 @@ public class Music{
 		if(!playing){
 			return;
 		}
-		alSourcePause(source);
+		alSourceStop(source);
+		int buffersQueued = alGetSourcei(source, AL_BUFFERS_QUEUED);
+		for(int i = 0; i < buffersQueued; i++){
+			alSourceUnqueueBuffers(source);
+		}
 		playing = false;
 	}
 	public void stop(){
@@ -142,6 +146,7 @@ public class Music{
 		for(int i = 0; i < buffersQueued; i++){
 			alSourceUnqueueBuffers(source);
 		}
+		rewind();
 		playing = false;
 	}
 	private int stream(){

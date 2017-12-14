@@ -3,6 +3,7 @@ package com.nyhammer.p96;
 import java.util.Random;
 
 import com.nyhammer.p96.audio.AudioSystem;
+import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.font.TextFont;
 import com.nyhammer.p96.input.Gamepad;
@@ -17,8 +18,8 @@ import com.nyhammer.p96.util.timing.Time;
 
 public class Main{
 	public static final int VERSION_MAJOR = 0;
-	public static final int VERSION_MINOR = 2;
-	public static final int VERSION_REVISION = 1;
+	public static final int VERSION_MINOR = 3;
+	public static final int VERSION_REVISION = 0;
 	public static final int VERSION_PATCH = 0;
 	public static final String PRE_VERSION_SUFFIX = "a";
 	public static final String TITLE = "Project 1996";
@@ -51,6 +52,9 @@ public class Main{
 			ControlScheme.setActiveInput(Gamepad.isPresent() ? ControlScheme.ActiveInput.ACTIVE_GAMEPAD : ControlScheme.ActiveInput.ACTIVE_KEYBOARD);
 			AudioSystem.init();
 			ResourceStorage.add("font", new TextFont("consola.ttf", 28));
+			Sound bootingSound = new Sound("system/booting.ogg");
+			ResourceStorage.add("bootingSound", bootingSound);
+			//bootingSound.play();
 			Render.setAlphaBlend(true);
 			Render.init();
 			globalScene = new GlobalScene();
@@ -103,6 +107,8 @@ public class Main{
 	private void stop(){
 		try{
 			globalScene.dispose();
+			ResourceStorage.disposeSound("bootingSound");
+			ResourceStorage.disposeTextFont("font");
 			ResourceStorage.disposeAll();
 			Render.terminate();
 			AudioSystem.terminate();
