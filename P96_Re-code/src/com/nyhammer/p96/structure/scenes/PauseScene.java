@@ -22,6 +22,7 @@ public class PauseScene extends Scene{
 	private Menu mainMenu;
 	private Menu keyboardMenu;
 	private Menu xboxMenu;
+	private boolean exit;
 	public PauseScene(Timer timer){
 		super(timer);
 		controls = new MenuControls();
@@ -56,6 +57,11 @@ public class PauseScene extends Scene{
 		xboxMenu = new Menu(this.timer, "Back");
 		xboxMenu.setPosition(new Vector2f(0f, -0.8f));
 	}
+	public boolean shouldExit(){
+		boolean answer = exit;
+		exit = false;
+		return answer;
+	}
 	@Override
 	protected void startSpecifics(){
 		currentMenu = mainMenu;
@@ -79,6 +85,7 @@ public class PauseScene extends Scene{
 	}
 	@Override
 	protected void stopSpecifics(){
+		xboxMenu.reset();
 		keyboardMenu.reset();
 		mainMenu.reset();
 	}
@@ -95,7 +102,14 @@ public class PauseScene extends Scene{
 			ResourceStorage.getSound("confirmSound").play();
 		}
 		if(controls.isPressed(controls.getCancel())){
-			ResourceStorage.getSound("cancelSound").play();
+			if(currentMenu == mainMenu){
+				exit = true;
+			}
+			else{
+				currentMenu.reset();
+				currentMenu = mainMenu;
+				ResourceStorage.getSound("cancelSound").play();
+			}
 		}
 		if(controls.isPressed(controls.getLeft())){
 			

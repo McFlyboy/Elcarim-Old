@@ -50,7 +50,7 @@ public class GlobalScene extends Scene{
 		else{
 			pauseScene.update();
 			int menuState = pauseScene.checkMenus();
-			if(menuState == 1){
+			if(menuState == 1 || pauseScene.shouldExit()){
 				gamePaused = false;
 				updateGameState();
 			}
