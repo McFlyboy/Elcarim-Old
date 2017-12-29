@@ -17,7 +17,9 @@ public class Todder extends Enemy{
 		};
 	}
 	@Override
-	public void update(){
+	public void update(double time){
+		position.y += Math.cos(time / 0.5) / 9000f;
+		position.x += Math.cos(time / 2.0) / 2000f;
 		attacks[0].update(position);
 	}
 }

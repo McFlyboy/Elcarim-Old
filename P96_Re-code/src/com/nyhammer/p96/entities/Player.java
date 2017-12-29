@@ -46,7 +46,7 @@ public class Player extends ModelEntity{
 		lives = 4;
 		miracles = 3;
 	}
-	public void update(float deltaTime){
+	public boolean update(float deltaTime){
 		if(!alive){
 			direction.y -= 5f * deltaTime;
 			if(position.y < -2f){
@@ -62,7 +62,7 @@ public class Player extends ModelEntity{
 					visibilityTimer.resume();
 				}
 				else{
-					GameWindow.close();
+					return true;
 				}
 			}
 		}
@@ -124,6 +124,7 @@ public class Player extends ModelEntity{
 				jumping = false;
 			}
 		}
+		return false;
 	}
 	public void walk(float movement){
 		direction.x = movement;

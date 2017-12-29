@@ -57,7 +57,7 @@ public class BatchRender{
 			char ch = text.charAt(i);
 			if(ch == '\n'){
 				drawY -= fontHeight;
-				drawX = 0;
+				drawX = -textField.getBaseWidth() / 2f;
 				continue;
 			}
 			if(ch == '\r'){

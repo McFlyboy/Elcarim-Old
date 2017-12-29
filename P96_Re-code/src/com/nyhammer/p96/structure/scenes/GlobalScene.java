@@ -41,11 +41,24 @@ public class GlobalScene extends Scene{
 		updateControls();
 		if(!gamePaused){
 			gameplayScene.update();
+			if(gameplayScene.isGameOver()){
+				gameplayScene.dispose();
+				gameplayScene = new GameplayScene(this.timer);
+				gameplayScene.start();
+			}
 		}
 		else{
 			pauseScene.update();
-			if(pauseScene.checkMenus()){
+			int menuState = pauseScene.checkMenus();
+			if(menuState == 1){
 				gamePaused = false;
+				updateGameState();
+			}
+			else if(menuState == 2){
+				System.out.println("Test");
+				gamePaused = false;
+				gameplayScene.dispose();
+				gameplayScene = new GameplayScene(this.timer);
 				updateGameState();
 			}
 		}

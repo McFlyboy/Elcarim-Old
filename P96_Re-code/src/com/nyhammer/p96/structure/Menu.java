@@ -30,7 +30,7 @@ public class Menu{
 		optionContinue = false;
 		continueTimer = new TargetTimer(baseTimer, 0.2);
 		position = new Vector2f();
-		spacing = 0.3f;
+		spacing = 0.2f;
 		positionType = PositionType.FROM_CENTER;
 		updatePositions();
 		updateColors();
@@ -92,9 +92,6 @@ public class Menu{
 		updateColors();
 	}
 	public void render(){
-		if(optionContinue){
-			return;
-		}
 		for(TextField optionText : optionTexts){
 			Render.addToQueue(optionText);
 		}

@@ -15,6 +15,7 @@ import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.entities.Todder;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
+import com.nyhammer.p96.structure.ControlScheme;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.Scene;
 import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
@@ -38,6 +39,7 @@ public class GameplayScene extends Scene{
 	private List<Bullet> bullets;
 	private Timer normalTimer;
 	private DeltaTimer normalDeltaTimer;
+	private boolean gameOver;
 	public GameplayScene(Timer timer){
 		super(timer);
 		normalTimer = new Timer(this.timer, true);
@@ -95,8 +97,11 @@ public class GameplayScene extends Scene{
 		Todder todder = new Todder(bullets, normalTimer);
 		todder.model = ResourceStorage.getModel("square");
 		todder.texture = todderTex;
-		todder.position.y = 0.3f;
+		todder.position.y = 0.5f;
 		enemies.add(todder);
+	}
+	public boolean isGameOver(){
+		return gameOver;
 	}
 	@Override
 	protected void startSpecifics(){
@@ -110,10 +115,7 @@ public class GameplayScene extends Scene{
 		if(player.alive){
 			updateControls();
 		}
-		player.update(deltaTime);
-		for(Enemy enemy : enemies){
-			enemy.update();
-		}
+		gameOver = player.update(deltaTime);
 		ball.update(normaldeltaTime, normalTimer);
 		if(player.hitting){
 			if(CC.checkCollision(player.hitCC, ball.cc)){
@@ -140,7 +142,9 @@ public class GameplayScene extends Scene{
 		}
 		for(int i = 0; i < enemies.size(); i++){
 			Enemy enemy = enemies.get(i);
-			enemy.update();
+			if(!ball.miracleActive){
+				enemy.update(normalTimer.getTime());
+			}
 			if(CC.checkCollision(enemy.cc, ball.cc)){
 				if(!enemy.hit){
 					enemy.hit = true;
@@ -277,11 +281,16 @@ public class GameplayScene extends Scene{
 	}
 	private void updateControls(){
 		float walkDistance = 0;
-		if(controls.isDown(controls.getMoveLeft())){
-			walkDistance += -1f;
+		if(ControlScheme.getActiveInput() == ControlScheme.ActiveInput.ACTIVE_GAMEPAD){
+			walkDistance = controls.getAxisState(controls.getMoveAxisX());
 		}
-		if(controls.isDown(controls.getMoveRight())){
-			walkDistance += 1f;
+		else{
+			if(controls.isDown(controls.getMoveLeft())){
+				walkDistance += -1f;
+			}
+			if(controls.isDown(controls.getMoveRight())){
+				walkDistance += 1f;
+			}
 		}
 		if(controls.isPressed(controls.getJump())){
 			player.jump();

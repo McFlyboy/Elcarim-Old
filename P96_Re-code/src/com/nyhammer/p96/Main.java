@@ -96,6 +96,7 @@ public class Main{
 		stop();
 	}
 	private void update(){
+		Gamepad.update();
 		globalScene.update();
 	}
 	private void render(){

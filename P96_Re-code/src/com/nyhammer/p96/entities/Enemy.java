@@ -18,5 +18,5 @@ public abstract class Enemy extends ModelEntity{
 		lives = 1;
 		hitTimer = new TargetTimer(baseTimer, ResourceStorage.getSound("hitSound").getLength());
 	}
-	public abstract void update();
+	public abstract void update(double time);
 }

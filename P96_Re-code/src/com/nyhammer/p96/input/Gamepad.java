@@ -5,6 +5,8 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+import com.nyhammer.p96.structure.ControlScheme;
+
 public class Gamepad{
 	/** Gamepad buttons */
 	public static final int
@@ -38,8 +40,8 @@ public class Gamepad{
 		BUTTON_UNCHANGED_FROM_RELEASE       = 0;
 	private static int[] buttons = new int[14];
 	private static float[] axes = new float[6];
-	private static float innerThreshold = 0.2f;
-	private static float outerThreshold = 0.8f;
+	private static float innerThreshold = 0.1f;
+	private static float outerThreshold = 0.9f;
 	public static String getName(){
 		return glfwGetJoystickName(GLFW_JOYSTICK_1);
 	}
@@ -83,15 +85,14 @@ public class Gamepad{
 		if(buttonStates == null){
 			return;
 		}
-		else{
-			//ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_GAMEPAD);
-		}
+		boolean activeInput = false;
 		int i = 0;
 		while(buttonStates.hasRemaining()){
 			int state = buttonStates.get();
 			if(state == GLFW_PRESS){
 				if(buttons[i] != BUTTON_PRESSED && buttons[i] != BUTTON_UNCHANGED_FROM_PRESS){
 					buttons[i] = BUTTON_PRESSED;
+					activeInput = true;
 				}
 				else{
 					buttons[i] = BUTTON_UNCHANGED_FROM_PRESS;
@@ -100,6 +101,7 @@ public class Gamepad{
 			else{
 				if(buttons[i] != BUTTON_RELEASED && buttons[i] != BUTTON_UNCHANGED_FROM_RELEASE){
 					buttons[i] = BUTTON_RELEASED;
+					activeInput = true;
 				}
 				else{
 					buttons[i] = BUTTON_UNCHANGED_FROM_RELEASE;
@@ -107,31 +109,41 @@ public class Gamepad{
 			}
 			i++;
 		}
+		if(activeInput){
+			ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_GAMEPAD);
+		}
 	}
 	private static void updateAxisStates(){
 		FloatBuffer axisStates = glfwGetJoystickAxes(GLFW_JOYSTICK_1);
 		if(axisStates == null){
 			return;
 		}
-		else{
-			//ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_GAMEPAD);
-		}
+		boolean activeInput = false;
 		int i = 0;
 		while(axisStates.hasRemaining()){
 			float state = axisStates.get();
-			if(i < 4){
-				if(Math.abs(state) < innerThreshold){
-					state = 0f;
-				}
-				if(state > outerThreshold){
-					state = 1;
-				}
-				if(state < -outerThreshold){
-					state = -1;
-				}
+			if(i > 3){
+				state += 1f;
+				state /= 2f;
+			}
+			if(Math.abs(state) < innerThreshold){
+				state = 0f;
+			}
+			else{
+				activeInput = true;
+			}
+			if(state > outerThreshold){
+				state = 1;
+			}
+			if(state < -outerThreshold){
+				state = -1;
 			}
 			axes[i] = state;
 			i++;
+		}
+		System.out.println(axes[4] + ", " + axes[5]);
+		if(activeInput){
+			ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_GAMEPAD);
 		}
 	}
 	public static void reset(){
