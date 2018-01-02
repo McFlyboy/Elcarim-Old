@@ -8,6 +8,7 @@ public class GlobalControls extends ControlScheme{
 	private int pause;
 	private int fps;
 	private int fullscreen;
+	private int init;
 	public GlobalControls(){
 		/** key/button-inputs */
 		super.inputs.add(new Input(Keyboard.KEY_ESCAPE, Gamepad.BUTTON_START));
@@ -16,6 +17,8 @@ public class GlobalControls extends ControlScheme{
 		fps = super.assignInputIndex();
 		super.inputs.add(new Input(Keyboard.KEY_F11, Gamepad.BUTTON_BACK));
 		fullscreen = super.assignInputIndex();
+		super.inputs.add(new Input(Keyboard.KEY_Z, Gamepad.BUTTON_A));
+		init = super.assignInputIndex();
 	}
 	public int getPause(){
 		return pause;
@@ -25,5 +28,8 @@ public class GlobalControls extends ControlScheme{
 	}
 	public int getFullscreen(){
 		return fullscreen;
+	}
+	public int getInit(){
+		return init;
 	}
 }

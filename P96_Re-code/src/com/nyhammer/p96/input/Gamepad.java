@@ -5,7 +5,9 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+import com.nyhammer.p96.ErrorHandler;
 import com.nyhammer.p96.structure.ControlScheme;
+import com.nyhammer.p96.ui.GameWindow;
 
 public class Gamepad{
 	/** Gamepad buttons */
@@ -38,6 +40,9 @@ public class Gamepad{
 		BUTTON_RELEASED                     = 2,
 		BUTTON_UNCHANGED_FROM_PRESS         = 1,
 		BUTTON_UNCHANGED_FROM_RELEASE       = 0;
+	/** Miscellaneous. */
+	public static final int
+		BUTTON_UNCHANGE_RANGE = 2;
 	private static int[] buttons = new int[14];
 	private static float[] axes = new float[6];
 	private static float innerThreshold = 0.1f;
@@ -49,7 +54,19 @@ public class Gamepad{
 		return glfwJoystickPresent(GLFW_JOYSTICK_1);
 	}
 	private static int getButtonState(int buttonID){
-		return buttons[buttonID];
+		int buttonState = 0;
+		try{
+			buttonState = buttons[buttonID];
+		}
+		catch(IndexOutOfBoundsException e){
+			ErrorHandler.printError("Gamepad \"" + getName() + "\" not supported", true);
+			ErrorHandler.printError(e);
+			GameWindow.close();
+		}
+		if(buttonState >= BUTTON_UNCHANGE_RANGE){
+			buttons[buttonID] -= BUTTON_UNCHANGE_RANGE;
+		}
+		return buttonState;
 	}
 	public static boolean isButtonPressed(int buttonID){
 		return getButtonState(buttonID) == BUTTON_PRESSED;
@@ -94,17 +111,11 @@ public class Gamepad{
 					buttons[i] = BUTTON_PRESSED;
 					activeInput = true;
 				}
-				else{
-					buttons[i] = BUTTON_UNCHANGED_FROM_PRESS;
-				}
 			}
 			else{
 				if(buttons[i] != BUTTON_RELEASED && buttons[i] != BUTTON_UNCHANGED_FROM_RELEASE){
 					buttons[i] = BUTTON_RELEASED;
 					activeInput = true;
-				}
-				else{
-					buttons[i] = BUTTON_UNCHANGED_FROM_RELEASE;
 				}
 			}
 			i++;
@@ -141,7 +152,6 @@ public class Gamepad{
 			axes[i] = state;
 			i++;
 		}
-		System.out.println(axes[4] + ", " + axes[5]);
 		if(activeInput){
 			ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_GAMEPAD);
 		}

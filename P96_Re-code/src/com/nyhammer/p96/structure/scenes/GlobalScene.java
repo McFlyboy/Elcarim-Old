@@ -4,6 +4,7 @@ import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Models;
 import com.nyhammer.p96.graphics.Render;
+import com.nyhammer.p96.structure.ControlScheme;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.Scene;
 import com.nyhammer.p96.structure.controlSchemes.GlobalControls;
@@ -18,13 +19,16 @@ public class GlobalScene extends Scene{
 	private GameplayScene gameplayScene;
 	private int gameState;
 	private TextField fpsText;
+	private TextField initText;
 	public GlobalScene(){
 		super(null);
 		fpsText = new TextField();
 		fpsText.scale = new Vector2f(0.0015f, 0.0015f);
 		fpsText.mainColor.blue = 0f;
 		fpsText.visible = false;
-		gameState = 0;
+		initText = new TextField();
+		initText.mainColor.blue = 0f;
+		gameState = 3;
 		controls = new GlobalControls();
 		ResourceStorage.add("square", Models.createSquare());
 		ResourceStorage.add("optionSound", new Sound("system/option.ogg"));
@@ -33,7 +37,7 @@ public class GlobalScene extends Scene{
 		pauseScene = new PauseScene(this.timer);
 		gameOverScene = new GameOverScene(this.timer);
 		gameplayScene = new GameplayScene(this.timer);
-		gameplayScene.start();
+		gameplayScene.brightness = 0.5f;
 	}
 	@Override
 	protected void startSpecifics(){
@@ -86,6 +90,10 @@ public class GlobalScene extends Scene{
 			gameOverScene.render();
 		}
 		Render.setScene(this);
+		if(gameState == 3){
+			initText.setText("Press [" + (ControlScheme.getActiveInput() == ControlScheme.ActiveInput.ACTIVE_GAMEPAD ? "A" : "Z") + "] to start!");
+			Render.addToQueue(initText);
+		}
 		fpsText.setText("FPS: " + Time.getFPS());
 		fpsText.position = new Vector2f(GameWindow.ASPECT_RATIO - fpsText.getWidth() / 2f, 0f);
 		Render.addToQueue(fpsText);
@@ -120,6 +128,12 @@ public class GlobalScene extends Scene{
 		if(controls.isPressed(controls.getFullscreen())){
 			boolean fullscreen = GameWindow.isFullscreen();
 			GameWindow.setFullscreen(!fullscreen);
+		}
+		if(gameState == 3){
+			if(controls.isPressed(controls.getInit())){
+				gameState = 0;
+				gameplayScene.start();
+			}
 		}
 	}
 	private void updateGameState(){
