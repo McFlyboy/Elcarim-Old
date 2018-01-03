@@ -44,8 +44,11 @@ public class GameWindow{
 		return glfwGetWindowMonitor(window) != NULL;
 	}
 	public static void setFullscreen(boolean fullscreen){
-		glfwSetWindowMonitor(window, fullscreen ? monitor : NULL, 0, 0, getMonitorWidth(), getMonitorHeight(), fullscreen ? getMonitorRefreshRate() : GLFW_DONT_CARE);
+		glfwSetWindowMonitor(window, fullscreen ? monitor : NULL, 0, 0, fullscreen ? getMonitorWidth() : 1280, fullscreen ? getMonitorHeight() : 720, fullscreen ? getMonitorRefreshRate() : GLFW_DONT_CARE);
 		setViewPort();
+		if(!fullscreen){
+			center();
+		}
 	}
 	public static boolean isVSync(){
 		return vsync;
