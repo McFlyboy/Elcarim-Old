@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.nyhammer.p96.ErrorHandler;
 import com.nyhammer.p96.Main;
+import com.nyhammer.p96.Settings;
 import com.nyhammer.p96.graphics.Render;
 
 public class GameWindow{
@@ -46,9 +47,16 @@ public class GameWindow{
 	public static void setFullscreen(boolean fullscreen){
 		glfwSetWindowMonitor(window, fullscreen ? monitor : NULL, 0, 0, fullscreen ? getMonitorWidth() : 1280, fullscreen ? getMonitorHeight() : 720, fullscreen ? getMonitorRefreshRate() : GLFW_DONT_CARE);
 		setViewPort();
+		String value;
 		if(!fullscreen){
 			center();
+			value = "false";
 		}
+		else{
+			value = "true";
+		}
+		Settings.setValue("fullscreen", value);
+		Settings.writeToFile();
 	}
 	public static boolean isVSync(){
 		return vsync;

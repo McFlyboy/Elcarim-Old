@@ -42,11 +42,16 @@ public class Main{
 	private void start(){
 		ErrorHandler.init();
 		try{
+			Settings.init();
+			Settings.readFromFile();
+			Settings.writeToFile();
 			if(!Framework.init()){
 				stop();
 			}
-			GameWindow.create(false);
-			GameWindow.setVSync(false);
+			boolean fullscreen = Settings.getValue("fullscreen").equals("true");
+			boolean vsync = Settings.getValue("vsync").equals("true");
+			GameWindow.create(fullscreen);
+			GameWindow.setVSync(vsync);
 			Keyboard.create();
 			Mouse.setCursorState(Mouse.CURSOR_HIDDEN);
 			ControlScheme.setActiveInput(Gamepad.isPresent() ? ControlScheme.ActiveInput.ACTIVE_GAMEPAD : ControlScheme.ActiveInput.ACTIVE_KEYBOARD);
