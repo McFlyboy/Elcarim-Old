@@ -94,7 +94,7 @@ public class TextFont{
 		return metrics;
 	}
 	private BufferedImage createCharImage(char ch, Font font, FontMetrics metrics){
-		BufferedImage charImage = new BufferedImage(metrics.charWidth(ch), metrics.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage charImage = new BufferedImage(metrics.charWidth(ch) + 1, metrics.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = charImage.createGraphics();
 		g.setFont(font);
 		g.setPaint(Color.WHITE);
