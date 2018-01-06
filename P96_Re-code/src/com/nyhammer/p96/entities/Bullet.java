@@ -1,5 +1,6 @@
 package com.nyhammer.p96.entities;
 
+import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
 import com.nyhammer.p96.util.math.vector.Vector2f;
@@ -15,6 +16,7 @@ public class Bullet extends ModelEntity{
 		cc = new CC(position, 0.03f);
 		this.hp = hp;
 		this.direction = direction;
+		model = ResourceStorage.getModel("square");
 	}
 	public void update(float deltaTime){
 		position.add(direction.getMul(deltaTime));

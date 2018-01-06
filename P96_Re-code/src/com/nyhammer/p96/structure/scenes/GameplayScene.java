@@ -8,17 +8,16 @@ import com.nyhammer.p96.audio.Sound;
 import com.nyhammer.p96.entities.Ball;
 import com.nyhammer.p96.entities.Bullet;
 import com.nyhammer.p96.entities.Enemy;
-import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.entities.Player;
 import com.nyhammer.p96.entities.Shot;
 import com.nyhammer.p96.entities.TextField;
-import com.nyhammer.p96.entities.Todder;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ControlScheme;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.Scene;
 import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
+import com.nyhammer.p96.structure.levels.Level1;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
 import com.nyhammer.p96.util.math.vector.Vector2f;
@@ -26,7 +25,6 @@ import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
 public class GameplayScene extends Scene{
-	private ModelEntity background;
 	private GameplayControls controls;
 	private Player player;
 	private Ball ball;
@@ -35,7 +33,7 @@ public class GameplayScene extends Scene{
 	private TextField livesText;
 	private TextField miraclesText;
 	private List<Shot> shots;
-	private List<Enemy> enemies;
+	private Level1 level1;
 	private List<Bullet> bullets;
 	private Timer normalTimer;
 	private DeltaTimer normalDeltaTimer;
@@ -45,19 +43,6 @@ public class GameplayScene extends Scene{
 		normalTimer = new Timer(this.timer, true);
 		normalDeltaTimer = new DeltaTimer(normalTimer);
 		controls = new GameplayControls();
-		Texture bgTex = new Texture("background/background.png");
-		ResourceStorage.add("bgTex", bgTex);
-		background = new ModelEntity(ResourceStorage.getModel("square"), bgTex, new Vector2f(), new Vector2f(GameWindow.ASPECT_RATIO, 1f), 0f);
-		Music bgm = new Music(new String[]{
-				"P96_1_intro.ogg",
-				"P96_1_main.ogg",
-				"P96_1_Miracle_intro.ogg",
-				"P96_1_Miracle_main.ogg"
-		});
-		bgm.setPartLooping(0, false);
-		bgm.setPartLooping(2, false);
-		bgm.setNextPart(1, 4);
-		ResourceStorage.add("bgm", bgm);
 		Sound deathSound = new Sound("player_death.ogg");
 		ResourceStorage.add("deathSound", deathSound);
 		Sound hitSound = new Sound("enemy_hit.ogg");
@@ -71,8 +56,14 @@ public class GameplayScene extends Scene{
 		player.model = ResourceStorage.getModel("square");
 		player.texture = playerTex;
 		ResourceStorage.add("playerTex", playerTex);
+		Texture bulletGreenTex = new Texture("bullet/bulletGreen.png");
+		ResourceStorage.add("bulletGreenTex", bulletGreenTex);
+		Texture bulletPurpleTex = new Texture("bullet/bulletPurple.png");
+		ResourceStorage.add("bulletPurpleTex", bulletPurpleTex);
 		Texture bulletRedTex = new Texture("bullet/bulletRed.png");
 		ResourceStorage.add("bulletRedTex", bulletRedTex);
+		Texture bulletYellowTex = new Texture("bullet/bulletYellow.png");
+		ResourceStorage.add("bulletYellowTex", bulletYellowTex);
 		ball = new Ball(this.timer);
 		ball.model = ResourceStorage.getModel("square");
 		Texture ballTex = new Texture("ball/ball.png");
@@ -90,33 +81,32 @@ public class GameplayScene extends Scene{
 		shots = new ArrayList<Shot>();
 		Texture shotTex = new Texture("shot/shot.png");
 		ResourceStorage.add("shotTex", shotTex);
-		Texture todderTex = new Texture("enemy/todder.png");
-		ResourceStorage.add("todderTex", todderTex);
 		bullets = new ArrayList<Bullet>();
-		enemies = new ArrayList<Enemy>();
-		Todder todder = new Todder(bullets, normalTimer);
-		todder.model = ResourceStorage.getModel("square");
-		todder.texture = todderTex;
-		todder.position.y = 0.5f;
-		enemies.add(todder);
+		level1 = new Level1(bullets, normalTimer);
 	}
 	public boolean isGameOver(){
 		return gameOver;
 	}
 	@Override
 	protected void startSpecifics(){
-		ResourceStorage.getMusic("bgm").play();
+		level1.getCurrentMusic().play();
 		brightness = 1f;
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime){
 		float normaldeltaTime = (float)normalDeltaTimer.getTime();
-		ResourceStorage.getMusic("bgm").update();
+		level1.update();
 		if(player.alive){
 			updateControls();
 		}
 		gameOver = player.update(deltaTime);
 		ball.update(normaldeltaTime, normalTimer);
+		if(ball.miracleTimer.targetReached()){
+			ball.deactivateMiracle();
+			normalTimer.resume();
+			Music bgm = level1.getCurrentMusic();
+			bgm.setActivePart(bgm.getActivePart() - 2, true);
+		}
 		if(player.hitting){
 			if(CC.checkCollision(player.hitCC, ball.cc)){
 				if(!ball.hit){
@@ -140,34 +130,37 @@ public class GameplayScene extends Scene{
 				player.die();
 			}
 		}
-		for(int i = 0; i < enemies.size(); i++){
-			Enemy enemy = enemies.get(i);
-			if(!ball.miracleActive){
-				enemy.update(normalTimer.getTime());
-			}
-			if(CC.checkCollision(enemy.cc, ball.cc)){
-				if(!enemy.hit){
-					enemy.hit = true;
-					enemy.lives--;
-					enemy.colorActive = true;
-					ball.direction.x *= -0.6f;
-					ball.direction.y *= 0.6f;
-					score += 1000;
-					ResourceStorage.getSound("hitSound").play();
-					enemy.hitTimer.resume();
+		if(!level1.isCompleted()){
+			List<Enemy> enemies = level1.getCurrentWave();
+			for(int i = 0; i < enemies.size(); i++){
+				Enemy enemy = enemies.get(i);
+				if(!ball.miracleActive){
+					enemy.update(normalTimer.getTime(), player.position);
 				}
-			}
-			else{
-				enemy.hit = false;
-			}
-			if(enemy.hitTimer.targetReached()){
-				if(enemy.lives > 0){
-					enemy.colorActive = false;
-					enemy.hitTimer.reset();
+				if(CC.checkCollision(enemy.cc, ball.cc)){
+					if(!enemy.hit){
+						enemy.hit = true;
+						enemy.lives--;
+						enemy.colorActive = true;
+						ball.direction.x *= -0.6f;
+						ball.direction.y *= 0.6f;
+						score += 1000;
+						ResourceStorage.getSound("hitSound").play();
+						enemy.hitTimer.resume();
+					}
 				}
 				else{
-					enemies.remove(i);
-					i--;
+					enemy.hit = false;
+				}
+				if(enemy.hitTimer.targetReached()){
+					if(enemy.lives > 0){
+						enemy.colorActive = false;
+						enemy.hitTimer.reset();
+					}
+					else{
+						enemies.remove(i);
+						i--;
+					}
 				}
 			}
 		}
@@ -235,11 +228,9 @@ public class GameplayScene extends Scene{
 	}
 	@Override
 	protected void renderSpecifics(){
-		Render.addToQueue(background);
+		level1.renderBackground();
 		Render.addToQueue(player);
-		for(Enemy enemy : enemies){
-			Render.addToQueue(enemy);
-		}
+		level1.renderEnemies();
 		Render.addToQueue(ball);
 		for(Bullet bullet : bullets){
 			Render.addToQueue(bullet);
@@ -247,6 +238,7 @@ public class GameplayScene extends Scene{
 		for(Shot shot : shots){
 			Render.addToQueue(shot);
 		}
+		level1.renderSpesifics();
 		scoreText.setText(String.format("Score: %08d", score));
 		scoreText.position.x = GameWindow.ASPECT_RATIO - scoreText.getWidth() / 2f;
 		scoreText.position.y = 1f - scoreText.getHeight() / 2f;
@@ -262,18 +254,18 @@ public class GameplayScene extends Scene{
 	}
 	@Override
 	protected void stopSpecifics(){
-		ResourceStorage.getMusic("bgm").pause();
+		level1.getCurrentMusic().pause();
 		brightness = 0.5f;
 	}
 	@Override
 	protected void disposeSpecifics(){
-		ResourceStorage.disposeTexture("bgTex");
 		ResourceStorage.disposeTexture("playerTex");
+		ResourceStorage.disposeTexture("bulletGreenTex");
+		ResourceStorage.disposeTexture("bulletPurpleTex");
 		ResourceStorage.disposeTexture("bulletRedTex");
+		ResourceStorage.disposeTexture("bulletYellowTex");
 		ResourceStorage.disposeTexture("ballTex");
 		ResourceStorage.disposeTexture("shotTex");
-		ResourceStorage.disposeTexture("todderTex");
-		ResourceStorage.disposeMusic("bgm");
 		ResourceStorage.disposeSound("deathSound");
 		ResourceStorage.disposeSound("hitSound");
 		ResourceStorage.disposeSound("shotSound");
@@ -307,6 +299,8 @@ public class GameplayScene extends Scene{
 				player.miracles--;
 				normalTimer.pause();
 				ball.activateMiracle();
+				Music bgm = level1.getCurrentMusic();
+				bgm.setActivePart(bgm.getActivePart() + 2, true);
 			}
 		}
 		player.walk(walkDistance);

@@ -1,6 +1,5 @@
 package com.nyhammer.p96.entities;
 
-import com.nyhammer.p96.audio.Music;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.collision.CC;
@@ -44,24 +43,16 @@ public class Ball extends ModelEntity{
 		Vector2f deltaBallPosition = direction.getMul(0.2f * deltaTime);
 		position.add(deltaBallPosition);
 		angle -= 360f * deltaBallPosition.x / 2f * (float)Math.PI * scale.x;
-		if(miracleTimer.targetReached()){
-			deactivateMiracle();
-			timer.resume();
-		}
 	}
 	public void activateMiracle(){
 		colorActive = true;
 		miracleActive = true;
 		miracleTimer.resume();
 		ResourceStorage.getSound("miracleSound").play();
-		Music bgm = ResourceStorage.getMusic("bgm");
-		bgm.setActivePart(bgm.getActivePart() + 2, true);
 	}
 	public void deactivateMiracle(){
 		colorActive = false;
 		miracleActive = false;
 		miracleTimer.reset();
-		Music bgm = ResourceStorage.getMusic("bgm");
-		bgm.setActivePart(bgm.getActivePart() - 2, true);
 	}
 }
