@@ -160,6 +160,7 @@ public class Player extends ModelEntity{
 		hitting = false;
 		hitTimer.reset();
 		animations[0].setTextureRow(0);
+		animations[1].setTextureRow(0);
 		texture.setOffset(animations[0].getFrame(0), 2);
 		direction.y = 2f;
 		direction.x = 0f;
