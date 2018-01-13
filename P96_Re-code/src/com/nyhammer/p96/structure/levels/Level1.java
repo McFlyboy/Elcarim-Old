@@ -15,8 +15,8 @@ import com.nyhammer.p96.structure.BulletPattern;
 import com.nyhammer.p96.structure.Level;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.attacks.SimpleAttack;
-import com.nyhammer.p96.structure.patterns.AimPattern;
-import com.nyhammer.p96.structure.patterns.RandomPattern;
+import com.nyhammer.p96.structure.patterns.CircleBeamPattern;
+import com.nyhammer.p96.structure.patterns.StaticAimStreamPattern;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Timer;
@@ -50,18 +50,23 @@ public class Level1 extends Level{
 	@Override
 	protected void addWaves(List<Bullet> sceneBullets, Timer baseTimer){
 		Todder todder = new Todder(baseTimer);
-		todder.position.y = 0.5f;
-		todder.position.x = 0.6f;
+		todder.position.y = 1.1f;
+		todder.position.x = 0.9f;
+		todder.properPosition.y = 0.5f;
+		todder.properPosition.x = 0.6f;
 		todder.attacks.add(new SimpleAttack());
 		todder.attacks.get(0).patterns = new BulletPattern[]{
-				new AimPattern(sceneBullets, 1f, baseTimer, 0.5f)
+				new StaticAimStreamPattern(sceneBullets, 2.5f, 0.2f, baseTimer, 1f, 0.025f, 5)
 		};
 		Todder todder2 = new Todder(baseTimer);
-		todder2.position.y = 0.5f;
-		todder2.position.x = -0.6f;
+		todder2.position.y = 1.1f;
+		todder2.position.x = -0.9f;
+		todder2.properPosition.y = 0.5f;
+		todder2.properPosition.x = -0.6f;
 		todder2.attacks.add(new SimpleAttack());
 		todder2.attacks.get(0).patterns = new BulletPattern[]{
-				new RandomPattern(sceneBullets, 1f, baseTimer, 0.125f)
+				new CircleBeamPattern(sceneBullets, 0.75f, 0.5f, baseTimer, 0.1f, 26f),
+				new CircleBeamPattern(sceneBullets, 1f, 0.25f, baseTimer, 0.1f, -52f)
 		};
 		List<Enemy> enemyWave = new ArrayList<Enemy>();
 		enemyWave.add(todder);
@@ -75,7 +80,7 @@ public class Level1 extends Level{
 	@Override
 	public void renderSpesifics(){
 		if(waveIndex < super.enemyWaves.size()){
-			enemyInfo.setText("Todder x" + super.enemyWaves.get(super.waveIndex).size());
+			enemyInfo.setText(super.getEnemyCountString());
 			enemyInfo.position.x = -GameWindow.ASPECT_RATIO + enemyInfo.getWidth() / 2f;
 			enemyInfo.position.y = 1f - enemyInfo.getHeight() / 2f;
 			Render.addToQueue(enemyInfo);

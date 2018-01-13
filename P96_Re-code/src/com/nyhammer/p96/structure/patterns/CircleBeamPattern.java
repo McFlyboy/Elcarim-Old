@@ -2,7 +2,6 @@ package com.nyhammer.p96.structure.patterns;
 
 import java.util.List;
 
-import com.nyhammer.p96.Main;
 import com.nyhammer.p96.entities.Bullet;
 import com.nyhammer.p96.structure.BulletPattern;
 import com.nyhammer.p96.structure.ResourceStorage;
@@ -10,11 +9,15 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class RandomPattern extends BulletPattern{
+public class CircleBeamPattern extends BulletPattern{
 	private TargetTimer intervalTimer;
-	public RandomPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval){
+	private float rotationPerBullet;
+	private float currentAngle;
+	public CircleBeamPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval, float rotationPerBullet){
 		super(sceneBullets, speed, size);
 		intervalTimer = new TargetTimer(baseTimer, interval);
+		this.rotationPerBullet = rotationPerBullet;
+		currentAngle = 270f;
 	}
 	@Override
 	protected void startSpecifics(){
@@ -23,7 +26,11 @@ public class RandomPattern extends BulletPattern{
 	@Override
 	protected void updateSpecifics(Vector2f sourcePosition, Vector2f targetPosition, float speed){
 		if(intervalTimer.targetReached()){
-			addBullet(sourcePosition, new Vector2f(Main.getRandom().nextFloat() * 2f - 1f, Main.getRandom().nextFloat() * 2f - 1f).getMul(speed));
+			double rad = Math.toRadians(currentAngle);
+			float x = (float)Math.cos(rad);
+			float y = (float)Math.sin(rad);
+			addBullet(sourcePosition, new Vector2f(x, y).getMul(speed));
+			currentAngle += rotationPerBullet;
 		}
 	}
 	@Override
@@ -34,7 +41,7 @@ public class RandomPattern extends BulletPattern{
 		bullet.scale.x = size;
 		bullet.scale.y = size;
 		bullet.cc.radius = size;
-		bullet.texture = ResourceStorage.getTexture("bulletRedTex");
+		bullet.texture = ResourceStorage.getTexture("bulletYellowTex");
 		bullets.add(bullet);
 		sceneBullets.add(bullet);
 	}

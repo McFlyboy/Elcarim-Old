@@ -2,7 +2,6 @@ package com.nyhammer.p96.structure.patterns;
 
 import java.util.List;
 
-import com.nyhammer.p96.Main;
 import com.nyhammer.p96.entities.Bullet;
 import com.nyhammer.p96.structure.BulletPattern;
 import com.nyhammer.p96.structure.ResourceStorage;
@@ -10,11 +9,13 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class RandomPattern extends BulletPattern{
+public class DelayAimPattern extends BulletPattern{
 	private TargetTimer intervalTimer;
-	public RandomPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval){
+	private float acceleration;
+	public DelayAimPattern(List<Bullet> sceneBullets, float speed, float size, float acceleration, Timer baseTimer, float interval){
 		super(sceneBullets, speed, size);
 		intervalTimer = new TargetTimer(baseTimer, interval);
+		this.acceleration = acceleration;
 	}
 	@Override
 	protected void startSpecifics(){
@@ -22,8 +23,17 @@ public class RandomPattern extends BulletPattern{
 	}
 	@Override
 	protected void updateSpecifics(Vector2f sourcePosition, Vector2f targetPosition, float speed){
+		for(Bullet bullet : bullets){
+			float length = bullet.direction.getLength();
+			if(length < speed){
+				bullet.direction.mul(acceleration);
+			}
+			else if(length > speed){
+				bullet.direction.mul(speed / length);
+			}
+		}
 		if(intervalTimer.targetReached()){
-			addBullet(sourcePosition, new Vector2f(Main.getRandom().nextFloat() * 2f - 1f, Main.getRandom().nextFloat() * 2f - 1f).getMul(speed));
+			addBullet(sourcePosition, targetPosition.getSub(sourcePosition).getNormalize().getMul(speed * 0.001f));
 		}
 	}
 	@Override
@@ -34,7 +44,7 @@ public class RandomPattern extends BulletPattern{
 		bullet.scale.x = size;
 		bullet.scale.y = size;
 		bullet.cc.radius = size;
-		bullet.texture = ResourceStorage.getTexture("bulletRedTex");
+		bullet.texture = ResourceStorage.getTexture("bulletGreenTex");
 		bullets.add(bullet);
 		sceneBullets.add(bullet);
 	}

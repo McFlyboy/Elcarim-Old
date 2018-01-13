@@ -15,10 +15,22 @@ public class Todder extends Enemy{
 		name = "Todder";
 	}
 	@Override
-	public void update(double time, Vector2f playerPosition){
-		position.y += Math.cos(time / 0.5) / 9000f;
-		position.x += Math.cos(time / 2.0) / 3000f;
-		if(!attacks.isEmpty()){
+	public void update(double time, float delta, Vector2f playerPosition){
+		if(positioned){
+			position.x = properPosition.x + (float)Math.sin((time - positionedTime) * 0.5) * 0.5f;
+			position.y = properPosition.y + (float)-Math.sin((time - positionedTime) * 1.25) * 0.1f;
+		}
+		else{
+			Vector2f distance = properPosition.getSub(position);
+			if(distance.getLength() <= 0.0001f){
+				positioned = true;
+				positionedTime = time;
+			}
+			else{
+				position.add(distance.getNormalize().getMul(delta * 0.8f));
+			}
+		}
+		if(!attacks.isEmpty() && positioned){
 			attacks.get(attackIndex).update(position, playerPosition);
 		}
 	}

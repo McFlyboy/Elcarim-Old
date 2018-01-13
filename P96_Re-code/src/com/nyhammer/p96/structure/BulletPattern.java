@@ -10,10 +10,12 @@ public abstract class BulletPattern{
 	private boolean started;
 	protected List<Bullet> bullets;
 	protected List<Bullet> sceneBullets;
-	protected float speed;
-	public BulletPattern(List<Bullet> sceneBullets, float speed){
+	private float speed;
+	protected float size;
+	public BulletPattern(List<Bullet> sceneBullets, float speed, float size){
 		this.sceneBullets = sceneBullets;
 		this.speed = speed;
+		this.size = size / 10f;
 		bullets = new ArrayList<Bullet>();
 	}
 	protected abstract void startSpecifics();

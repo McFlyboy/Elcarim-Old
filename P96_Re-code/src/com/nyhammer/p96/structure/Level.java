@@ -18,6 +18,7 @@ public abstract class Level{
 	protected int bgIndex;
 	protected int bgmIndex;
 	protected boolean completed;
+	private int todderCount;
 	public Level(List<Bullet> sceneBullets, Timer baseTimer){
 		enemyWaves = new ArrayList<List<Enemy>>();
 		waveIndex = 0;
@@ -28,20 +29,43 @@ public abstract class Level{
 		completed = false;
 		init();
 		addWaves(sceneBullets, baseTimer);
+		setEnemyCounts();
 	}
 	public boolean isCompleted(){
 		return completed;
 	}
-	protected abstract void init();
-	protected abstract void addWaves(List<Bullet> sceneBullets, Timer baseTimer);
+	protected String getEnemyCountString(){
+		StringBuilder enemyCount = new StringBuilder();
+		//boolean firstLine = true;
+		if(todderCount > 0){
+			enemyCount.append("Todder x" + todderCount);
+			//firstLine = false;
+		}
+		return enemyCount.toString();
+	}
 	public List<Enemy> getCurrentWave(){
 		if(completed){
 			return null;
 		}
 		return enemyWaves.get(waveIndex);
 	}
+	protected abstract void init();
+	protected abstract void addWaves(List<Bullet> sceneBullets, Timer baseTimer);
 	public Music getCurrentMusic(){
 		return bgms.get(bgmIndex);
+	}
+	protected void setEnemyCounts(){
+		List<Enemy> firstWave = enemyWaves.get(waveIndex);
+		for(Enemy enemy : firstWave){
+			if(enemy.name.equals("Todder")){
+				todderCount++;
+			}
+		}
+	}
+	public void subtractEnemyCount(String enemyType){
+		if(enemyType.equals("Todder")){
+			todderCount--;
+		}
 	}
 	protected abstract void updateSpecifics();
 	public void update(){
@@ -53,6 +77,9 @@ public abstract class Level{
 		}
 		if(enemyWaves.get(waveIndex).isEmpty()){
 			waveIndex++;
+			if(waveIndex < enemyWaves.size()){
+				setEnemyCounts();
+			}
 		}
 		if(waveIndex >= enemyWaves.size()){
 			completed = true;

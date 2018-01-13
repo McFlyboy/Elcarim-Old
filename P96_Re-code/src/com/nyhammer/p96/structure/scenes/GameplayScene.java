@@ -135,7 +135,7 @@ public class GameplayScene extends Scene{
 			for(int i = 0; i < enemies.size(); i++){
 				Enemy enemy = enemies.get(i);
 				if(!ball.miracleActive){
-					enemy.update(normalTimer.getTime(), player.position);
+					enemy.update(normalTimer.getTime(), normaldeltaTime, player.position);
 				}
 				if(CC.checkCollision(enemy.cc, ball.cc)){
 					if(!enemy.hit){
@@ -160,6 +160,7 @@ public class GameplayScene extends Scene{
 					else{
 						enemies.remove(i);
 						i--;
+						level1.subtractEnemyCount(enemy.name);
 					}
 				}
 			}

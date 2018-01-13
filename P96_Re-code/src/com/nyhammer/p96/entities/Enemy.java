@@ -18,6 +18,9 @@ public abstract class Enemy extends ModelEntity{
 	public List<Attack> attacks;
 	public int attackIndex;
 	public String name;
+	public Vector2f properPosition;
+	protected double positionedTime;
+	protected boolean positioned;
 	public Enemy(Timer baseTimer){
 		super();
 		cc = new CC(position, 1f);
@@ -26,9 +29,12 @@ public abstract class Enemy extends ModelEntity{
 		attacks = new ArrayList<Attack>();
 		attackIndex = 0;
 		name = "Enemy";
+		properPosition = new Vector2f();
+		positionedTime = 0.0;
+		positioned = false;
 	}
 	public void addAttack(Attack attack){
 		attacks.add(attack);
 	}
-	public abstract void update(double time, Vector2f playerPosition);
+	public abstract void update(double time, float delta, Vector2f playerPosition);
 }

@@ -44,7 +44,7 @@ public class Player extends ModelEntity{
 		visibilityTimer = new TargetTimer(timer, 0.1 / 3.0);
 		alive = true;
 		lives = 4;
-		miracles = 3;
+		miracles = 2;
 	}
 	public boolean update(float deltaTime){
 		if(!alive){
@@ -52,6 +52,7 @@ public class Player extends ModelEntity{
 			if(position.y < -2f){
 				if(lives > 0){
 					lives--;
+					miracles = 2;
 					direction.y = 0f;
 					position.x = 0f;
 					position.y = -1f + scale.y;

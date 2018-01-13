@@ -11,8 +11,8 @@ import com.nyhammer.p96.util.timing.Timer;
 
 public class AimPattern extends BulletPattern{
 	private TargetTimer intervalTimer;
-	public AimPattern(List<Bullet> sceneBullets, float speed, Timer baseTimer, float interval){
-		super(sceneBullets, speed);
+	public AimPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval){
+		super(sceneBullets, speed, size);
 		intervalTimer = new TargetTimer(baseTimer, interval);
 	}
 	@Override
@@ -30,6 +30,9 @@ public class AimPattern extends BulletPattern{
 		Bullet bullet = new Bullet(1, direction);
 		bullet.position.x = sourcePosition.x;
 		bullet.position.y = sourcePosition.y;
+		bullet.scale.x = size;
+		bullet.scale.y = size;
+		bullet.cc.radius = size;
 		bullet.texture = ResourceStorage.getTexture("bulletGreenTex");
 		bullets.add(bullet);
 		sceneBullets.add(bullet);

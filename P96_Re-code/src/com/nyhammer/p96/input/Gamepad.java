@@ -53,6 +53,12 @@ public class Gamepad{
 	public static boolean isPresent(){
 		return glfwJoystickPresent(GLFW_JOYSTICK_1);
 	}
+	public static int getButtonCount(){
+		return glfwGetJoystickButtons(GLFW_JOYSTICK_1).capacity();
+	}
+	public static int getAxisCount(){
+		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).capacity();
+	}
 	private static int getButtonState(int buttonID){
 		int buttonState = 0;
 		try{
