@@ -15,8 +15,8 @@ import com.nyhammer.p96.structure.BulletPattern;
 import com.nyhammer.p96.structure.Level;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.attacks.SimpleAttack;
-import com.nyhammer.p96.structure.patterns.CircleBeamPattern;
-import com.nyhammer.p96.structure.patterns.StaticAimStreamPattern;
+import com.nyhammer.p96.structure.patterns.AimHalfCirclePattern;
+import com.nyhammer.p96.structure.patterns.HomingRandomPattern;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Timer;
@@ -56,7 +56,7 @@ public class Level1 extends Level{
 		todder.properPosition.x = 0.6f;
 		todder.attacks.add(new SimpleAttack());
 		todder.attacks.get(0).patterns = new BulletPattern[]{
-				new StaticAimStreamPattern(sceneBullets, 2.5f, 0.2f, baseTimer, 1f, 0.025f, 5)
+				new AimHalfCirclePattern(sceneBullets, 0.75f, 0.3f, baseTimer, 1.5f, 5)
 		};
 		Todder todder2 = new Todder(baseTimer);
 		todder2.position.y = 1.1f;
@@ -65,8 +65,9 @@ public class Level1 extends Level{
 		todder2.properPosition.x = -0.6f;
 		todder2.attacks.add(new SimpleAttack());
 		todder2.attacks.get(0).patterns = new BulletPattern[]{
-				new CircleBeamPattern(sceneBullets, 0.75f, 0.5f, baseTimer, 0.1f, 26f),
-				new CircleBeamPattern(sceneBullets, 1f, 0.25f, baseTimer, 0.1f, -52f)
+				//new CircleBeamPattern(sceneBullets, 0.75f, 0.5f, baseTimer, 0.1f, 26f),
+				//new CircleBeamPattern(sceneBullets, 1f, 0.25f, baseTimer, 0.1f, -52f)
+				new HomingRandomPattern(sceneBullets, 1f, 0.4f, baseTimer, 1f, 70f)
 		};
 		List<Enemy> enemyWave = new ArrayList<Enemy>();
 		enemyWave.add(todder);

@@ -10,13 +10,21 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class DelayAimPattern extends BulletPattern{
+public class AimHalfCirclePattern extends BulletPattern{
 	private TargetTimer intervalTimer;
-	private float acceleration;
-	public DelayAimPattern(List<Bullet> sceneBullets, float speed, float size, float acceleration, Timer baseTimer, float interval){
+	private int bulletsPerHalfCircle;
+	private boolean greenPresent;
+	private float angleDifference;
+	private Texture yellowTex;
+	private Texture greenTex;
+	public AimHalfCirclePattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval, int bulletsPerHalfCircle){
 		super(sceneBullets, speed, size);
 		intervalTimer = new TargetTimer(baseTimer, interval);
-		this.acceleration = acceleration;
+		this.bulletsPerHalfCircle = bulletsPerHalfCircle;
+		greenPresent = bulletsPerHalfCircle % 2 == 1;
+		angleDifference = 180f / (float)(bulletsPerHalfCircle - 1);
+		yellowTex = ResourceStorage.getTexture("bulletYellowTex");
+		greenTex = ResourceStorage.getTexture("bulletGreenTex");
 	}
 	@Override
 	protected void startSpecifics(){
@@ -24,17 +32,11 @@ public class DelayAimPattern extends BulletPattern{
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed){
-		for(Bullet bullet : bullets){
-			float length = bullet.direction.getLength();
-			if(length < speed){
-				bullet.direction.mul(acceleration);
-			}
-			else if(length > speed){
-				bullet.direction.mul(speed / length);
-			}
-		}
 		if(intervalTimer.targetReached()){
-			addBullet(sourcePosition, targetPosition.getSub(sourcePosition).getNormalize().getMul(speed * 0.001f), ResourceStorage.getTexture("bulletGreenTex"));
+			Vector2f targetDirection = targetPosition.getSub(sourcePosition).getNormalize().getMul(speed);
+			for(int i = 0; i < bulletsPerHalfCircle; i++){
+				addBullet(sourcePosition, targetDirection.getAdd(targetDirection.getRotate(90f + angleDifference * (float)i).getMul(0.33f)), (greenPresent && i == bulletsPerHalfCircle / 2) ? greenTex : yellowTex);
+			}
 		}
 	}
 	@Override

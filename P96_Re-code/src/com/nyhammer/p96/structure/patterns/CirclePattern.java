@@ -3,6 +3,7 @@ package com.nyhammer.p96.structure.patterns;
 import java.util.List;
 
 import com.nyhammer.p96.entities.Bullet;
+import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.BulletPattern;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.util.math.vector.Vector2f;
@@ -22,7 +23,7 @@ public class CirclePattern extends BulletPattern{
 		intervalTimer.resume();
 	}
 	@Override
-	protected void updateSpecifics(Vector2f sourcePosition, Vector2f targetPosition, float speed){
+	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed){
 		if(intervalTimer.targetReached()){
 			double angleDifference = 360.0 / (double)bulletsPerCircle;
 			for(int i = 0; i < bulletsPerCircle; i++){
@@ -30,19 +31,19 @@ public class CirclePattern extends BulletPattern{
 				double rad = Math.toRadians(angle);
 				float x = (float)Math.cos(rad);
 				float y = (float)Math.sin(rad);
-				addBullet(sourcePosition, new Vector2f(x, y).getMul(speed));
+				addBullet(sourcePosition, new Vector2f(x, y).getMul(speed), ResourceStorage.getTexture("bulletYellowTex"));
 			}
 		}
 	}
 	@Override
-	protected void addBullet(Vector2f sourcePosition, Vector2f direction){
+	protected void addBullet(Vector2f sourcePosition, Vector2f direction, Texture bulletTex){
 		Bullet bullet = new Bullet(1, direction);
 		bullet.position.x = sourcePosition.x;
 		bullet.position.y = sourcePosition.y;
 		bullet.scale.x = size;
 		bullet.scale.y = size;
 		bullet.cc.radius = size;
-		bullet.texture = ResourceStorage.getTexture("bulletYellowTex");
+		bullet.texture = bulletTex;
 		bullets.add(bullet);
 		sceneBullets.add(bullet);
 	}

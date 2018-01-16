@@ -15,7 +15,7 @@ public class Todder extends Enemy{
 		name = "Todder";
 	}
 	@Override
-	public void update(double time, float delta, Vector2f playerPosition){
+	public void update(double time, float deltaTime, Vector2f playerPosition){
 		if(positioned){
 			position.x = properPosition.x + (float)Math.sin((time - positionedTime) * 0.5) * 0.5f;
 			position.y = properPosition.y + (float)-Math.sin((time - positionedTime) * 1.25) * 0.1f;
@@ -27,11 +27,11 @@ public class Todder extends Enemy{
 				positionedTime = time;
 			}
 			else{
-				position.add(distance.getNormalize().getMul(delta * 0.8f));
+				position.add(distance.getNormalize().getMul(deltaTime * 0.8f));
 			}
 		}
 		if(!attacks.isEmpty() && positioned){
-			attacks.get(attackIndex).update(position, playerPosition);
+			attacks.get(attackIndex).update(deltaTime, position, playerPosition);
 		}
 	}
 }

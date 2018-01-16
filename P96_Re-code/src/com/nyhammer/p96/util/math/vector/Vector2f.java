@@ -93,15 +93,19 @@ public class Vector2f{
 		return (float)Math.toDegrees(theta);
 	}
 	public float getAngle(){
-		return getAngleBetween(new Vector2f(1f, 0f));
+		float angle = getAngleBetween(new Vector2f(1f, 0f));
+		if(getAngleBetween(new Vector2f(0f, 1f)) > 90f){
+			angle *= -1f;
+		}
+		return angle;
 	}
-	public Vector2f createVector(float angle, float length){
+	public static Vector2f createVector(float angle, float length){
 		double radians = Math.toRadians(angle);
 		float cos = (float)Math.cos(radians);
 		float sin = (float)Math.sin(radians);
 		return new Vector2f(cos * length, sin * length);
 	}
-	public Vector2f createVector(float angle){
+	public static Vector2f createVector(float angle){
 		return createVector(angle, 1f);
 	}
 	public Vector2f getRotate(float angle){

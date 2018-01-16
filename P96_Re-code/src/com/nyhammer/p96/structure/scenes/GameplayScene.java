@@ -95,6 +95,7 @@ public class GameplayScene extends Scene{
 	@Override
 	protected void updateSpecifics(float deltaTime){
 		float normaldeltaTime = (float)normalDeltaTimer.getTime();
+		float normalTime = (float)normalTimer.getTime();
 		level1.update();
 		if(player.alive){
 			updateControls();
@@ -135,7 +136,7 @@ public class GameplayScene extends Scene{
 			for(int i = 0; i < enemies.size(); i++){
 				Enemy enemy = enemies.get(i);
 				if(!ball.miracleActive){
-					enemy.update(normalTimer.getTime(), normaldeltaTime, player.position);
+					enemy.update(normalTime, normaldeltaTime, player.position);
 				}
 				if(CC.checkCollision(enemy.cc, ball.cc)){
 					if(!enemy.hit){

@@ -2,6 +2,7 @@ package com.nyhammer.p96.structure.patterns;
 
 import java.util.List;
 
+import com.nyhammer.p96.Main;
 import com.nyhammer.p96.entities.Bullet;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.BulletPattern;
@@ -10,13 +11,15 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class DelayAimPattern extends BulletPattern{
+public class HomingRandomPattern extends BulletPattern{
 	private TargetTimer intervalTimer;
-	private float acceleration;
-	public DelayAimPattern(List<Bullet> sceneBullets, float speed, float size, float acceleration, Timer baseTimer, float interval){
+	private Texture bulletTex;
+	private float roationSpeed;
+	public HomingRandomPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval, float roationSpeed){
 		super(sceneBullets, speed, size);
+		bulletTex = ResourceStorage.getTexture("bulletPurpleTex");
 		intervalTimer = new TargetTimer(baseTimer, interval);
-		this.acceleration = acceleration;
+		this.roationSpeed = roationSpeed;
 	}
 	@Override
 	protected void startSpecifics(){
@@ -24,17 +27,26 @@ public class DelayAimPattern extends BulletPattern{
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed){
-		for(Bullet bullet : bullets){
-			float length = bullet.direction.getLength();
-			if(length < speed){
-				bullet.direction.mul(acceleration);
-			}
-			else if(length > speed){
-				bullet.direction.mul(speed / length);
-			}
-		}
 		if(intervalTimer.targetReached()){
-			addBullet(sourcePosition, targetPosition.getSub(sourcePosition).getNormalize().getMul(speed * 0.001f), ResourceStorage.getTexture("bulletGreenTex"));
+			addBullet(sourcePosition, new Vector2f(Main.getRandom().nextFloat() * 2f - 1f, Main.getRandom().nextFloat() * 2f - 1f).getNormalize().getMul(speed), bulletTex);
+		}
+		for(Bullet bullet : super.bullets){
+			bullet.angle += 250f * deltaTime;
+			float currentAngle = bullet.direction.getAngle();
+			float targetAngle = targetPosition.getSub(bullet.position).getAngle();
+			float angleDifference = Math.abs(targetAngle - currentAngle);
+			if(angleDifference == 0f){
+				continue;
+			}
+			float deltaAngle = targetAngle - currentAngle;
+			if(angleDifference < 180f){
+				deltaAngle /= angleDifference;
+			}
+			else{
+				deltaAngle /= -angleDifference;
+			}
+			deltaAngle *= roationSpeed * deltaTime;
+			bullet.direction.rotate(deltaAngle);
 		}
 	}
 	@Override
