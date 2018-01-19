@@ -19,6 +19,8 @@ public abstract class Level{
 	protected int bgmIndex;
 	protected boolean completed;
 	private int todderCount;
+	private int luckTodderCloverCount;
+	private int luckTodderSpadeCount;
 	public Level(List<Bullet> sceneBullets, Timer baseTimer){
 		enemyWaves = new ArrayList<List<Enemy>>();
 		waveIndex = 0;
@@ -36,10 +38,24 @@ public abstract class Level{
 	}
 	protected String getEnemyCountString(){
 		StringBuilder enemyCount = new StringBuilder();
-		//boolean firstLine = true;
+		boolean firstLine = true;
 		if(todderCount > 0){
 			enemyCount.append("Todder x" + todderCount);
-			//firstLine = false;
+			firstLine = false;
+		}
+		if(luckTodderCloverCount > 0){
+			if(!firstLine){
+				enemyCount.append("\n");
+			}
+			enemyCount.append("Clover-Todder x" + luckTodderCloverCount);
+			firstLine = false;
+		}
+		if(luckTodderSpadeCount > 0){
+			if(!firstLine){
+				enemyCount.append("\n");
+			}
+			enemyCount.append("Spade-Todder x" + luckTodderSpadeCount);
+			firstLine = false;
 		}
 		return enemyCount.toString();
 	}
@@ -55,16 +71,28 @@ public abstract class Level{
 		return bgms.get(bgmIndex);
 	}
 	protected void setEnemyCounts(){
-		List<Enemy> firstWave = enemyWaves.get(waveIndex);
-		for(Enemy enemy : firstWave){
+		List<Enemy> currentWave = enemyWaves.get(waveIndex);
+		for(Enemy enemy : currentWave){
 			if(enemy.name.equals("Todder")){
 				todderCount++;
+			}
+			if(enemy.name.equals("CloverTodder")){
+				luckTodderCloverCount++;
+			}
+			if(enemy.name.equals("SpadeTodder")){
+				luckTodderSpadeCount++;
 			}
 		}
 	}
 	public void subtractEnemyCount(String enemyType){
 		if(enemyType.equals("Todder")){
 			todderCount--;
+		}
+		if(enemyType.equals("CloverTodder")){
+			luckTodderCloverCount--;
+		}
+		if(enemyType.equals("SpadeTodder")){
+			luckTodderSpadeCount--;
 		}
 	}
 	protected abstract void updateSpecifics();

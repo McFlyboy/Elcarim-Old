@@ -1,18 +1,19 @@
 package com.nyhammer.p96.entities;
 
+import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class Todder extends Enemy{
-	public Todder(Timer baseTimer){
-		super(baseTimer, 1);
-		scale.x = 0.08f;
-		scale.y = 0.08f;
-		cc.radius = 0.06f;
+public class LuckTodder extends Enemy{
+	public LuckTodder(Timer baseTimer, String name, Texture texture){
+		super(baseTimer, 2);
+		scale.x = 0.1f;
+		scale.y = 0.1f;
+		cc.radius = 0.075f;
 		model = ResourceStorage.getModel("square");
-		texture = ResourceStorage.getTexture("todderTex");
-		name = "Todder";
+		super.texture = texture;
+		super.name = name;
 	}
 	@Override
 	public void update(double time, float deltaTime, Vector2f playerPosition){

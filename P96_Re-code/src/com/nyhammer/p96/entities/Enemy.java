@@ -21,10 +21,10 @@ public abstract class Enemy extends ModelEntity{
 	public Vector2f properPosition;
 	protected double positionedTime;
 	protected boolean positioned;
-	public Enemy(Timer baseTimer){
+	public Enemy(Timer baseTimer, int lives){
 		super();
 		cc = new CC(position, 1f);
-		lives = 1;
+		this.lives = lives;
 		hitTimer = new TargetTimer(baseTimer, ResourceStorage.getSound("hitSound").getLength());
 		attacks = new ArrayList<Attack>();
 		attackIndex = 0;
@@ -36,5 +36,5 @@ public abstract class Enemy extends ModelEntity{
 	public void addAttack(Attack attack){
 		attacks.add(attack);
 	}
-	public abstract void update(double time, float delta, Vector2f playerPosition);
+	public abstract void update(double time, float deltaTime, Vector2f playerPosition);
 }

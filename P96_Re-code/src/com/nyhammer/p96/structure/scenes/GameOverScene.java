@@ -86,6 +86,7 @@ public class GameOverScene extends Scene{
 	}
 	public int checkMenus(){
 		if(menu.isOptionContinue()){
+			ResourceStorage.getMusic("gameOverBGM").setVolume(0f);
 			menu.setOptionSelected(false);
 			switch(menu.getActiveOption()){
 			case 0:

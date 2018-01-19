@@ -13,7 +13,7 @@ import com.nyhammer.p96.util.timing.Timer;
 public class DelayAimPattern extends BulletPattern{
 	private TargetTimer intervalTimer;
 	private float acceleration;
-	public DelayAimPattern(List<Bullet> sceneBullets, float speed, float size, float acceleration, Timer baseTimer, float interval){
+	public DelayAimPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval, float acceleration){
 		super(sceneBullets, speed, size);
 		intervalTimer = new TargetTimer(baseTimer, interval);
 		this.acceleration = acceleration;

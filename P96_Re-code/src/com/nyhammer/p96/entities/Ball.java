@@ -13,6 +13,7 @@ public class Ball extends ModelEntity{
 	public TargetTimer miracleTimer;
 	public boolean miracleActive;
 	public boolean hit;
+	private boolean resetKills;
 	public Ball(Timer baseTimer){
 		super();
 		position.x = 0.8f * GameWindow.ASPECT_RATIO;
@@ -26,6 +27,12 @@ public class Ball extends ModelEntity{
 		color.blue = 0f;
 		miracleTimer = new TargetTimer(baseTimer, ResourceStorage.getSound("miracleSound").getLength());
 		hit = false;
+		resetKills = false;
+	}
+	public boolean shouldKillsReset(){
+		boolean result = resetKills;
+		resetKills = false;
+		return result;
 	}
 	public void update(float deltaTime, Timer timer){
 		direction.x -= direction.x * 0.02f * deltaTime;
@@ -34,6 +41,9 @@ public class Ball extends ModelEntity{
 			position.y *= (1f - scale.y) / Math.abs(position.y);
 			direction.y *= -0.9f;
 			direction.x *= 0.992f;
+			if(position.y < 0f){
+				resetKills = true;
+			}
 		}
 		if(Math.abs(position.x) > GameWindow.ASPECT_RATIO - scale.x){
 			position.x *= (GameWindow.ASPECT_RATIO - scale.x) / Math.abs(position.x);

@@ -38,6 +38,7 @@ public class GameplayScene extends Scene{
 	private Timer normalTimer;
 	private DeltaTimer normalDeltaTimer;
 	private boolean gameOver;
+	private int killsInAir;
 	public GameplayScene(Timer timer){
 		super(timer);
 		normalTimer = new Timer(this.timer, true);
@@ -47,6 +48,8 @@ public class GameplayScene extends Scene{
 		ResourceStorage.add("deathSound", deathSound);
 		Sound hitSound = new Sound("enemy_hit.ogg");
 		ResourceStorage.add("hitSound", hitSound);
+		Sound multiKillSound = new Sound("multi-kill.ogg");
+		ResourceStorage.add("multiKillSound", multiKillSound);
 		Sound shotSound = new Sound("shot.ogg");
 		ResourceStorage.add("shotSound", shotSound);
 		Sound miracleSound = new Sound("miracle.ogg");
@@ -69,7 +72,6 @@ public class GameplayScene extends Scene{
 		Texture ballTex = new Texture("ball/ball.png");
 		ball.texture = ballTex;
 		ResourceStorage.add("ballTex", ballTex);
-		score = 0;
 		scoreText = new TextField();
 		scoreText.mainColor.blue = 0f;
 		livesText = new TextField();
@@ -83,6 +85,8 @@ public class GameplayScene extends Scene{
 		ResourceStorage.add("shotTex", shotTex);
 		bullets = new ArrayList<Bullet>();
 		level1 = new Level1(bullets, normalTimer);
+		score = level1.getRandomAttackIndex();
+		killsInAir = 0;
 	}
 	public boolean isGameOver(){
 		return gameOver;
@@ -102,6 +106,9 @@ public class GameplayScene extends Scene{
 		}
 		gameOver = player.update(deltaTime);
 		ball.update(normaldeltaTime, normalTimer);
+		if(ball.shouldKillsReset()){
+			killsInAir = 0;
+		}
 		if(ball.miracleTimer.targetReached()){
 			ball.deactivateMiracle();
 			normalTimer.resume();
@@ -112,6 +119,7 @@ public class GameplayScene extends Scene{
 			if(CC.checkCollision(player.hitCC, ball.cc)){
 				if(!ball.hit){
 					ball.hit = true;
+					killsInAir = 0;
 					if(player.direction.x == 0f){
 						ball.direction = new Vector2f(player.lastXDirection / Math.abs(player.lastXDirection), 2f).getNormalize().getMul(player.jumping ? 15f : 12f);
 						score += 20;
@@ -138,24 +146,27 @@ public class GameplayScene extends Scene{
 				if(!ball.miracleActive){
 					enemy.update(normalTime, normaldeltaTime, player.position);
 				}
-				if(CC.checkCollision(enemy.cc, ball.cc)){
+				boolean collision = CC.checkCollision(enemy.cc, ball.cc);
+				if(collision){
 					if(!enemy.hit){
 						enemy.hit = true;
 						enemy.lives--;
 						enemy.colorActive = true;
 						ball.direction.x *= -0.6f;
 						ball.direction.y *= 0.6f;
-						score += 1000;
+						score += 1000 * (killsInAir + 1);
+						if(killsInAir > 0){
+							ResourceStorage.getSound("multiKillSound").play();
+						}
+						killsInAir++;
 						ResourceStorage.getSound("hitSound").play();
 						enemy.hitTimer.resume();
 					}
 				}
-				else{
-					enemy.hit = false;
-				}
-				if(enemy.hitTimer.targetReached()){
+				if(enemy.hitTimer.targetReached() && !collision){
 					if(enemy.lives > 0){
 						enemy.colorActive = false;
+						enemy.hit = false;
 						enemy.hitTimer.reset();
 					}
 					else{
@@ -270,6 +281,7 @@ public class GameplayScene extends Scene{
 		ResourceStorage.disposeTexture("shotTex");
 		ResourceStorage.disposeSound("deathSound");
 		ResourceStorage.disposeSound("hitSound");
+		ResourceStorage.disposeSound("multiKillSound");
 		ResourceStorage.disposeSound("shotSound");
 		ResourceStorage.disposeSound("miracleSound");
 	}

@@ -24,7 +24,7 @@ public class RandomPattern extends BulletPattern{
 	@Override
 	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed){
 		if(intervalTimer.targetReached()){
-			addBullet(sourcePosition, new Vector2f(Main.getRandom().nextFloat() * 2f - 1f, Main.getRandom().nextFloat() * 2f - 1f).getMul(speed), ResourceStorage.getTexture("bulletRedTex"));
+			addBullet(sourcePosition, new Vector2f(Main.getRandom().nextFloat() * 2f - 1f, -Main.getRandom().nextFloat()).getMul(speed), ResourceStorage.getTexture("bulletRedTex"));
 		}
 	}
 	@Override
