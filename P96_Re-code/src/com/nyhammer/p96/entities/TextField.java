@@ -10,6 +10,7 @@ public class TextField extends Entity{
 	public Color3f mainColor;
 	private int baseWidth, baseHeight;
 	public boolean visible;
+	public boolean monochrome;
 	public TextField(){
 		super();
 		scale.x = 0.004f;
@@ -21,6 +22,7 @@ public class TextField extends Entity{
 		charColors = new Color3f[1];
 		charColors[0] = new Color3f(mainColor.red, mainColor.green, mainColor.blue);
 		visible = true;
+		monochrome = false;
 	}
 	public String getText(){
 		return text;

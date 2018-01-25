@@ -21,6 +21,7 @@ public abstract class Enemy extends ModelEntity{
 	public Vector2f properPosition;
 	protected double positionedTime;
 	protected boolean positioned;
+	public int state;
 	public Enemy(Timer baseTimer, int lives){
 		super();
 		cc = new CC(position, 1f);
@@ -32,6 +33,7 @@ public abstract class Enemy extends ModelEntity{
 		properPosition = new Vector2f();
 		positionedTime = 0.0;
 		positioned = false;
+		state = 0;
 	}
 	public void addAttack(Attack attack){
 		attacks.add(attack);

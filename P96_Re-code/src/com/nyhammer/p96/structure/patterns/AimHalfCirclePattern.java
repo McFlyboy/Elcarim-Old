@@ -17,8 +17,8 @@ public class AimHalfCirclePattern extends BulletPattern{
 	private float angleDifference;
 	private Texture yellowTex;
 	private Texture greenTex;
-	public AimHalfCirclePattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval, int bulletsPerHalfCircle){
-		super(sceneBullets, speed, size);
+	public AimHalfCirclePattern(List<Bullet> levelBullets, float speed, float size, Timer baseTimer, float interval, int bulletsPerHalfCircle){
+		super(levelBullets, speed, size);
 		intervalTimer = new TargetTimer(baseTimer, interval);
 		this.bulletsPerHalfCircle = bulletsPerHalfCircle;
 		greenPresent = bulletsPerHalfCircle % 2 == 1;
@@ -38,17 +38,5 @@ public class AimHalfCirclePattern extends BulletPattern{
 				addBullet(sourcePosition, targetDirection.getAdd(targetDirection.getRotate(90f + angleDifference * (float)i).getMul(0.33f)), (greenPresent && i == bulletsPerHalfCircle / 2) ? greenTex : yellowTex);
 			}
 		}
-	}
-	@Override
-	protected void addBullet(Vector2f sourcePosition, Vector2f direction, Texture bulletTex){
-		Bullet bullet = new Bullet(1, direction);
-		bullet.position.x = sourcePosition.x;
-		bullet.position.y = sourcePosition.y;
-		bullet.scale.x = size;
-		bullet.scale.y = size;
-		bullet.cc.radius = size;
-		bullet.texture = bulletTex;
-		bullets.add(bullet);
-		sceneBullets.add(bullet);
 	}
 }

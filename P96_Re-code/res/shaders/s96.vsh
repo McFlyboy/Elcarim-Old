@@ -18,6 +18,6 @@ void main(void){
 	float y = vertex.x * sine + vertex.y * cosine;
 	vec2 rotPos = vec2(x, y);
 	vec2 absPosition = rotPos * scale + position + scenePosition;
-	gl_Position = vec4(absPosition.x * (9.0 / 16.0), absPosition.y, 0.0, 1.0);
+	gl_Position = vec4(absPosition.x * (9f / 16f), absPosition.y, 0f, 1f);
 	passTextureCoord = textureCoord;
 }

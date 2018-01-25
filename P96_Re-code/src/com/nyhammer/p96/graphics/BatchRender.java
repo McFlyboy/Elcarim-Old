@@ -71,7 +71,7 @@ public class BatchRender{
 		shader.loadTransformation(scene.position, textField.position, textField.angle, textField.scale);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 		for(int i = 0; i < text.length(); i++){
-			shader.loadColors(scene.brightness, true, textField.charColors[i]);
+			shader.loadColors(scene.brightness, textField.monochrome, true, textField.charColors[i]);
 			glDrawArrays(GL_TRIANGLES, i * 6, 6);
 		}
 		vertices.clear();

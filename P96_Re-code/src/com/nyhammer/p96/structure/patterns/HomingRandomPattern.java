@@ -15,8 +15,8 @@ public class HomingRandomPattern extends BulletPattern{
 	private TargetTimer intervalTimer;
 	private Texture bulletTex;
 	private float roationSpeed;
-	public HomingRandomPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval, float roationSpeed){
-		super(sceneBullets, speed, size);
+	public HomingRandomPattern(List<Bullet> levelBullets, float speed, float size, Timer baseTimer, float interval, float roationSpeed){
+		super(levelBullets, speed, size);
 		bulletTex = ResourceStorage.getTexture("bulletPurpleTex");
 		intervalTimer = new TargetTimer(baseTimer, interval);
 		this.roationSpeed = roationSpeed;
@@ -30,7 +30,7 @@ public class HomingRandomPattern extends BulletPattern{
 		if(intervalTimer.targetReached()){
 			addBullet(sourcePosition, new Vector2f(Main.getRandom().nextFloat() * 2f - 1f, Main.getRandom().nextFloat() * 2f - 1f).getNormalize().getMul(speed), bulletTex);
 		}
-		for(Bullet bullet : super.bullets){
+		for(Bullet bullet : super.localBullets){
 			bullet.angle += 250f * deltaTime;
 			float currentAngle = bullet.direction.getAngle();
 			float targetAngle = targetPosition.getSub(bullet.position).getAngle();
@@ -48,17 +48,5 @@ public class HomingRandomPattern extends BulletPattern{
 			deltaAngle *= roationSpeed * deltaTime;
 			bullet.direction.rotate(deltaAngle);
 		}
-	}
-	@Override
-	protected void addBullet(Vector2f sourcePosition, Vector2f direction, Texture bulletTex){
-		Bullet bullet = new Bullet(1, direction);
-		bullet.position.x = sourcePosition.x;
-		bullet.position.y = sourcePosition.y;
-		bullet.scale.x = size;
-		bullet.scale.y = size;
-		bullet.cc.radius = size;
-		bullet.texture = bulletTex;
-		bullets.add(bullet);
-		sceneBullets.add(bullet);
 	}
 }

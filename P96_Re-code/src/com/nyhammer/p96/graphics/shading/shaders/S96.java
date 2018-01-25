@@ -16,6 +16,7 @@ public class S96 extends ShaderProgram{
 	private int verticalTextureCountLocation;
 	private int textureOffsetXLocation;
 	private int textureOffsetYLocation;
+	private int monochromeLocation;
 	private int colorActiveLocation;
 	private int colorLocation;
 	public S96(){
@@ -37,6 +38,7 @@ public class S96 extends ShaderProgram{
 		verticalTextureCountLocation = super.getUniformLocation("verticalTextureCount");
 		textureOffsetXLocation = super.getUniformLocation("textureOffsetX");
 		textureOffsetYLocation = super.getUniformLocation("textureOffsetY");
+		monochromeLocation = super.getUniformLocation("monochrome");
 		colorActiveLocation = super.getUniformLocation("colorActive");
 		colorLocation = super.getUniformLocation("color");
 	}
@@ -52,8 +54,9 @@ public class S96 extends ShaderProgram{
 		super.loadInt(textureOffsetXLocation, textureOffsetX);
 		super.loadInt(textureOffsetYLocation, textureOffsetY);
 	}
-	public void loadColors(float sceneBrightness, boolean colorActive, Color3f color){
+	public void loadColors(float sceneBrightness, boolean monochrome, boolean colorActive, Color3f color){
 		super.loadFloat(sceneBrightnessLocation, sceneBrightness);
+		super.loadBoolean(monochromeLocation, monochrome);
 		super.loadBoolean(colorActiveLocation, colorActive);
 		super.loadColor3f(colorLocation, color);
 	}

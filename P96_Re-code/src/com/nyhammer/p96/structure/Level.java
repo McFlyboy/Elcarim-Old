@@ -11,6 +11,7 @@ import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.util.timing.Timer;
 
 public abstract class Level{
+	protected List<Bullet> bullets;
 	protected List<List<Enemy>> enemyWaves;
 	protected List<ModelEntity> backgrounds;
 	protected List<Music> bgms;
@@ -21,7 +22,8 @@ public abstract class Level{
 	private int todderCount;
 	private int luckTodderCloverCount;
 	private int luckTodderSpadeCount;
-	public Level(List<Bullet> sceneBullets, Timer baseTimer){
+	public Level(Timer baseTimer){
+		bullets = new ArrayList<Bullet>();
 		enemyWaves = new ArrayList<List<Enemy>>();
 		waveIndex = 0;
 		backgrounds = new ArrayList<ModelEntity>();
@@ -29,12 +31,26 @@ public abstract class Level{
 		bgms = new ArrayList<Music>();
 		bgmIndex = 0;
 		completed = false;
-		init();
-		addWaves(sceneBullets, baseTimer);
+		init(baseTimer);
+		addWaves(baseTimer);
 		setEnemyCounts();
 	}
 	public boolean isCompleted(){
 		return completed;
+	}
+	public List<Bullet> getBullets(){
+		return bullets;
+	}
+	protected String getBossString(){
+		List<Enemy> currentWave = getCurrentWave();
+		if(currentWave == null){
+			return "";
+		}
+		if(currentWave.size() == 0){
+			return "";
+		}
+		Enemy boss = currentWave.get(0);
+		return boss.name + ": " + boss.lives;
 	}
 	protected String getEnemyCountString(){
 		StringBuilder enemyCount = new StringBuilder();
@@ -65,10 +81,15 @@ public abstract class Level{
 		}
 		return enemyWaves.get(waveIndex);
 	}
-	protected abstract void init();
-	protected abstract void addWaves(List<Bullet> sceneBullets, Timer baseTimer);
 	public Music getCurrentMusic(){
 		return bgms.get(bgmIndex);
+	}
+	protected abstract void init(Timer baseTimer);
+	protected abstract void addWaves(Timer baseTimer);
+	public void clearBullets(){
+		for(Bullet bullet : bullets){
+			bullet.hp = 0;
+		}
 	}
 	protected void setEnemyCounts(){
 		List<Enemy> currentWave = enemyWaves.get(waveIndex);

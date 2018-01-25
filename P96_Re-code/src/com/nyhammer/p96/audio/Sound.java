@@ -22,23 +22,23 @@ public class Sound{
 		ShortBuffer pcm = readVorbis(filename, info);
 		buffer = alGenBuffers();
 		if(alGetError() != AL_NO_ERROR){
-			ErrorHandler.printError("Return at bufferGen!");
+			ErrorHandler.printError("Return at bufferGen! Sound-file is: " + filename);
 			return;
 		}
 		source = alGenSources();
 		if(alGetError() != AL_NO_ERROR){
-			ErrorHandler.printError("Return at sourceGen!");
+			ErrorHandler.printError("Return at sourceGen! Sound-file is: " + filename);
 			return;
 		}
 		alBufferData(buffer, AL_FORMAT_STEREO16, pcm, info.sample_rate());
 		if(alGetError() != AL_NO_ERROR){
-			ErrorHandler.printError("Return at bufferData!");
+			ErrorHandler.printError("Return at bufferData! Sound-file is: " + filename);
 			return;
 		}
 		info.free();
 		alSourcei(source, AL_BUFFER, buffer);
 		if(alGetError() != AL_NO_ERROR){
-			ErrorHandler.printError("Return at source-binding!");
+			ErrorHandler.printError("Return at source-binding! Sound-file is: " + filename);
 			return;
 		}
 	}

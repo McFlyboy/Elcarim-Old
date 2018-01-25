@@ -14,6 +14,7 @@ import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.ControlScheme;
+import com.nyhammer.p96.structure.Level;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.Scene;
 import com.nyhammer.p96.structure.controlSchemes.GameplayControls;
@@ -34,11 +35,12 @@ public class GameplayScene extends Scene{
 	private TextField miraclesText;
 	private List<Shot> shots;
 	private Level1 level1;
-	private List<Bullet> bullets;
 	private Timer normalTimer;
 	private DeltaTimer normalDeltaTimer;
 	private boolean gameOver;
-	private int killsInAir;
+	private int killStreak;
+	private List<Bullet> bullets;
+	private boolean gameCompleted;
 	public GameplayScene(Timer timer){
 		super(timer);
 		normalTimer = new Timer(this.timer, true);
@@ -67,6 +69,7 @@ public class GameplayScene extends Scene{
 		ResourceStorage.add("bulletRedTex", bulletRedTex);
 		Texture bulletYellowTex = new Texture("bullet/bulletYellow.png");
 		ResourceStorage.add("bulletYellowTex", bulletYellowTex);
+		Bullet.initBulletSystem(this.timer);
 		ball = new Ball(this.timer);
 		ball.model = ResourceStorage.getModel("square");
 		Texture ballTex = new Texture("ball/ball.png");
@@ -83,13 +86,20 @@ public class GameplayScene extends Scene{
 		shots = new ArrayList<Shot>();
 		Texture shotTex = new Texture("shot/shot.png");
 		ResourceStorage.add("shotTex", shotTex);
-		bullets = new ArrayList<Bullet>();
-		level1 = new Level1(bullets, normalTimer);
+		level1 = new Level1(normalTimer);
+		bullets = level1.getBullets();
 		score = level1.getRandomAttackIndex();
-		killsInAir = 0;
+		killStreak = 0;
+		gameCompleted = false;
+	}
+	public boolean isGameCompleted(){
+		return gameCompleted;
 	}
 	public boolean isGameOver(){
 		return gameOver;
+	}
+	public Level getCurrentLevel(){
+		return level1;
 	}
 	@Override
 	protected void startSpecifics(){
@@ -101,13 +111,34 @@ public class GameplayScene extends Scene{
 		float normaldeltaTime = (float)normalDeltaTimer.getTime();
 		float normalTime = (float)normalTimer.getTime();
 		level1.update();
+		if(level1.isCompleted()){
+			level1.clearBullets();
+			if(super.brightness <= 0f){
+				gameCompleted = true;
+			}
+			else{
+				super.brightness -= 0.25f * deltaTime;
+				Music currentMusic = level1.getCurrentMusic();
+				currentMusic.setVolume(currentMusic.getVolume() - 0.25f * deltaTime);
+			}
+		}
+		if(level1.shouldBallBeInactive() && ball.position.y < 0.4f){
+			ball.inactive = true;
+			ball.monochrome = true;
+			ball.direction.x = 0f;
+			ball.direction.y = 0f;
+		}
+		else{
+			ball.inactive = false;
+			ball.monochrome = false;
+		}
 		if(player.alive){
 			updateControls();
 		}
 		gameOver = player.update(deltaTime);
 		ball.update(normaldeltaTime, normalTimer);
 		if(ball.shouldKillsReset()){
-			killsInAir = 0;
+			killStreak = 0;
 		}
 		if(ball.miracleTimer.targetReached()){
 			ball.deactivateMiracle();
@@ -117,16 +148,17 @@ public class GameplayScene extends Scene{
 		}
 		if(player.hitting){
 			if(CC.checkCollision(player.hitCC, ball.cc)){
-				if(!ball.hit){
-					ball.hit = true;
-					killsInAir = 0;
-					if(player.direction.x == 0f){
-						ball.direction = new Vector2f(player.lastXDirection / Math.abs(player.lastXDirection), 2f).getNormalize().getMul(player.jumping ? 15f : 12f);
-						score += 20;
-					}
-					else{
-						ball.direction = new Vector2f(player.direction.x / Math.abs(player.direction.x), 2f).getNormalize().getMul(15f);
-						score += 30;
+				if(!ball.inactive){
+					if(!ball.hit){
+						ball.hit = true;
+						if(player.direction.x == 0f){
+							ball.direction = new Vector2f(player.lastXDirection / Math.abs(player.lastXDirection), 2f).getNormalize().getMul(player.jumping ? 15f : 12f);
+							score += 20;
+						}
+						else{
+							ball.direction = new Vector2f(player.direction.x / Math.abs(player.direction.x), 2f).getNormalize().getMul(15f);
+							score += 30;
+						}
 					}
 				}
 			}
@@ -150,21 +182,21 @@ public class GameplayScene extends Scene{
 				if(collision){
 					if(!enemy.hit){
 						enemy.hit = true;
-						enemy.lives--;
 						enemy.colorActive = true;
 						ball.direction.x *= -0.6f;
 						ball.direction.y *= 0.6f;
-						score += 1000 * (killsInAir + 1);
-						if(killsInAir > 0){
+						score += 1000 * Math.pow(2, killStreak);
+						if(killStreak > 0){
 							ResourceStorage.getSound("multiKillSound").play();
 						}
-						killsInAir++;
+						killStreak++;
 						ResourceStorage.getSound("hitSound").play();
 						enemy.hitTimer.resume();
 					}
 				}
 				if(enemy.hitTimer.targetReached() && !collision){
-					if(enemy.lives > 0){
+					enemy.lives--;
+					if(enemy.lives >= 0){
 						enemy.colorActive = false;
 						enemy.hit = false;
 						enemy.hitTimer.reset();
@@ -179,20 +211,24 @@ public class GameplayScene extends Scene{
 		}
 		for(int i = 0; i < bullets.size(); i++){
 			Bullet bullet = bullets.get(i);
+			bullet.update();
 			if(!ball.miracleActive){
-				bullet.update(normaldeltaTime);
+				bullet.updateMovement(normaldeltaTime);
 			}
 			else{
 				bullet.position.add(ball.position.getSub(bullet.position).getNormalize().getMul(deltaTime * 0.3f));
-				if(Math.abs(bullet.position.x) > GameWindow.ASPECT_RATIO + bullet.scale.x || Math.abs(bullet.position.y) > 1f + bullet.scale.y){
-					bullet.hp = 0;
-				}
+			}
+			if(Math.abs(bullet.position.x) > GameWindow.ASPECT_RATIO + bullet.scale.x || Math.abs(bullet.position.y) > 1f + bullet.scale.y){
+				bullet.intact = false;
 			}
 			if(CC.checkCollision(bullet.cc, player.cc)){
 				player.die();
+				bullet.hp = 0;
+				bullet.color.green = 0f;
+				bullet.color.blue = 0f;
 			}
 			if(CC.checkCollision(bullet.cc, ball.cc)){
-				bullet.hp = 0;
+				bullet.intact = false;
 				if(ball.miracleActive){
 					score += 150;
 				}
@@ -200,7 +236,7 @@ public class GameplayScene extends Scene{
 					score += 50;
 				}
 			}
-			if(bullet.hp == 0){
+			if(!bullet.intact){
 				bullets.remove(i);
 				i--;
 			}
@@ -210,9 +246,11 @@ public class GameplayScene extends Scene{
 			shot.update(deltaTime);
 			if(CC.checkCollision(shot.cc, ball.cc)){
 				if(!ball.miracleActive){
-					Vector2f shotAngle = ball.position.getSub(shot.position).getNormalize();
-					ball.direction.add(shotAngle.getMul(12f * shotAngle.y));
-					score += 30;
+					if(!ball.inactive){
+						Vector2f shotAngle = ball.position.getSub(shot.position).getNormalize();
+						ball.direction.add(shotAngle.getMul(12f * shotAngle.y));
+						score += 30;
+					}
 				}
 				else{
 					score += 100;
@@ -223,10 +261,14 @@ public class GameplayScene extends Scene{
 				Bullet bullet = bullets.get(j);
 				if(CC.checkCollision(shot.cc, bullet.cc)){
 					shot.intact = false;
-					bullet.hp = 0;
+					if(bullet.hp > 0){
+						bullet.hp--;
+						score += 10;
+					}
+				}
+				if(!bullet.intact){
 					bullets.remove(j);
 					j--;
-					score += 10;
 				}
 			}
 			if(!shot.intact){
@@ -260,6 +302,12 @@ public class GameplayScene extends Scene{
 		livesText.position.x = GameWindow.ASPECT_RATIO - livesText.getWidth() / 2f;
 		livesText.position.y = 1f - scoreText.getHeight() / 2f - livesText.getHeight();
 		Render.addToQueue(livesText);
+		if(ball.inactive){
+			miraclesText.monochrome = true;
+		}
+		else{
+			miraclesText.monochrome = false;
+		}
 		miraclesText.setText("Miracle: " + player.miracles);
 		miraclesText.position.x = GameWindow.ASPECT_RATIO - miraclesText.getWidth() / 2f;
 		miraclesText.position.y = 1f - scoreText.getHeight() / 2f - livesText.getHeight() - miraclesText.getHeight();
@@ -309,7 +357,7 @@ public class GameplayScene extends Scene{
 			player.shoot(shots);
 		}
 		if(controls.isPressed(controls.getMiracle())){
-			if(player.miracles > 0 && ball.miracleActive == false){
+			if(player.miracles > 0 && ball.miracleActive == false && !ball.inactive){
 				player.miracles--;
 				normalTimer.pause();
 				ball.activateMiracle();

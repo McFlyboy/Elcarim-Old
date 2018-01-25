@@ -3,7 +3,6 @@ package com.nyhammer.p96.structure.patterns;
 import java.util.List;
 
 import com.nyhammer.p96.entities.Bullet;
-import com.nyhammer.p96.graphics.Texture;
 import com.nyhammer.p96.structure.BulletPattern;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.util.math.vector.Vector2f;
@@ -13,8 +12,8 @@ import com.nyhammer.p96.util.timing.Timer;
 public class DelayAimPattern extends BulletPattern{
 	private TargetTimer intervalTimer;
 	private float acceleration;
-	public DelayAimPattern(List<Bullet> sceneBullets, float speed, float size, Timer baseTimer, float interval, float acceleration){
-		super(sceneBullets, speed, size);
+	public DelayAimPattern(List<Bullet> levelBullets, float speed, float size, Timer baseTimer, float interval, float acceleration){
+		super(levelBullets, speed, size);
 		intervalTimer = new TargetTimer(baseTimer, interval);
 		this.acceleration = acceleration;
 	}
@@ -24,7 +23,7 @@ public class DelayAimPattern extends BulletPattern{
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed){
-		for(Bullet bullet : bullets){
+		for(Bullet bullet : localBullets){
 			float length = bullet.direction.getLength();
 			if(length < speed){
 				bullet.direction.mul(acceleration);
@@ -36,17 +35,5 @@ public class DelayAimPattern extends BulletPattern{
 		if(intervalTimer.targetReached()){
 			addBullet(sourcePosition, targetPosition.getSub(sourcePosition).getNormalize().getMul(speed * 0.001f), ResourceStorage.getTexture("bulletGreenTex"));
 		}
-	}
-	@Override
-	protected void addBullet(Vector2f sourcePosition, Vector2f direction, Texture bulletTex){
-		Bullet bullet = new Bullet(1, direction);
-		bullet.position.x = sourcePosition.x;
-		bullet.position.y = sourcePosition.y;
-		bullet.scale.x = size;
-		bullet.scale.y = size;
-		bullet.cc.radius = size;
-		bullet.texture = bulletTex;
-		bullets.add(bullet);
-		sceneBullets.add(bullet);
 	}
 }

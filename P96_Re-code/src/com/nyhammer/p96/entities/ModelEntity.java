@@ -11,6 +11,7 @@ public class ModelEntity extends Entity{
 	public Color3f color;
 	public boolean colorActive;
 	public boolean visible;
+	public boolean monochrome;
 	public ModelEntity(){
 		super();
 		model = null;
@@ -18,6 +19,7 @@ public class ModelEntity extends Entity{
 		color = new Color3f(1f, 1f, 1f);
 		colorActive = false;
 		visible = true;
+		monochrome = false;
 	}
 	public ModelEntity(Model model, Texture texture, Vector2f position, Vector2f scale, float angle){
 		super(position, scale, angle);

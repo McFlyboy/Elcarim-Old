@@ -20,6 +20,10 @@ public class GlobalScene extends Scene{
 	private int gameState;
 	private TextField fpsText;
 	private TextField initText;
+	private TextField congratzTitleText;
+	private TextField congratzLineText;
+	private TextField congratzText;
+	private TextField continueText;
 	public GlobalScene(){
 		super(null);
 		fpsText = new TextField();
@@ -28,6 +32,24 @@ public class GlobalScene extends Scene{
 		fpsText.visible = false;
 		initText = new TextField();
 		initText.mainColor.blue = 0f;
+		congratzTitleText = new TextField();
+		congratzTitleText.setText("Congratualtions!!");
+		congratzTitleText.scale.x = 0.0075f;
+		congratzTitleText.scale.y = 0.0075f;
+		congratzTitleText.position.y = 0.4f;
+		congratzLineText = new TextField();
+		congratzLineText.setText("---------------------------------------------");
+		congratzLineText.position.y = congratzTitleText.position.y - congratzTitleText.getHeight() / 2f - congratzLineText.getHeight() / 2f;
+		congratzText = new TextField();
+		congratzText.scale.x = 0.00225f;
+		congratzText.scale.y = 0.00225f;
+		congratzText.setText("Good job on clearing this demo!\nWhat you just played is not the final version of the game's first stage,\nbut hopefully it gives off an idea of how it will be in it's finished state."
+				+ "\nI hope to see you again, playing future builds of this project, and I would be\nthrilled if you would give me some feedback on this build,\neither through Itch.io or the Discord-server."
+				+ "\nAnyway, thank you for playing this game!\n\nSincerely, Henrik Nyhammer <3");
+		congratzText.position.y = congratzLineText.position.y - congratzLineText.getHeight() / 2f - congratzText.getHeight() / 2f;
+		continueText = new TextField();
+		continueText.mainColor.blue = 0f;
+		continueText.position.y = -0.8f;
 		gameState = 3;
 		controls = new GlobalControls();
 		ResourceStorage.add("square", Models.createSquare());
@@ -48,6 +70,11 @@ public class GlobalScene extends Scene{
 		updateControls();
 		if(gameState == 0){
 			gameplayScene.update();
+			if(gameplayScene.isGameCompleted()){
+				gameplayScene.stop();
+				gameplayScene.brightness = 0f;
+				gameState = 4;
+			}
 			if(gameplayScene.isGameOver()){
 				gameplayScene.stop();
 				gameState = 2;
@@ -94,6 +121,13 @@ public class GlobalScene extends Scene{
 			initText.setText("Press [" + (ControlScheme.getActiveInput() == ControlScheme.ActiveInput.ACTIVE_GAMEPAD ? "A" : "Z") + "] to start!");
 			Render.addToQueue(initText);
 		}
+		if(gameState == 4){
+			Render.addToQueue(congratzTitleText);
+			Render.addToQueue(congratzLineText);
+			Render.addToQueue(congratzText);
+			continueText.setText("Press [" + (ControlScheme.getActiveInput() == ControlScheme.ActiveInput.ACTIVE_GAMEPAD ? "A" : "Z") + "] to exit the game!");
+			Render.addToQueue(continueText);
+		}
 		fpsText.setText("FPS: " + Time.getFPS());
 		fpsText.position = new Vector2f(GameWindow.ASPECT_RATIO - fpsText.getWidth() / 2f, 0f);
 		Render.addToQueue(fpsText);
@@ -114,7 +148,7 @@ public class GlobalScene extends Scene{
 		ResourceStorage.disposeSound("cancelSound");
 	}
 	private void updateControls(){
-		if(controls.isPressed(controls.getPause()) && gameState < 2){
+		if(controls.isPressed(controls.getPause()) && gameState < 2 && !gameplayScene.getCurrentLevel().isCompleted()){
 			gameState++;
 			gameState %= 2;
 			updateGameState();
@@ -135,6 +169,11 @@ public class GlobalScene extends Scene{
 				gameplayScene.start();
 			}
 		}
+		if(gameState == 4){
+			if(controls.isPressed(controls.getInit())){
+				GameWindow.close();
+			}
+		}
 	}
 	private void updateGameState(){
 		if(gameState == 0){
@@ -146,4 +185,14 @@ public class GlobalScene extends Scene{
 			pauseScene.start();
 		}
 	}
+	/*private void restartGameFully(){
+		gameState = 3;
+		pauseScene.dispose();
+		gameOverScene.dispose();
+		gameplayScene.dispose();
+		pauseScene = new PauseScene(this.timer);
+		gameOverScene = new GameOverScene(this.timer);
+		gameplayScene = new GameplayScene(this.timer);
+		gameplayScene.brightness = 0.5f;
+	}*/
 }

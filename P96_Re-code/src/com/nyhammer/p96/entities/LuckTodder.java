@@ -7,7 +7,7 @@ import com.nyhammer.p96.util.timing.Timer;
 
 public class LuckTodder extends Enemy{
 	public LuckTodder(Timer baseTimer, String name, Texture texture){
-		super(baseTimer, 2);
+		super(baseTimer, 1);
 		scale.x = 0.1f;
 		scale.y = 0.1f;
 		cc.radius = 0.075f;
