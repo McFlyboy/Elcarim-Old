@@ -20,20 +20,19 @@ public class Main{
 	public static final int VERSION_MAJOR = 0;
 	public static final int VERSION_MINOR = 3;
 	public static final int VERSION_REVISION = 0;
-	public static final int VERSION_PATCH = 0;
 	public static final String PRE_VERSION_SUFFIX = "a";
+	public static final int VERSION_PATCH = 1;
 	public static final String TITLE = "Project 1996";
 	private DeltaTimer systemDelta;
 	private static final Random RANDOM = new Random();
 	private GlobalScene globalScene;
 	public static String getVersion(){
 		StringBuilder version = new StringBuilder();
-		version.append(String.format("%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION));
-		String patch = String.format("%d", VERSION_PATCH);
-		if(!patch.equals("0")){
-			version.append("." + patch);
+		version.append(String.format("%d.%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, PRE_VERSION_SUFFIX));
+		String patch = String.format("%02d", VERSION_PATCH);
+		if(!patch.equals("00")){
+			version.append(" - patch: " + patch);
 		}
-		version.append(PRE_VERSION_SUFFIX);
 		return version.toString();
 	}
 	public static Random getRandom(){

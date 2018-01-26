@@ -33,7 +33,7 @@ public class GlobalScene extends Scene{
 		initText = new TextField();
 		initText.mainColor.blue = 0f;
 		congratzTitleText = new TextField();
-		congratzTitleText.setText("Congratualtions!!");
+		congratzTitleText.setText("Congratulations!!");
 		congratzTitleText.scale.x = 0.0075f;
 		congratzTitleText.scale.y = 0.0075f;
 		congratzTitleText.position.y = 0.4f;
@@ -148,7 +148,7 @@ public class GlobalScene extends Scene{
 		ResourceStorage.disposeSound("cancelSound");
 	}
 	private void updateControls(){
-		if(controls.isPressed(controls.getPause()) && gameState < 2 && !gameplayScene.getCurrentLevel().isCompleted()){
+		if(controls.isPressed(controls.getPause()) && gameState < 2 && !(gameplayScene.getCurrentLevel().isCompleted() && gameplayScene.brightness < 0.5f)){
 			gameState++;
 			gameState %= 2;
 			updateGameState();
