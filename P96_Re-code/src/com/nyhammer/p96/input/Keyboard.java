@@ -163,6 +163,9 @@ public class Keyboard{
 			@Override
 			public void invoke(long window, int key, int scancode, int action, int mods){
 				ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_KEYBOARD);
+				if(key < 0){
+					return;
+				}
 				if(action == GLFW_PRESS){
 					keys[key] = KEY_PRESSED;
 				}

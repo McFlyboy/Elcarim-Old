@@ -60,7 +60,7 @@ public class BatchRender{
 				drawX = -textField.getBaseWidth() / 2f;
 				continue;
 			}
-			if(ch == '\r'){
+			else if(ch == '\r'){
 				continue;
 			}
 			Glyph glyph = font.getGlyph(ch);
@@ -70,9 +70,19 @@ public class BatchRender{
 		vertices.flip();
 		shader.loadTransformation(scene.position, textField.position, textField.angle, textField.scale);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
-		for(int i = 0; i < text.length(); i++){
-			shader.loadColors(scene.brightness, textField.monochrome, true, textField.charColors[i]);
-			glDrawArrays(GL_TRIANGLES, i * 6, 6);
+		int charSlot = 0;
+		int lineFeedCount = 0;
+		for(char ch : text.toCharArray()){
+			if(ch == '\n'){
+				lineFeedCount++;
+				continue;
+			}
+			else if(ch == '\r'){
+				continue;
+			}
+			shader.loadColors(scene.brightness, textField.monochrome, true, textField.charColors[charSlot + lineFeedCount]);
+			glDrawArrays(GL_TRIANGLES, charSlot * 6, 6);
+			charSlot++;
 		}
 		vertices.clear();
 	}
@@ -88,11 +98,11 @@ public class BatchRender{
 		float s2 = ((float)glyph.getX() + (float)glyph.getWidth()) / fontWidth;
 		float t2 = ((float)glyph.getY() + (float)glyph.getHeight()) / fontHeight;
 		vertices.put(x1).put(y1).put(s1).put(t1);
-		vertices.put(x1).put(y2).put(s1).put(t2);
+		vertices.put(x2).put(y1).put(s2).put(t1);
 		vertices.put(x2).put(y2).put(s2).put(t2);
 		vertices.put(x1).put(y1).put(s1).put(t1);
 		vertices.put(x2).put(y2).put(s2).put(t2);
-		vertices.put(x2).put(y1).put(s2).put(t1);
+		vertices.put(x1).put(y2).put(s1).put(t2);
 	}
 	public void dispose(){
 		MemoryUtil.memFree(vertices);

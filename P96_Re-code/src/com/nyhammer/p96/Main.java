@@ -21,7 +21,7 @@ public class Main{
 	public static final int VERSION_MINOR = 3;
 	public static final int VERSION_REVISION = 0;
 	public static final String PRE_VERSION_SUFFIX = "a";
-	public static final int VERSION_PATCH = 1;
+	public static final int VERSION_PATCH = 2;
 	public static final String TITLE = "Project 1996";
 	private DeltaTimer systemDelta;
 	private static final Random RANDOM = new Random();
