@@ -7,7 +7,7 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class Ball extends ModelEntity{
+public class Ball extends ModelEntity {
 	public CC cc;
 	public Vector2f direction;
 	public TargetTimer miracleTimer;
@@ -15,7 +15,7 @@ public class Ball extends ModelEntity{
 	public boolean hit;
 	private boolean resetKills;
 	public boolean inactive;
-	public Ball(Timer baseTimer){
+	public Ball(Timer baseTimer) {
 		super();
 		position.x = 0.8f * GameWindow.ASPECT_RATIO;
 		position.y = -0.2f;
@@ -31,26 +31,26 @@ public class Ball extends ModelEntity{
 		resetKills = false;
 		inactive = false;
 	}
-	public boolean shouldKillsReset(){
+	public boolean shouldKillsReset() {
 		boolean result = resetKills;
 		resetKills = false;
 		return result;
 	}
-	public void update(float deltaTime, Timer timer){
-		if(inactive){
+	public void update(float deltaTime, Timer timer) {
+		if(inactive) {
 			return;
 		}
 		direction.x -= direction.x * 0.02f * deltaTime;
 		direction.y -= 11.25f * deltaTime;
-		if(Math.abs(position.y) > 1f - scale.y){
+		if(Math.abs(position.y) > 1f - scale.y) {
 			position.y *= (1f - scale.y) / Math.abs(position.y);
 			direction.y *= -0.9f;
 			direction.x *= 0.992f;
-			if(position.y < 0f){
+			if(position.y < 0f) {
 				resetKills = true;
 			}
 		}
-		if(Math.abs(position.x) > GameWindow.ASPECT_RATIO - scale.x){
+		if(Math.abs(position.x) > GameWindow.ASPECT_RATIO - scale.x) {
 			position.x *= (GameWindow.ASPECT_RATIO - scale.x) / Math.abs(position.x);
 			direction.x *= -0.9f;
 			direction.y *= 0.992f;
@@ -59,13 +59,13 @@ public class Ball extends ModelEntity{
 		position.add(deltaBallPosition);
 		angle -= 360f * deltaBallPosition.x / 2f * (float)Math.PI * scale.x;
 	}
-	public void activateMiracle(){
+	public void activateMiracle() {
 		colorActive = true;
 		miracleActive = true;
 		miracleTimer.resume();
 		ResourceStorage.getSound("miracleSound").play();
 	}
-	public void deactivateMiracle(){
+	public void deactivateMiracle() {
 		colorActive = false;
 		miracleActive = false;
 		miracleTimer.reset();

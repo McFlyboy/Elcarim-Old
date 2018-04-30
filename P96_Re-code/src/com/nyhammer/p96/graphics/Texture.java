@@ -15,7 +15,7 @@ import org.lwjgl.BufferUtils;
 import com.nyhammer.p96.ErrorHandler;
 import com.nyhammer.p96.ui.GameWindow;
 
-public class Texture{
+public class Texture {
 	private int width;
 	private int height;
 	private int colorComp;
@@ -24,56 +24,56 @@ public class Texture{
 	private int verticalCount;
 	private int offsetX;
 	private int offsetY;
-	public Texture(String filename){
+	public Texture(String filename) {
 		this(filename, 1, 1, false);
 	}
-	public Texture(String filename, int horizontalCount, int verticalCount){
+	public Texture(String filename, int horizontalCount, int verticalCount) {
 		this(filename, horizontalCount, verticalCount, false);
 	}
-	public Texture(String filename, int horizontalCount, int verticalCount, boolean linear){
+	public Texture(String filename, int horizontalCount, int verticalCount, boolean linear) {
 		ByteBuffer buffer = loadImage(filename);
 		this.horizontalCount = horizontalCount;
 		this.verticalCount = verticalCount;
 		initTexture(buffer, linear);
 	}
-	public Texture(BufferedImage img){
+	public Texture(BufferedImage img) {
 		this(img, false);
 	}
-	public Texture(BufferedImage img, boolean linear){
+	public Texture(BufferedImage img, boolean linear) {
 		ByteBuffer buffer = createByteBuffer(img);
 		horizontalCount = 1;
 		verticalCount = 1;
 		initTexture(buffer, linear);
 	}
-	public int getWidth(){
+	public int getWidth() {
 		return width;
 	}
-	public int getHeight(){
+	public int getHeight() {
 		return height;
 	}
-	public int getColorComp(){
+	public int getColorComp() {
 		return colorComp;
 	}
-	public int getTexture(){
+	public int getTexture() {
 		return texture;
 	}
-	public int getHorizontalCount(){
+	public int getHorizontalCount() {
 		return horizontalCount;
 	}
-	public int getVerticalCount(){
+	public int getVerticalCount() {
 		return verticalCount;
 	}
-	public int getOffsetX(){
+	public int getOffsetX() {
 		return offsetX;
 	}
-	public int getOffsetY(){
+	public int getOffsetY() {
 		return offsetY;
 	}
-	public void setOffset(int x, int y){
+	public void setOffset(int x, int y) {
 		offsetX = x;
 		offsetY = y;
 	}
-	private void initTexture(ByteBuffer buffer, boolean linear){
+	private void initTexture(ByteBuffer buffer, boolean linear) {
 		texture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -83,7 +83,7 @@ public class Texture{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	}
-	private ByteBuffer createByteBuffer(BufferedImage img){
+	private ByteBuffer createByteBuffer(BufferedImage img) {
 		width = img.getWidth();
 		height = img.getHeight();
 		colorComp = img.getColorModel().getNumComponents();
@@ -94,8 +94,8 @@ public class Texture{
 		int[] pixels = new int[width * height];
 		img.getRGB(0, 0, width, height, pixels, 0, width);
 		ByteBuffer buffer = BufferUtils.createByteBuffer(pixels.length * colorComp);
-		for(int y = 0; y < height; y++){
-			for(int x = 0; x < width; x++){
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
 				int pixel = pixels[x + y * width];
 				buffer.put((byte)((pixel >> 16) & 0xff));
 				buffer.put((byte)((pixel >> 8) & 0xff));
@@ -106,13 +106,13 @@ public class Texture{
 		buffer.flip();
 		return buffer;
 	}
-	private ByteBuffer loadImage(String filename){
+	private ByteBuffer loadImage(String filename) {
 		IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
 		IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
 		IntBuffer colorCompBuffer = BufferUtils.createIntBuffer(1);
 		stbi_set_flip_vertically_on_load(true);
 		ByteBuffer img = stbi_load("assets/textures/" + filename, widthBuffer, heightBuffer, colorCompBuffer, 4);
-		if(img == null){
+		if(img == null) {
 			ErrorHandler.printError(String.format("Could not load the texture: %s\n%s", filename, stbi_failure_reason()), true);
 			ErrorHandler.printError(new RuntimeException());
 			GameWindow.close();
@@ -122,7 +122,7 @@ public class Texture{
 		colorComp = colorCompBuffer.get();
 		return img;
 	}
-	public void dispose(){
+	public void dispose() {
 		glDeleteTextures(texture);
 	}
 }

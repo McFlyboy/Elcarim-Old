@@ -13,19 +13,19 @@ import org.lwjgl.openal.ALCCapabilities;
 import com.nyhammer.p96.ErrorHandler;
 import com.nyhammer.p96.ui.GameWindow;
 
-public class AudioSystem{
+public class AudioSystem {
 	private static long device;
 	private static long context;
-	public static void init(){
+	public static void init() {
 		device = alcOpenDevice((ByteBuffer)null);
-		if(device == NULL){
+		if(device == NULL) {
 			ErrorHandler.printError("Could not open the default sound-device!", true);
 			ErrorHandler.printError(new IllegalStateException());
 			GameWindow.close();
 		}
 		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
 		context = alcCreateContext(device, (IntBuffer)null);
-		if(context == NULL){
+		if(context == NULL) {
 			ErrorHandler.printError("Could not create an OpenAL-context!", true);
 			ErrorHandler.printError(new IllegalStateException());
 			GameWindow.close();
@@ -33,8 +33,8 @@ public class AudioSystem{
 		alcMakeContextCurrent(context);
 		AL.createCapabilities(deviceCaps);
 	}
-	public static void terminate(){
-		if(device == NULL){
+	public static void terminate() {
+		if(device == NULL) {
 			return;
 		}
 		alcDestroyContext(context);

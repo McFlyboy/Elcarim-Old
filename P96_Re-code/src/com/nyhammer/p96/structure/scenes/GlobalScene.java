@@ -12,7 +12,7 @@ import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Time;
 
-public class GlobalScene extends Scene{
+public class GlobalScene extends Scene {
 	private GlobalControls controls;
 	private PauseScene pauseScene;
 	private GameOverScene gameOverScene;
@@ -24,7 +24,7 @@ public class GlobalScene extends Scene{
 	private TextField congratzLineText;
 	private TextField congratzText;
 	private TextField continueText;
-	public GlobalScene(){
+	public GlobalScene() {
 		super(null);
 		fpsText = new TextField();
 		fpsText.scale = new Vector2f(0.0015f, 0.0015f);
@@ -62,33 +62,33 @@ public class GlobalScene extends Scene{
 		gameplayScene.brightness = 0.5f;
 	}
 	@Override
-	protected void startSpecifics(){
+	protected void startSpecifics() {
 		
 	}
 	@Override
-	protected void updateSpecifics(float deltaTime){
+	protected void updateSpecifics(float deltaTime) {
 		updateControls();
-		if(gameState == 0){
+		if(gameState == 0) {
 			gameplayScene.update();
-			if(gameplayScene.isGameCompleted()){
+			if(gameplayScene.isGameCompleted()) {
 				gameplayScene.stop();
 				gameplayScene.brightness = 0f;
 				gameState = 4;
 			}
-			if(gameplayScene.isGameOver()){
+			if(gameplayScene.isGameOver()) {
 				gameplayScene.stop();
 				gameState = 2;
 				gameOverScene.start();
 			}
 		}
-		else if(gameState == 1){
+		else if(gameState == 1) {
 			pauseScene.update();
 			int menuState = pauseScene.checkMenus();
-			if(menuState == 1 || pauseScene.shouldExit()){
+			if(menuState == 1 || pauseScene.shouldExit()) {
 				gameState = 0;
 				updateGameState();
 			}
-			else if(menuState == 2){
+			else if(menuState == 2) {
 				gameState = 0;
 				gameplayScene.dispose();
 				gameplayScene = new GameplayScene(this.timer);
@@ -98,7 +98,7 @@ public class GlobalScene extends Scene{
 		else{
 			gameOverScene.update();
 			int menuState = gameOverScene.checkMenus();
-			if(menuState == 1){
+			if(menuState == 1) {
 				gameState = 0;
 				gameplayScene.dispose();
 				gameplayScene = new GameplayScene(this.timer);
@@ -108,20 +108,20 @@ public class GlobalScene extends Scene{
 		}
 	}
 	@Override
-	protected void renderSpecifics(){
+	protected void renderSpecifics() {
 		gameplayScene.render();
 		if(gameState == 1){
 			pauseScene.render();
 		}
-		else if(gameState == 2){
+		else if(gameState == 2) {
 			gameOverScene.render();
 		}
 		Render.setScene(this);
-		if(gameState == 3){
+		if(gameState == 3) {
 			initText.setText("Press [" + (ControlScheme.getActiveInput() == ControlScheme.ActiveInput.ACTIVE_GAMEPAD ? "A" : "Z") + "] to start!");
 			Render.addToQueue(initText);
 		}
-		if(gameState == 4){
+		if(gameState == 4) {
 			Render.addToQueue(congratzTitleText);
 			Render.addToQueue(congratzLineText);
 			Render.addToQueue(congratzText);
@@ -133,12 +133,12 @@ public class GlobalScene extends Scene{
 		Render.addToQueue(fpsText);
 	}
 	@Override
-	protected void stopSpecifics(){
+	protected void stopSpecifics() {
 		gameplayScene.stop();
 		pauseScene.stop();
 	}
 	@Override
-	protected void disposeSpecifics(){
+	protected void disposeSpecifics() {
 		gameplayScene.dispose();
 		pauseScene.dispose();
 		gameOverScene.dispose();
@@ -147,45 +147,45 @@ public class GlobalScene extends Scene{
 		ResourceStorage.disposeSound("confirmSound");
 		ResourceStorage.disposeSound("cancelSound");
 	}
-	private void updateControls(){
-		if(controls.isPressed(controls.getPause()) && gameState < 2 && !(gameplayScene.getCurrentLevel().isCompleted() && gameplayScene.brightness < 0.5f)){
+	private void updateControls() {
+		if(controls.isPressed(controls.getPause()) && gameState < 2 && !(gameplayScene.getCurrentLevel().isCompleted() && gameplayScene.brightness < 0.5f)) {
 			gameState++;
 			gameState %= 2;
 			updateGameState();
-			if(gameState == 1){
+			if(gameState == 1) {
 				ResourceStorage.getSound("confirmSound").play();
 			}
 		}
-		if(controls.isPressed(controls.getFPS())){
+		if(controls.isPressed(controls.getFPS())) {
 			fpsText.visible = !fpsText.visible;
 		}
-		if(controls.isPressed(controls.getFullscreen())){
+		if(controls.isPressed(controls.getFullscreen())) {
 			boolean fullscreen = GameWindow.isFullscreen();
 			GameWindow.setFullscreen(!fullscreen);
 		}
-		if(gameState == 3){
-			if(controls.isPressed(controls.getInit())){
+		if(gameState == 3) {
+			if(controls.isPressed(controls.getInit())) {
 				gameState = 0;
 				gameplayScene.start();
 			}
 		}
-		if(gameState == 4){
-			if(controls.isPressed(controls.getInit())){
+		if(gameState == 4) {
+			if(controls.isPressed(controls.getInit())) {
 				GameWindow.close();
 			}
 		}
 	}
-	private void updateGameState(){
-		if(gameState == 0){
+	private void updateGameState() {
+		if(gameState == 0) {
 			pauseScene.stop();
 			gameplayScene.start();
 		}
-		else{
+		else {
 			gameplayScene.stop();
 			pauseScene.start();
 		}
 	}
-	/*private void restartGameFully(){
+	/*private void restartGameFully() {
 		gameState = 3;
 		pauseScene.dispose();
 		gameOverScene.dispose();

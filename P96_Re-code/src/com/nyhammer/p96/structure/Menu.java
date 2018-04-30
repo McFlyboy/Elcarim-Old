@@ -7,8 +7,8 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class Menu{
-	public enum PositionType{
+public class Menu {
+	public enum PositionType {
 		FROM_LEFT, FROM_CENTER, FROM_RIGHT;
 	}
 	private TextField[] optionTexts;
@@ -19,9 +19,9 @@ public class Menu{
 	private Vector2f position;
 	private float spacing;
 	private PositionType positionType;
-	public Menu(Timer baseTimer, String... options){
+	public Menu(Timer baseTimer, String... options) {
 		optionTexts = new TextField[options.length];
-		for(int i = 0; i < options.length; i++){
+		for(int i = 0; i < options.length; i++) {
 			optionTexts[i] = new TextField();
 			optionTexts[i].setText(options[i]);
 		}
@@ -35,88 +35,88 @@ public class Menu{
 		updatePositions();
 		updateColors();
 	}
-	public int getActiveOption(){
+	public int getActiveOption() {
 		return activeOption;
 	}
-	public boolean isOptionSelected(){
+	public boolean isOptionSelected() {
 		return optionSelected;
 	}
-	public void setOptionSelected(boolean selected){
+	public void setOptionSelected(boolean selected) {
 		optionSelected = selected;
-		if(selected){
+		if(selected) {
 			optionTexts[activeOption].setColors(new Color3f(1f, 0f, 0f));
 			continueTimer.resume();
 		}
-		else{
+		else {
 			optionTexts[activeOption].setColors(new Color3f(1f, 1f, 0f));
 		}
 	}
-	public boolean isOptionContinue(){
-		if(!optionContinue){
-			if(continueTimer.targetReached()){
+	public boolean isOptionContinue() {
+		if(!optionContinue) {
+			if(continueTimer.targetReached()) {
 				continueTimer.reset();
 				optionContinue = true;
 			}
 		}
 		return optionContinue;
 	}
-	public void setOptionContinue(boolean optionContinue){
+	public void setOptionContinue(boolean optionContinue) {
 		this.optionContinue = optionContinue;
 	}
-	public void setPosition(Vector2f position){
+	public void setPosition(Vector2f position) {
 		this.position = position;
 		updatePositions();
 	}
-	public void setSpacing(float spacing){
+	public void setSpacing(float spacing) {
 		this.spacing = spacing;
 		updatePositions();
 	}
-	public void setPositionType(PositionType type){
+	public void setPositionType(PositionType type) {
 		positionType = type;
 		updatePositions();
 	}
-	public void scrollUp(){
+	public void scrollUp() {
 		activeOption--;
-		if(activeOption < 0){
+		if(activeOption < 0) {
 			activeOption = optionTexts.length -1;
 		}
 		ResourceStorage.getSound("optionSound").play();
 		updateColors();
 	}
-	public void scrollDown(){
+	public void scrollDown() {
 		activeOption++;
-		if(activeOption == optionTexts.length){
+		if(activeOption == optionTexts.length) {
 			activeOption = 0;
 		}
 		ResourceStorage.getSound("optionSound").play();
 		updateColors();
 	}
-	public void render(){
-		for(TextField optionText : optionTexts){
+	public void render() {
+		for(TextField optionText : optionTexts) {
 			Render.addToQueue(optionText);
 		}
 	}
-	private void updatePositions(){
-		for(int i = 0; i < optionTexts.length; i++){
-			if(positionType == PositionType.FROM_CENTER){
+	private void updatePositions() {
+		for(int i = 0; i < optionTexts.length; i++) {
+			if(positionType == PositionType.FROM_CENTER) {
 				optionTexts[i].position.x = position.x;
 			}
-			else if(positionType == PositionType.FROM_LEFT){
+			else if(positionType == PositionType.FROM_LEFT) {
 				optionTexts[i].position.x = position.x + optionTexts[i].getWidth() / 2f;
 			}
-			else{
+			else {
 				optionTexts[i].position.x = position.x - optionTexts[i].getWidth() / 2f;
 			}
 			optionTexts[i].position.y = position.y + spacing * (float)(optionTexts.length - 1) / 2f - spacing * i;
 		}
 	}
-	public void updateColors(){
-		for(TextField optionText : optionTexts){
+	public void updateColors() {
+		for(TextField optionText : optionTexts) {
 			optionText.setColors(new Color3f(1f, 1f, 1f));
 		}
 		optionTexts[activeOption].setColors(new Color3f(1f, 1f, 0f));
 	}
-	public void reset(){
+	public void reset() {
 		activeOption = 0;
 		updateColors();
 		optionSelected = false;

@@ -1,14 +1,14 @@
 package com.nyhammer.p96.util.timing;
 
-public class DeltaTimer{
+public class DeltaTimer {
 	private Timer timer;
-	public DeltaTimer(){
+	public DeltaTimer() {
 		this(null);
 	}
-	public DeltaTimer(Timer basetimer){
+	public DeltaTimer(Timer basetimer) {
 		timer = new Timer(basetimer, true);
 	}
-	public double getTime(){
+	public double getTime() {
 		double time = timer.getTime();
 		timer.reset(true);
 		return time;

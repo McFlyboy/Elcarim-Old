@@ -5,20 +5,20 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public abstract class Scene{
+public abstract class Scene {
 	private boolean running;
 	protected Timer timer;
 	protected DeltaTimer deltaTimer;
 	public Vector2f position;
 	public float brightness;
-	public Scene(Timer timer){
+	public Scene(Timer timer) {
 		running = false;
 		this.timer = new Timer(timer);
 		deltaTimer = new DeltaTimer(this.timer);
 		position = new Vector2f();
 		brightness = 1f;
 	}
-	public boolean isRunning(){
+	public boolean isRunning() {
 		return running;
 	}
 	protected abstract void startSpecifics();
@@ -26,33 +26,33 @@ public abstract class Scene{
 	protected abstract void renderSpecifics();
 	protected abstract void stopSpecifics();
 	protected abstract void disposeSpecifics();
-	public void start(){
-		if(running){
+	public void start() {
+		if(running) {
 			return;
 		}
 		timer.resume();
 		startSpecifics();
 		running = true;
 	}
-	public void update(){
-		if(!running){
+	public void update() {
+		if(!running) {
 			return;
 		}
 		updateSpecifics((float)deltaTimer.getTime());
 	}
-	public void render(){
+	public void render() {
 		Render.setScene(this);
 		renderSpecifics();
 	}
-	public void stop(){
-		if(!running){
+	public void stop() {
+		if(!running) {
 			return;
 		}
 		timer.pause();
 		stopSpecifics();
 		running = false;
 	}
-	public void dispose(){
+	public void dispose() {
 		disposeSpecifics();
 	}
 }

@@ -6,7 +6,7 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class Bullet extends ModelEntity{
+public class Bullet extends ModelEntity {
 	private static boolean init;
 	private static Timer baseTimer;
 	public int hp;
@@ -14,7 +14,7 @@ public class Bullet extends ModelEntity{
 	public TargetTimer intactTimer;
 	public CC cc;
 	public Vector2f direction;
-	public Bullet(int hp, Vector2f direction){
+	public Bullet(int hp, Vector2f direction) {
 		super();
 		scale.x = 0.03f;
 		scale.y = 0.03f;
@@ -25,24 +25,24 @@ public class Bullet extends ModelEntity{
 		intact = true;
 		intactTimer = new TargetTimer(baseTimer, 0.125f);
 	}
-	public void update(){
-		if(!init){
+	public void update() {
+		if(!init) {
 			return;
 		}
-		if(hp == 0){
+		if(hp == 0) {
 			intactTimer.resume();
 			super.colorActive = true;
 			direction.x = 0f;
 			direction.y = 0f;
 		}
-		if(intactTimer.targetReached()){
+		if(intactTimer.targetReached()) {
 			intact = false;
 		}
 	}
-	public void updateMovement(float deltaTime){
+	public void updateMovement(float deltaTime) {
 		position.add(direction.getMul(deltaTime));
 	}
-	public static void initBulletSystem(Timer baseTimer){
+	public static void initBulletSystem(Timer baseTimer) {
 		Bullet.baseTimer = baseTimer;
 		init = true;
 	}

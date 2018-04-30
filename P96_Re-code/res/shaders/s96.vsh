@@ -10,7 +10,7 @@ uniform vec2 position;
 uniform float angle;
 uniform vec2 scale;
 
-void main(void){
+void main(void) {
 	float rad = radians(angle);
 	float cosine = cos(rad);
 	float sine = sin(rad);

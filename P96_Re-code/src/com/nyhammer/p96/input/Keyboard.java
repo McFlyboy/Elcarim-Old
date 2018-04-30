@@ -7,7 +7,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import com.nyhammer.p96.structure.ControlScheme;
 import com.nyhammer.p96.ui.GameWindow;
 
-public class Keyboard{
+public class Keyboard {
 	/** Printable keys. */
 	public static final int
 		KEY_SPACE         = 32,
@@ -60,6 +60,7 @@ public class Keyboard{
 		KEY_GRAVE_ACCENT  = 96,
 		KEY_WORLD_1       = 161,
 		KEY_WORLD_2       = 162;
+	
 	/** Function keys. */
 	public static final int
 		KEY_ESCAPE        = 256,
@@ -133,54 +134,57 @@ public class Keyboard{
 		KEY_RIGHT_SUPER   = 347,
 		KEY_MENU          = 348,
 		KEY_LAST          = KEY_MENU;
+	
 	/** Key-states. */
 	public static final int
 		KEY_PRESSED                 = 3,
 		KEY_RELEASED                = 2,
 		KEY_UNCHANGED_FROM_PRESSED  = 1,
 		KEY_UNCHANGED_FROM_RELEASED = 0;
+	
 	/** Miscellaneous. */
 	public static final int
 		KEY_UNCHANGE_RANGE = 2;
+	
 	private static GLFWKeyCallback keyCallback;
 	private static int[] keys = new int[0x10000];
-	private static int getKeyState(int key){
+	private static int getKeyState(int key) {
 		int keyState = keys[key];
-		if(keyState >= KEY_UNCHANGE_RANGE){
+		if(keyState >= KEY_UNCHANGE_RANGE) {
 			keys[key] -= KEY_UNCHANGE_RANGE;
 		}
 		return keyState;
 	}
-	public static boolean isKeyPressed(int key){
+	public static boolean isKeyPressed(int key) {
 		return getKeyState(key) == KEY_PRESSED;
 	}
-	public static boolean isKeyDown(int key){
+	public static boolean isKeyDown(int key) {
 		int keyState = getKeyState(key);
 		return keyState == KEY_PRESSED | keyState == KEY_UNCHANGED_FROM_PRESSED;
 	}
-	public static void create(){
-		glfwSetKeyCallback(GameWindow.getWindow(), keyCallback = new GLFWKeyCallback(){
+	public static void create() {
+		glfwSetKeyCallback(GameWindow.getWindow(), keyCallback = new GLFWKeyCallback() {
 			@Override
-			public void invoke(long window, int key, int scancode, int action, int mods){
+			public void invoke(long window, int key, int scancode, int action, int mods) {
 				ControlScheme.setActiveInput(ControlScheme.ActiveInput.ACTIVE_KEYBOARD);
-				if(key < 0){
+				if(key < 0) {
 					return;
 				}
-				if(action == GLFW_PRESS){
+				if(action == GLFW_PRESS) {
 					keys[key] = KEY_PRESSED;
 				}
-				if(action == GLFW_RELEASE){
+				if(action == GLFW_RELEASE) {
 					keys[key] = KEY_RELEASED;
 				}
 			}
 		});
 	}
-	public static void resetKeyStates(){
-		for(int i = 0; i < keys.length; i++){
+	public static void resetKeyStates() {
+		for(int i = 0; i < keys.length; i++) {
 			keys[i] = KEY_UNCHANGED_FROM_RELEASED;
 		}
 	}
-	public static void destroy(){
+	public static void destroy() {
 		keyCallback.free();
 	}
 }

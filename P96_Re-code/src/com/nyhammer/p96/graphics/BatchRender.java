@@ -17,12 +17,12 @@ import com.nyhammer.p96.graphics.shading.shaders.S96;
 import com.nyhammer.p96.structure.ResourceStorage;
 import com.nyhammer.p96.structure.Scene;
 
-public class BatchRender{
+public class BatchRender {
 	private int vao;
 	private int vbo;
 	private FloatBuffer vertices;
 	private TextFont font;
-	public BatchRender(){
+	public BatchRender() {
 		vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 		vbo = glGenBuffers();
@@ -35,17 +35,17 @@ public class BatchRender{
 		glBindVertexArray(0);
 		font = ResourceStorage.getTextFont("font");
 	}
-	public int getVAO(){
+	public int getVAO() {
 		return vao;
 	}
-	public void prepare(){
+	public void prepare() {
 		glBindVertexArray(vao);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glActiveTexture(GL_TEXTURE0);
 	}
-	public void render(S96 shader, Scene scene, TextField textField){
+	public void render(S96 shader, Scene scene, TextField textField) {
 		glBindTexture(GL_TEXTURE_2D, font.getFontTexture().getTexture());
 		shader.loadTextureInfo(1, 1, 0, 0);
 		int fontHeight = font.getFontHeight();
@@ -53,14 +53,14 @@ public class BatchRender{
 		String text = textField.getText();
 		float drawX = -textField.getBaseWidth() / 2f;
 		float drawY = textHeight / 2f - fontHeight;
-		for(int i = 0; i < text.length(); i++){
+		for(int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);
-			if(ch == '\n'){
+			if(ch == '\n') {
 				drawY -= fontHeight;
 				drawX = -textField.getBaseWidth() / 2f;
 				continue;
 			}
-			else if(ch == '\r'){
+			else if(ch == '\r') {
 				continue;
 			}
 			Glyph glyph = font.getGlyph(ch);
@@ -72,12 +72,12 @@ public class BatchRender{
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 		int charSlot = 0;
 		int lineFeedCount = 0;
-		for(char ch : text.toCharArray()){
-			if(ch == '\n'){
+		for(char ch : text.toCharArray()) {
+			if(ch == '\n') {
 				lineFeedCount++;
 				continue;
 			}
-			else if(ch == '\r'){
+			else if(ch == '\r') {
 				continue;
 			}
 			shader.loadColors(scene.brightness, textField.monochrome, true, textField.charColors[charSlot + lineFeedCount]);
@@ -86,7 +86,7 @@ public class BatchRender{
 		}
 		vertices.clear();
 	}
-	private void drawTextureRegion(float x, float y, Glyph glyph){
+	private void drawTextureRegion(float x, float y, Glyph glyph) {
 		float fontWidth = (float)font.getFontWidth();
 		float fontHeight = (float)font.getFontHeight();
 		float x1 = x;
@@ -104,7 +104,7 @@ public class BatchRender{
 		vertices.put(x2).put(y2).put(s2).put(t2);
 		vertices.put(x1).put(y2).put(s1).put(t2);
 	}
-	public void dispose(){
+	public void dispose() {
 		MemoryUtil.memFree(vertices);
 		glDeleteBuffers(vbo);
 		glDeleteVertexArrays(vao);

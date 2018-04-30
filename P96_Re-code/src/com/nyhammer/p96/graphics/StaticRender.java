@@ -8,14 +8,14 @@ import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.graphics.shading.shaders.S96;
 import com.nyhammer.p96.structure.Scene;
 
-public class StaticRender{
-	public void prepareModel(Model model){
+public class StaticRender {
+	public void prepareModel(Model model) {
 		model.bind();
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glActiveTexture(GL_TEXTURE0);
 	}
-	public void render(S96 shader, Scene scene, ModelEntity entity){
+	public void render(S96 shader, Scene scene, ModelEntity entity) {
 		glBindTexture(GL_TEXTURE_2D, entity.texture.getTexture());
 		shader.loadTextureInfo(entity.texture.getHorizontalCount(), entity.texture.getVerticalCount(), entity.texture.getOffsetX(), entity.texture.getOffsetY());
 		shader.loadTransformation(scene.position, entity.position, entity.angle, entity.scale);

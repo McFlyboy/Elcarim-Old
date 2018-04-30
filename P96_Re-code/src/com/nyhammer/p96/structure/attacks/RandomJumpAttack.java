@@ -11,12 +11,12 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class RandomJumpAttack extends Attack{
+public class RandomJumpAttack extends Attack {
 	private TargetTimer delayTimer;
 	private boolean delayOver;
 	private boolean started;
-	public RandomJumpAttack(List<Bullet> sceneBullets, Timer baseTimer){
-		super.patterns = new BulletPattern[]{
+	public RandomJumpAttack(List<Bullet> sceneBullets, Timer baseTimer) {
+		super.patterns = new BulletPattern[] {
 				new JumpPattern(sceneBullets, 0.8f, 0.4f),
 				new RandomPattern(sceneBullets, 0.8f, 0.25f, baseTimer, 0.05f, false)
 		};
@@ -25,17 +25,17 @@ public class RandomJumpAttack extends Attack{
 		started = false;
 	}
 	@Override
-	public void update(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition){
-		if(!started){
+	public void update(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition) {
+		if(!started) {
 			delayTimer.resume();
 			started = true;
 		}
 		patterns[0].update(deltaTime, sourcePosition, targetPosition);
-		if(delayTimer.targetReached()){
+		if(delayTimer.targetReached()) {
 			delayOver = true;
 			delayTimer.reset();
 		}
-		if(delayOver){
+		if(delayOver) {
 			patterns[1].update(deltaTime, sourcePosition, targetPosition);
 		}
 	}

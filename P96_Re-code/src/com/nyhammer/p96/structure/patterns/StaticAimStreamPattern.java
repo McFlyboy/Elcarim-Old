@@ -9,13 +9,13 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class StaticAimStreamPattern extends BulletPattern{
+public class StaticAimStreamPattern extends BulletPattern {
 	private TargetTimer streamIntervalTimer;
 	private TargetTimer bulletIntervalTimer;
 	private final int bulletsPerStream;
 	private int bulletCount;
 	private boolean streaming;
-	public StaticAimStreamPattern(List<Bullet> levelBullets, float speed, float size, Timer baseTimer, float streamInterval, float bulletInterval, int bulletsPerStream){
+	public StaticAimStreamPattern(List<Bullet> levelBullets, float speed, float size, Timer baseTimer, float streamInterval, float bulletInterval, int bulletsPerStream) {
 		super(levelBullets, speed, size);
 		streamIntervalTimer = new TargetTimer(baseTimer, streamInterval);
 		bulletIntervalTimer = new TargetTimer(baseTimer, bulletInterval);
@@ -24,17 +24,17 @@ public class StaticAimStreamPattern extends BulletPattern{
 		streaming = false;
 	}
 	@Override
-	protected void startSpecifics(){
+	protected void startSpecifics() {
 		streamIntervalTimer.resume();
 	}
 	@Override
-	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed){
-		if(streaming){
-			if(bulletIntervalTimer.targetReached()){
+	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed) {
+		if(streaming) {
+			if(bulletIntervalTimer.targetReached()) {
 				addBullet(sourcePosition, targetPosition.getSub(sourcePosition).getNormalize().getMul(speed), ResourceStorage.getTexture("bulletGreenTex"));
 				bulletCount++;
 			}
-			if(bulletCount == bulletsPerStream){
+			if(bulletCount == bulletsPerStream) {
 				streaming = false;
 				bulletCount = 0;
 				bulletIntervalTimer.reset();
@@ -42,8 +42,8 @@ public class StaticAimStreamPattern extends BulletPattern{
 				streamIntervalTimer.resume();
 			}
 		}
-		else{
-			if(streamIntervalTimer.targetReached()){
+		else {
+			if(streamIntervalTimer.targetReached()) {
 				streaming = true;
 				bulletIntervalTimer.resume();
 			}

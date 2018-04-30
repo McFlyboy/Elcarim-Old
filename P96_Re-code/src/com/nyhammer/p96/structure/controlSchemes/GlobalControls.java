@@ -4,12 +4,12 @@ import com.nyhammer.p96.input.Gamepad;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.structure.ControlScheme;
 
-public class GlobalControls extends ControlScheme{
+public class GlobalControls extends ControlScheme {
 	private int pause;
 	private int fps;
 	private int fullscreen;
 	private int init;
-	public GlobalControls(){
+	public GlobalControls() {
 		/** key/button-inputs */
 		super.inputs.add(new Input(Keyboard.KEY_ESCAPE, Gamepad.BUTTON_START));
 		pause = super.assignInputIndex();
@@ -20,16 +20,16 @@ public class GlobalControls extends ControlScheme{
 		super.inputs.add(new Input(Keyboard.KEY_Z, Gamepad.BUTTON_A));
 		init = super.assignInputIndex();
 	}
-	public int getPause(){
+	public int getPause() {
 		return pause;
 	}
-	public int getFPS(){
+	public int getFPS() {
 		return fps;
 	}
-	public int getFullscreen(){
+	public int getFullscreen() {
 		return fullscreen;
 	}
-	public int getInit(){
+	public int getInit() {
 		return init;
 	}
 }

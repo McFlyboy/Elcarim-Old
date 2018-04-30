@@ -10,61 +10,61 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class ErrorHandler{
+public class ErrorHandler {
 	private static Toolkit toolkit;
 	private static File logFile;
 	private static PrintStream stream;
-	public static PrintStream getStream(){
+	public static PrintStream getStream() {
 		return stream;
 	}
-	public static void init(){
+	public static void init() {
 		toolkit = Toolkit.getDefaultToolkit();
 		logFile = new File("Errorlog.txt");
-		if(!logFile.exists()){
-			try{
+		if(!logFile.exists()) {
+			try {
 				logFile.createNewFile();
 			}
-			catch(IOException e){
+			catch(IOException e) {
 				System.err.println("Failed to create the logfile!!!");
 				e.printStackTrace();
 				toolkit.beep();
 				System.exit(1);
 			}
 		}
-		try{
+		try {
 			stream = new PrintStream(logFile);
 		}
-		catch(FileNotFoundException e){
+		catch(FileNotFoundException e) {
 			System.err.println("Failed to locate the logfile!!!");
 			e.printStackTrace();
 			toolkit.beep();
 			System.exit(1);
 		}
-		try{
+		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 		catch(ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e){
+				| UnsupportedLookAndFeelException e) {
 			printError("Could not set the proper Look-and-feel!", true);
 			printError(e);
 		}
 	}
-	public static void printError(String error, boolean shouldPopUp){
+	public static void printError(String error, boolean shouldPopUp) {
 		System.err.println(error);
 		stream.println(error);
-		if(shouldPopUp){
+		if(shouldPopUp) {
 			toolkit.beep();
 			JOptionPane.showMessageDialog(null, error + "\nCheck logfile for more info");
 		}
 	}
-	public static void printError(String error){
+	public static void printError(String error) {
 		printError(error, false);
 	}
-	public static void printError(Exception e){
+	public static void printError(Exception e) {
 		e.printStackTrace(stream);
 		e.printStackTrace();
 	}
-	public static void terminate(){
+	public static void terminate() {
 		stream.flush();
 		stream.close();
 	}

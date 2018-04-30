@@ -10,7 +10,7 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public abstract class Enemy extends ModelEntity{
+public abstract class Enemy extends ModelEntity {
 	public CC cc;
 	public int lives;
 	public TargetTimer hitTimer;
@@ -22,7 +22,7 @@ public abstract class Enemy extends ModelEntity{
 	protected double positionedTime;
 	protected boolean positioned;
 	public int state;
-	public Enemy(Timer baseTimer, int lives){
+	public Enemy(Timer baseTimer, int lives) {
 		super();
 		cc = new CC(position, 1f);
 		this.lives = lives;
@@ -35,7 +35,7 @@ public abstract class Enemy extends ModelEntity{
 		positioned = false;
 		state = 0;
 	}
-	public void addAttack(Attack attack){
+	public void addAttack(Attack attack) {
 		attacks.add(attack);
 	}
 	public abstract void update(double time, float deltaTime, Vector2f playerPosition);

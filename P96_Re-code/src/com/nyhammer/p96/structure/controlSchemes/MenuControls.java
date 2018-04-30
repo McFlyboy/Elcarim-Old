@@ -4,14 +4,14 @@ import com.nyhammer.p96.input.Gamepad;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.structure.ControlScheme;
 
-public class MenuControls extends ControlScheme{
+public class MenuControls extends ControlScheme {
 	private int confirm;
 	private int cancel;
 	private int left;
 	private int right;
 	private int up;
 	private int down;
-	public MenuControls(){
+	public MenuControls() {
 		/** key/button-inputs */
 		super.inputs.add(new Input(Keyboard.KEY_Z, Gamepad.BUTTON_A));
 		confirm = super.assignInputIndex();
@@ -26,22 +26,22 @@ public class MenuControls extends ControlScheme{
 		super.inputs.add(new Input(Keyboard.KEY_DOWN, Gamepad.BUTTON_DPAD_DOWN));
 		down = super.assignInputIndex();
 	}
-	public int getConfirm(){
+	public int getConfirm() {
 		return confirm;
 	}
-	public int getCancel(){
+	public int getCancel() {
 		return cancel;
 	}
-	public int getLeft(){
+	public int getLeft() {
 		return left;
 	}
-	public int getRight(){
+	public int getRight() {
 		return right;
 	}
-	public int getUp(){
+	public int getUp() {
 		return up;
 	}
-	public int getDown(){
+	public int getDown() {
 		return down;
 	}
 }

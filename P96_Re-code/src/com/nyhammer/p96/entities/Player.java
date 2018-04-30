@@ -10,7 +10,7 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class Player extends ModelEntity{
+public class Player extends ModelEntity {
 	public Animation[] animations;
 	public float walkingDistance;
 	private TargetTimer hitTimer;
@@ -27,7 +27,7 @@ public class Player extends ModelEntity{
 	public boolean invinsible;
 	private TargetTimer invinsibilityTimer;
 	private TargetTimer visibilityTimer;
-	public Player(Timer timer){
+	public Player(Timer timer) {
 		super();
 		scale = new Vector2f(0.05f, 0.05f);
 		position.y = -1f + scale.y;
@@ -35,7 +35,7 @@ public class Player extends ModelEntity{
 		lastXDirection = 1f;
 		cc = new CC(position, 0.035f);
 		hitCC = new CC(position, 0.07f);
-		animations = new Animation[]{
+		animations = new Animation[] {
 				new Animation(0, 0, 1),
 				new Animation(0, 1, 2)
 		};
@@ -46,11 +46,11 @@ public class Player extends ModelEntity{
 		lives = 4;
 		miracles = 2;
 	}
-	public boolean update(float deltaTime){
-		if(!alive){
+	public boolean update(float deltaTime) {
+		if(!alive) {
 			direction.y -= 5f * deltaTime;
-			if(position.y < -2f){
-				if(lives > 0){
+			if(position.y < -2f) {
+				if(lives > 0) {
 					lives--;
 					miracles = 2;
 					direction.y = 0f;
@@ -62,20 +62,20 @@ public class Player extends ModelEntity{
 					invinsibilityTimer.resume();
 					visibilityTimer.resume();
 				}
-				else{
+				else {
 					return true;
 				}
 			}
 		}
-		if(visibilityTimer.targetReached()){
+		if(visibilityTimer.targetReached()) {
 			visible = !visible;
 		}
-		if(invinsibilityTimer.targetReached()){
-			if(invinsibilityTimer.getTargetTime() == 2.0){
+		if(invinsibilityTimer.targetReached()) {
+			if(invinsibilityTimer.getTargetTime() == 2.0) {
 				invinsibilityTimer.setTargetTime(1.0);
 				visibilityTimer.setTargetTime(0.2 / 3.0);
 			}
-			else{
+			else {
 				invinsible = false;
 				visible = true;
 				invinsibilityTimer.reset();
@@ -84,42 +84,42 @@ public class Player extends ModelEntity{
 				visibilityTimer.setTargetTime(0.1 / 3.0);
 			}
 		}
-		if(hitTimer.targetReached()){
+		if(hitTimer.targetReached()) {
 			hitTimer.reset();
 			hitting = false;
 			animations[0].setTextureRow(0);
 			animations[1].setTextureRow(0);
 		}
-		if(jumping){
-			if(holdJumping){
+		if(jumping) {
+			if(holdJumping) {
 				direction.y -= 8f * deltaTime;
 			}
-			else{
+			else {
 				direction.y -= 15f * deltaTime;
 			}
 		}
 		position.add(direction.getMul(deltaTime));
-		if(direction.x != 0f){
+		if(direction.x != 0f) {
 			lastXDirection = direction.x;
 		}
-		if(alive){
-			if(Math.abs(position.x) > GameWindow.ASPECT_RATIO - scale.x){
+		if(alive) {
+			if(Math.abs(position.x) > GameWindow.ASPECT_RATIO - scale.x) {
 				position.x *= (GameWindow.ASPECT_RATIO - scale.x) / Math.abs(position.x);
 				direction.x = 0f;
 			}
 			float xMovement = direction.x * deltaTime * 1.1f;
-			if(jumping){
+			if(jumping) {
 				xMovement = 0f;
 			}
-			if(xMovement != 0f){
+			if(xMovement != 0f) {
 				walkingDistance += xMovement;
 				texture.setOffset(animations[1].getFrame((int)(walkingDistance * 10)), animations[1].getTextureRow());
 			}
-			else{
+			else {
 				walkingDistance = 0f;
 				texture.setOffset(animations[0].getFrame(0), animations[0].getTextureRow());
 			}
-			if(jumping && position.y < -1f + scale.y){
+			if(jumping && position.y < -1f + scale.y) {
 				position.y = -1f + scale.y;
 				direction.y = 0f;
 				jumping = false;
@@ -127,23 +127,23 @@ public class Player extends ModelEntity{
 		}
 		return false;
 	}
-	public void walk(float movement){
+	public void walk(float movement) {
 		direction.x = movement;
 	}
-	public void jump(){
-		if(jumping){
+	public void jump() {
+		if(jumping) {
 			return;
 		}
 		jumping = true;
 		direction.y = 2.3f;
 	}
-	public void hit(){
+	public void hit() {
 		hitting = true;
 		animations[0].setTextureRow(1);
 		animations[1].setTextureRow(1);
 		hitTimer.resume();
 	}
-	public void shoot(List<Shot> shots){
+	public void shoot(List<Shot> shots) {
 		Shot shot = new Shot();
 		shot.model = ResourceStorage.getModel("square");
 		shot.texture = ResourceStorage.getTexture("shotTex");
@@ -151,8 +151,8 @@ public class Player extends ModelEntity{
 		shot.position.y = position.y;
 		shots.add(shot);
 	}
-	public void die(){
-		if(!alive || invinsible){
+	public void die() {
+		if(!alive || invinsible) {
 			return;
 		}
 		alive = false;

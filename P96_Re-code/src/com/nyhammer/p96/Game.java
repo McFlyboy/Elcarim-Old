@@ -16,35 +16,35 @@ import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Time;
 
-public class Main{
+public class Game {
 	public static final int VERSION_MAJOR = 0;
 	public static final int VERSION_MINOR = 3;
-	public static final int VERSION_REVISION = 0;
+	public static final int VERSION_REVISION = 1;
 	public static final String PRE_VERSION_SUFFIX = "a";
-	public static final int VERSION_PATCH = 2;
-	public static final String TITLE = "Project 1996";
+	public static final int VERSION_PATCH = 0;
+	public static final String TITLE = "Project 1996: Elcarim";
 	private DeltaTimer systemDelta;
 	private static final Random RANDOM = new Random();
 	private GlobalScene globalScene;
-	public static String getVersion(){
+	public static String getVersion() {
 		StringBuilder version = new StringBuilder();
 		version.append(String.format("%d.%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, PRE_VERSION_SUFFIX));
 		String patch = String.format("%02d", VERSION_PATCH);
-		if(!patch.equals("00")){
+		if(!patch.equals("00")) {
 			version.append(" - patch: " + patch);
 		}
 		return version.toString();
 	}
-	public static Random getRandom(){
+	public static Random getRandom() {
 		return RANDOM;
 	}
-	private void start(){
+	private void start() {
 		ErrorHandler.init();
-		try{
+		try {
 			Settings.init();
 			Settings.readFromFile();
 			Settings.writeToFile();
-			if(!Framework.init()){
+			if(!Framework.init()) {
 				stop();
 			}
 			boolean fullscreen = Settings.getValue("fullscreen").equals("true");
@@ -66,32 +66,32 @@ public class Main{
 			systemDelta = new DeltaTimer();
 			globalScene.start();
 		}
-		catch(Exception e){
+		catch(Exception e) {
 			ErrorHandler.printError("Error in game-startup!", true);
 			ErrorHandler.printError(e);
 			stop();
 		}
 		run();
 	}
-	private void run(){
+	private void run() {
 		double targetFrameTime = 1.0 / GameWindow.getMonitorRefreshRate();
 		double renderTimeRemaining = 0.0;
-		while(!GameWindow.shouldClose()){
+		while(!GameWindow.shouldClose()) {
 			boolean renderReady = false;
 			update();
-			if(renderTimeRemaining <= 0.0){
+			if(renderTimeRemaining <= 0.0) {
 				renderReady = true;
 				renderTimeRemaining += targetFrameTime;
 			}
 			renderTimeRemaining -= systemDelta.getTime();
-			if(renderReady){
+			if(renderReady) {
 				render();
 			}
-			else{
-				try{
+			else {
+				try {
 					Thread.sleep(1L);
 				}
-				catch(InterruptedException e){
+				catch(InterruptedException e) {
 					ErrorHandler.printError("Error caused by thread being unable to sleep!", false);
 					ErrorHandler.printError(e);
 				}
@@ -99,18 +99,18 @@ public class Main{
 		}
 		stop();
 	}
-	private void update(){
+	private void update() {
 		Gamepad.update();
 		globalScene.update();
 	}
-	private void render(){
+	private void render() {
 		globalScene.render();
 		Render.renderQueue();
 		GameWindow.update();
 		Time.updateFPS();
 	}
-	private void stop(){
-		try{
+	private void stop() {
+		try {
 			globalScene.dispose();
 			ResourceStorage.disposeSound("bootingSound");
 			ResourceStorage.disposeTextFont("font");
@@ -121,7 +121,7 @@ public class Main{
 			GameWindow.destroy();
 			Framework.terminate();
 		}
-		catch(Exception e){
+		catch(Exception e) {
 			ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
 			ErrorHandler.printError("Error in game-shutdown!");
 			ErrorHandler.printError(e);
@@ -129,7 +129,7 @@ public class Main{
 		ErrorHandler.terminate();
 		System.exit(0);
 	}
-	public static void main(String[] args){
-		new Main().start();
+	public static void main(String[] args) {
+		new Game().start();
 	}
 }

@@ -4,7 +4,7 @@ import com.nyhammer.p96.input.Gamepad;
 import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.structure.ControlScheme;
 
-public class GameplayControls extends ControlScheme{
+public class GameplayControls extends ControlScheme {
 	private int shootLeft;
 	private int shootRight;
 	private int hit;
@@ -17,7 +17,7 @@ public class GameplayControls extends ControlScheme{
 	
 	private int moveAxisX;
 	private int moveAxisY;
-	public GameplayControls(){
+	public GameplayControls() {
 		/** key/button-inputs */
 		super.inputs.add(new Input(Keyboard.KEY_Z, Gamepad.BUTTON_LB));
 		shootLeft = super.assignInputIndex();
@@ -44,37 +44,37 @@ public class GameplayControls extends ControlScheme{
 		super.axisInputs.add(new AxisInput(Gamepad.AXIS_LY));
 		moveAxisY = super.assignAxisInputIndex();
 	}
-	public int getShootLeft(){
+	public int getShootLeft() {
 		return shootLeft;
 	}
-	public int getShootRight(){
+	public int getShootRight() {
 		return shootRight;
 	}
-	public int getHit(){
+	public int getHit() {
 		return hit;
 	}
-	public int getMiracle(){
+	public int getMiracle() {
 		return miracle;
 	}
-	public int getJump(){
+	public int getJump() {
 		return jump;
 	}
-	public int getMoveLeft(){
+	public int getMoveLeft() {
 		return moveLeft;
 	}
-	public int getMoveRight(){
+	public int getMoveRight() {
 		return moveRight;
 	}
-	public int getMoveUp(){
+	public int getMoveUp() {
 		return moveUp;
 	}
-	public int getMoveDown(){
+	public int getMoveDown() {
 		return moveDown;
 	}
-	public int getMoveAxisX(){
+	public int getMoveAxisX() {
 		return moveAxisX;
 	}
-	public int getMoveAxisY(){
+	public int getMoveAxisY() {
 		return moveAxisY;
 	}
 }

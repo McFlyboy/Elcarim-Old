@@ -3,7 +3,7 @@ package com.nyhammer.p96.structure.levels;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nyhammer.p96.Main;
+import com.nyhammer.p96.Game;
 import com.nyhammer.p96.audio.Music;
 import com.nyhammer.p96.entities.Enemy;
 import com.nyhammer.p96.entities.LuckTodder;
@@ -33,7 +33,7 @@ import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.TargetTimer;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class Level1 extends Level{
+public class Level1 extends Level {
 	private TextField enemyInfo;
 	private TextField enemyInfoTitle;
 	private TextField timerText;
@@ -43,17 +43,17 @@ public class Level1 extends Level{
 	private boolean bossActive;
 	private int bossWaveIndex;
 	private TargetTimer attackTimer;
-	public Level1(Timer baseTimer){
+	public Level1(Timer baseTimer) {
 		super(baseTimer);
 	}
-	public int getRandomAttackIndex(){
+	public int getRandomAttackIndex() {
 		return random;
 	}
-	public boolean shouldBallBeInactive(){
+	public boolean shouldBallBeInactive() {
 		return ballInactive;
 	}
 	@Override
-	protected void init(Timer baseTimer){
+	protected void init(Timer baseTimer) {
 		ballInactive = false;
 		bossActive = false;
 		bossWaveIndex = 7;
@@ -61,7 +61,7 @@ public class Level1 extends Level{
 		Texture bgTex = new Texture("background/background.png");
 		ResourceStorage.add("bgTex", bgTex);
 		super.backgrounds.add(new ModelEntity(ResourceStorage.getModel("square"), bgTex, new Vector2f(), new Vector2f(GameWindow.ASPECT_RATIO, 1f), 0f));
-		Music bgm = new Music(new String[]{
+		Music bgm = new Music(new String[] {
 				"P96_1_intro.ogg",
 				"P96_1_main.ogg",
 				"P96_1_Miracle_intro.ogg",
@@ -72,7 +72,7 @@ public class Level1 extends Level{
 		bgm.setNextPart(1, 4);
 		ResourceStorage.add("bgm", bgm);
 		super.bgms.add(bgm);
-		Music bossBGM = new Music(new String[]{
+		Music bossBGM = new Music(new String[] {
 				"P96_2_intro.ogg",
 				"P96_2_main.ogg",
 				"P96_2_Miracle_intro.ogg",
@@ -103,14 +103,14 @@ public class Level1 extends Level{
 		timerTextInfo.position.y = timerText.position.y + (timerText.getHeight() + timerTextInfo.getHeight()) / 2f;
 	}
 	@Override
-	protected void addWaves(Timer baseTimer){
+	protected void addWaves(Timer baseTimer) {
 		Todder todder1 = new Todder(baseTimer);
 		todder1.position.y = 1.7f;
 		todder1.position.x = 1.3f;
 		todder1.properPosition.y = 0.5f;
 		todder1.properPosition.x = 0.3f;
 		todder1.attacks.add(new SimpleAttack());
-		todder1.attacks.get(0).patterns = new BulletPattern[]{
+		todder1.attacks.get(0).patterns = new BulletPattern[] {
 				new RandomPattern(bullets, 0.5f, 0.3f, baseTimer, 0.5f, false)
 		};
 		List<Enemy> enemyWave1 = new ArrayList<Enemy>();
@@ -123,7 +123,7 @@ public class Level1 extends Level{
 		todder2.properPosition.y = 0.5f;
 		todder2.properPosition.x = -0.7f;
 		todder2.attacks.add(new SimpleAttack());
-		todder2.attacks.get(0).patterns = new BulletPattern[]{
+		todder2.attacks.get(0).patterns = new BulletPattern[] {
 				new RandomPattern(bullets, 0.5f, 0.3f, baseTimer, 0.8f, false),
 				new AimPattern(bullets, 0.4f, 0.3f, baseTimer, 1.6f)
 		};
@@ -133,7 +133,7 @@ public class Level1 extends Level{
 		todder3.properPosition.y = 0.5f;
 		todder3.properPosition.x = 0.7f;
 		todder3.attacks.add(new SimpleAttack());
-		todder3.attacks.get(0).patterns = new BulletPattern[]{
+		todder3.attacks.get(0).patterns = new BulletPattern[] {
 				new RandomPattern(bullets, 0.5f, 0.3f, baseTimer, 0.8f, false),
 				new CirclePattern(bullets, 0.4f, 0.4f, baseTimer, 1.5f, 10)
 		};
@@ -148,7 +148,7 @@ public class Level1 extends Level{
 		todder4.properPosition.y = 0.5f;
 		todder4.properPosition.x = 0f;
 		todder4.attacks.add(new SimpleAttack());
-		todder4.attacks.get(0).patterns = new BulletPattern[]{
+		todder4.attacks.get(0).patterns = new BulletPattern[] {
 				new HomingRandomPattern(bullets, 0.75f, 0.35f, baseTimer, 0.6f, 85f)
 		};
 		List<Enemy> enemyWave3 = new ArrayList<Enemy>();
@@ -161,7 +161,7 @@ public class Level1 extends Level{
 		todder5.properPosition.y = 0.5f;
 		todder5.properPosition.x = 0.7f;
 		todder5.attacks.add(new SimpleAttack());
-		todder5.attacks.get(0).patterns = new BulletPattern[]{
+		todder5.attacks.get(0).patterns = new BulletPattern[] {
 				new AimHalfCirclePattern(bullets, 0.7f, 0.35f, baseTimer, 1f, 4),
 				new DelayAimPattern(bullets, 2f, 0.35f, baseTimer, 2f, 1.003f)
 		};
@@ -171,7 +171,7 @@ public class Level1 extends Level{
 		todder6.properPosition.y = 0.5f;
 		todder6.properPosition.x = -0.7f;
 		todder6.attacks.add(new SimpleAttack());
-		todder6.attacks.get(0).patterns = new BulletPattern[]{
+		todder6.attacks.get(0).patterns = new BulletPattern[] {
 				new AimHalfCirclePattern(bullets, 0.7f, 0.35f, baseTimer, 0.8f, 5)
 		};
 		List<Enemy> enemyWave4 = new ArrayList<Enemy>();
@@ -185,7 +185,7 @@ public class Level1 extends Level{
 		todder7.properPosition.y = 0.65f;
 		todder7.properPosition.x = 0f;
 		todder7.attacks.add(new SimpleAttack());
-		todder7.attacks.get(0).patterns = new BulletPattern[]{
+		todder7.attacks.get(0).patterns = new BulletPattern[] {
 				new HomingRandomPattern(bullets, 0.6f, 0.3f, baseTimer, 1f, 60)
 		};
 		Todder todder8 = new Todder(baseTimer);
@@ -194,7 +194,7 @@ public class Level1 extends Level{
 		todder8.properPosition.y = 0.5f;
 		todder8.properPosition.x = -0.8f;
 		todder8.attacks.add(new SimpleAttack());
-		todder8.attacks.get(0).patterns = new BulletPattern[]{
+		todder8.attacks.get(0).patterns = new BulletPattern[] {
 				new StaticAimStreamPattern(bullets, 1.5f, 0.2f, baseTimer, 0.8f, 0.04f, 5)
 		};
 		Todder todder9 = new Todder(baseTimer);
@@ -203,7 +203,7 @@ public class Level1 extends Level{
 		todder9.properPosition.y = 0.5f;
 		todder9.properPosition.x = 0.8f;
 		todder9.attacks.add(new SimpleAttack());
-		todder9.attacks.get(0).patterns = new BulletPattern[]{
+		todder9.attacks.get(0).patterns = new BulletPattern[] {
 				new AimHalfCirclePattern(bullets, 1.2f, 0.3f, baseTimer, 1f, 3)
 		};
 		List<Enemy> enemyWave5 = new ArrayList<Enemy>();
@@ -218,7 +218,7 @@ public class Level1 extends Level{
 		todder10.properPosition.y = 0.65f;
 		todder10.properPosition.x = 0f;
 		todder10.attacks.add(new SimpleAttack());
-		todder10.attacks.get(0).patterns = new BulletPattern[]{
+		todder10.attacks.get(0).patterns = new BulletPattern[] {
 				new CircleBeamPattern(bullets, 1f, 0.4f, baseTimer, 0.05f, 27f),
 				new CircleBeamPattern(bullets, 1f, 0.2f, baseTimer, 0.025f, -54f)
 		};
@@ -238,45 +238,45 @@ public class Level1 extends Level{
 		spadeTodder.properPosition.y = 0.55f;
 		spadeTodder.properPosition.x = 0.75f;
 		spadeTodder.attacks.add(new SimpleAttack());
-		random = Main.getRandom().nextInt(5);
-		switch(random){
+		random = Game.getRandom().nextInt(5);
+		switch(random) {
 		case 0:
-			cloverTodder.attacks.get(0).patterns = new BulletPattern[]{
+			cloverTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new AimPattern(bullets, 1.3f, 0.3f, baseTimer, 0.5f)
 			};
-			spadeTodder.attacks.get(0).patterns = new BulletPattern[]{
+			spadeTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new DelayAimPattern(bullets, 1.3f, 0.3f, baseTimer, 0.5f, 1.005f)
 			};
 			break;
 		case 1:
-			cloverTodder.attacks.get(0).patterns = new BulletPattern[]{
+			cloverTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new AimHalfCirclePattern(bullets, 0.8f, 0.4f, baseTimer, 1f, 7)
 			};
-			spadeTodder.attacks.get(0).patterns = new BulletPattern[]{
+			spadeTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new CirclePattern(bullets, 1f, 0.4f, baseTimer, 0.6f, 15)
 			};
 			break;
 		case 2:
-			cloverTodder.attacks.get(0).patterns = new BulletPattern[]{
+			cloverTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new HomingRandomPattern(bullets, 1f, 0.225f, baseTimer, 0.8f, 100)
 			};
-			spadeTodder.attacks.get(0).patterns = new BulletPattern[]{
+			spadeTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new RandomPattern(bullets, 0.75f, 0.3f, baseTimer, 0.2f, false)
 			};
 			break;
 		case 3:
-			cloverTodder.attacks.get(0).patterns = new BulletPattern[]{
+			cloverTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new RandomPattern(bullets, 1f, 0.3f, baseTimer, 0.1f, false)
 			};
-			spadeTodder.attacks.get(0).patterns = new BulletPattern[]{
+			spadeTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new DelayAimPattern(bullets, 2.5f, 1.2f, baseTimer, 4f, 1.01f)
 			};
 			break;
 		case 4:
-			cloverTodder.attacks.get(0).patterns = new BulletPattern[]{
+			cloverTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new StaticAimStreamPattern(bullets, 1.5f, 0.3f, baseTimer, 0.5f, 0.05f, 5)
 			};
-			spadeTodder.attacks.get(0).patterns = new BulletPattern[]{
+			spadeTodder.attacks.get(0).patterns = new BulletPattern[] {
 					new AimHalfCirclePattern(bullets, 1.5f, 0.3f, baseTimer, 0.5f, 2)
 			};
 			break;
@@ -292,22 +292,22 @@ public class Level1 extends Level{
 		yargKrad.properPosition.y = 0.65f;
 		yargKrad.properPosition.x = 0f;
 		yargKrad.attacks.add(new SimpleAttack());
-		yargKrad.attacks.get(0).patterns = new BulletPattern[]{
+		yargKrad.attacks.get(0).patterns = new BulletPattern[] {
 				new CirclePattern(bullets, 1.2f, 0.8f, baseTimer, 2f, 15),
 				new CircleBeamPattern(bullets, 1f, 0.2f, baseTimer, 0.05f, -54f)
 		};
 		yargKrad.attacks.add(new RandomJumpAttack(bullets, baseTimer));
 		yargKrad.attacks.add(new SimpleAttack());
-		yargKrad.attacks.get(2).patterns = new BulletPattern[]{
+		yargKrad.attacks.get(2).patterns = new BulletPattern[] {
 				new RandomPattern(bullets, 0.2f, 0.2f, baseTimer, 0.25f, true),
 				new StaticAimStreamPattern(bullets, 1.2f, 0.25f, baseTimer, 1f, 0.05f, 60)
 		};
 		yargKrad.attacks.add(new SimpleAttack());
-		yargKrad.attacks.get(3).patterns = new BulletPattern[]{
+		yargKrad.attacks.get(3).patterns = new BulletPattern[] {
 				new HomingRandomPattern(bullets, 1.2f, 0.25f, baseTimer, 0.4f, 80)
 		};
 		yargKrad.attacks.add(new SimpleAttack());
-		yargKrad.attacks.get(4).patterns = new BulletPattern[]{
+		yargKrad.attacks.get(4).patterns = new BulletPattern[] {
 				new SpinPattern(bullets, 1f, 0.25f, baseTimer, 0.125f),
 				new CircleBeamPattern(bullets, 0.5f, 0.25f, baseTimer, 0.1f, -26)
 		};
@@ -316,42 +316,42 @@ public class Level1 extends Level{
 		super.enemyWaves.add(bossWave);
 	}
 	@Override
-	protected void updateSpecifics(){
-		if(super.bgmIndex == 0 && super.waveIndex == bossWaveIndex){
+	protected void updateSpecifics() {
+		if(super.bgmIndex == 0 && super.waveIndex == bossWaveIndex) {
 			super.getCurrentMusic().stop();
 			super.bgmIndex++;
 			super.clearBullets();
 		}
-		else if(!isCompleted() && !bossActive){
-			if(super.bgmIndex == 1 && getCurrentWave().get(0).position.y < 1f){
+		else if(!isCompleted() && !bossActive) {
+			if(super.bgmIndex == 1 && getCurrentWave().get(0).position.y < 1f) {
 				super.getCurrentMusic().play();
 				bossActive = true;
 			}
 		}
-		else if(getCurrentWave().get(0).state == 1){
+		else if(getCurrentWave().get(0).state == 1) {
 			if(!ballInactive){
 				super.clearBullets();
 			}
 			ballInactive = true;
 			attackTimer.resume();
-			if(attackTimer.targetReached()){
+			if(attackTimer.targetReached()) {
 				attackTimer.reset();
 				super.clearBullets();
 				getCurrentWave().get(0).state = 2;
 			}
 		}
-		else if(getCurrentWave().get(0).state == 3){
+		else if(getCurrentWave().get(0).state == 3) {
 			ballInactive = false;
 		}
 	}
 	@Override
-	public void renderSpesifics(){
-		if(!super.isCompleted()){
-			if(super.waveIndex == bossWaveIndex){
+	public void renderSpesifics() {
+		if(!super.isCompleted()) {
+			if(super.waveIndex == bossWaveIndex) {
 				enemyInfo.setText(super.getBossString());
 				enemyInfoTitle.setText("-Boss-");
 			}
-			else{
+			else {
 				enemyInfo.setText(super.getEnemyCountString());
 				enemyInfoTitle.setText("-Enemies-");
 			}
@@ -361,20 +361,20 @@ public class Level1 extends Level{
 			enemyInfo.position.y = 1f - enemyInfo.getHeight() / 2f - enemyInfoTitle.getHeight();
 			enemyInfo.position.x = -GameWindow.ASPECT_RATIO + enemyInfo.getWidth() / 2f;
 			Render.addToQueue(enemyInfo);
-			if(!isCompleted()){
-				if(super.waveIndex == bossWaveIndex && getCurrentWave().get(0).state == 1){
+			if(!isCompleted()) {
+				if(super.waveIndex == bossWaveIndex && getCurrentWave().get(0).state == 1) {
 					double attackTime = 30.0 - attackTimer.getTime();
-					if(attackTime < 3.0){
+					if(attackTime < 3.0) {
 						Color3f color = new Color3f(1f, 0f, 0f);
 						timerText.mainColor = color;
 						timerTextInfo.setColors(color);
 					}
-					else if(attackTime < 5.0){
+					else if(attackTime < 5.0) {
 						Color3f color = new Color3f(1f, 0.5f, 0f);
 						timerText.mainColor = color;
 						timerTextInfo.setColors(color);
 					}
-					else if(attackTime < 10.0){
+					else if(attackTime < 10.0) {
 						Color3f color = new Color3f(1f, 1f, 0f);
 						timerText.mainColor = color;
 						timerTextInfo.setColors(color);
@@ -387,7 +387,7 @@ public class Level1 extends Level{
 		}
 	}
 	@Override
-	public void dispose(){
+	public void dispose() {
 		ResourceStorage.disposeTexture("bgTex");
 		ResourceStorage.disposeMusic("bgm");
 		ResourceStorage.disposeMusic("bossBGM");

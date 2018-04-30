@@ -1,6 +1,6 @@
 package com.nyhammer.p96.structure.scenes;
 
-import com.nyhammer.p96.Main;
+import com.nyhammer.p96.Game;
 import com.nyhammer.p96.entities.TextField;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.structure.Menu;
@@ -11,7 +11,7 @@ import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Timer;
 
-public class PauseScene extends Scene{
+public class PauseScene extends Scene {
 	private MenuControls controls;
 	private TextField titleText;
 	private TextField versionText;
@@ -23,7 +23,7 @@ public class PauseScene extends Scene{
 	private Menu keyboardMenu;
 	private Menu xboxMenu;
 	private boolean exit;
-	public PauseScene(Timer timer){
+	public PauseScene(Timer timer) {
 		super(timer);
 		controls = new MenuControls();
 		titleText = new TextField();
@@ -33,7 +33,7 @@ public class PauseScene extends Scene{
 		versionText = new TextField();
 		versionText.scale = new Vector2f(0.002f, 0.002f);
 		versionText.mainColor.blue = 0f;
-		versionText.setText("Version " + Main.getVersion());
+		versionText.setText("Version " + Game.getVersion());
 		versionText.position.x = -GameWindow.ASPECT_RATIO + versionText.getWidth() / 2f;
 		versionText.position.y = -1f + versionText.getHeight() / 2f;
 		creatorText = new TextField();
@@ -57,78 +57,78 @@ public class PauseScene extends Scene{
 		xboxMenu = new Menu(this.timer, "Back");
 		xboxMenu.setPosition(new Vector2f(0f, -0.8f));
 	}
-	public boolean shouldExit(){
+	public boolean shouldExit() {
 		boolean answer = exit;
 		exit = false;
 		return answer;
 	}
 	@Override
-	protected void startSpecifics(){
+	protected void startSpecifics() {
 		currentMenu = mainMenu;
 	}
 	@Override
-	protected void updateSpecifics(float deltaTime){
+	protected void updateSpecifics(float deltaTime) {
 		updateControls();
 	}
 	@Override
-	protected void renderSpecifics(){
+	protected void renderSpecifics() {
 		Render.addToQueue(versionText);
 		Render.addToQueue(creatorText);
 		Render.addToQueue(titleText);
-		if(currentMenu == keyboardMenu){
+		if(currentMenu == keyboardMenu) {
 			Render.addToQueue(keyboardControlsText);
 		}
-		else if(currentMenu == xboxMenu){
+		else if(currentMenu == xboxMenu) {
 			Render.addToQueue(xboxControlsText);
 		}
 		currentMenu.render();
 	}
 	@Override
-	protected void stopSpecifics(){
+	protected void stopSpecifics() {
 		xboxMenu.reset();
 		keyboardMenu.reset();
 		mainMenu.reset();
 	}
 	@Override
-	protected void disposeSpecifics(){
+	protected void disposeSpecifics() {
 		
 	}
-	private void updateControls(){
-		if(currentMenu.isOptionSelected()){
+	private void updateControls() {
+		if(currentMenu.isOptionSelected()) {
 			return;
 		}
-		if(controls.isPressed(controls.getConfirm())){
+		if(controls.isPressed(controls.getConfirm())) {
 			currentMenu.setOptionSelected(true);
 			ResourceStorage.getSound("confirmSound").play();
 		}
-		if(controls.isPressed(controls.getCancel())){
-			if(currentMenu == mainMenu){
+		if(controls.isPressed(controls.getCancel())) {
+			if(currentMenu == mainMenu) {
 				exit = true;
 			}
-			else{
+			else {
 				currentMenu.reset();
 				currentMenu = mainMenu;
 				ResourceStorage.getSound("cancelSound").play();
 			}
 		}
-		if(controls.isPressed(controls.getLeft())){
+		if(controls.isPressed(controls.getLeft())) {
 			
 		}
-		if(controls.isPressed(controls.getRight())){
+		if(controls.isPressed(controls.getRight())) {
 			
 		}
-		if(controls.isPressed(controls.getUp())){
+		if(controls.isPressed(controls.getUp())) {
 			currentMenu.scrollUp();
 		}
-		if(controls.isPressed(controls.getDown())){
+		if(controls.isPressed(controls.getDown())) {
 			currentMenu.scrollDown();
 		}
 	}
-	public int checkMenus(){
-		if(currentMenu == mainMenu){
-			if(currentMenu.isOptionContinue()){
+	public int checkMenus() {
+		if(currentMenu == mainMenu) {
+			if(currentMenu.isOptionContinue()) {
 				currentMenu.setOptionSelected(false);
-				switch(mainMenu.getActiveOption()){
+				switch(mainMenu.getActiveOption()) {
 				case 0:
 					currentMenu.setOptionContinue(false);
 					return 1;
@@ -149,10 +149,10 @@ public class PauseScene extends Scene{
 				}
 			}
 		}
-		if(currentMenu == keyboardMenu){
-			if(currentMenu.isOptionContinue()){
+		if(currentMenu == keyboardMenu) {
+			if(currentMenu.isOptionContinue()) {
 				currentMenu.setOptionSelected(false);
-				switch(mainMenu.getActiveOption()){
+				switch(mainMenu.getActiveOption()) {
 				default:
 					currentMenu.setOptionContinue(false);
 					currentMenu = mainMenu;
@@ -160,10 +160,10 @@ public class PauseScene extends Scene{
 				}
 			}
 		}
-		if(currentMenu == xboxMenu){
-			if(currentMenu.isOptionContinue()){
+		if(currentMenu == xboxMenu) {
+			if(currentMenu.isOptionContinue()) {
 				currentMenu.setOptionSelected(false);
-				switch(mainMenu.getActiveOption()){
+				switch(mainMenu.getActiveOption()) {
 				default:
 					currentMenu.setOptionContinue(false);
 					currentMenu = mainMenu;

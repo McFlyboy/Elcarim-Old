@@ -11,11 +11,11 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import com.nyhammer.p96.ErrorHandler;
-import com.nyhammer.p96.Main;
+import com.nyhammer.p96.Game;
 import com.nyhammer.p96.Settings;
 import com.nyhammer.p96.graphics.Render;
 
-public class GameWindow{
+public class GameWindow {
 	public static final float ASPECT_RATIO = 16f / 9f;
 	private static long monitor;
 	private static GLFWVidMode vidMode;
@@ -23,52 +23,52 @@ public class GameWindow{
 	private static int windowWidth;
 	private static int windowHeight;
 	private static boolean vsync;
-	public static long getWindow(){
+	public static long getWindow() {
 		return window;
 	}
-	public static int getMonitorWidth(){
+	public static int getMonitorWidth() {
 		return vidMode.width();
 	}
-	public static int getMonitorHeight(){
+	public static int getMonitorHeight() {
 		return vidMode.height();
 	}
-	public static float getMonitorAspectRatio(){
+	public static float getMonitorAspectRatio() {
 		return (float)vidMode.width() / (float)vidMode.height();
 	}
-	public static int getMonitorRefreshRate(){
+	public static int getMonitorRefreshRate() {
 		return vidMode.refreshRate(); 
 	}
-	public static boolean shouldClose(){
+	public static boolean shouldClose() {
 		return glfwWindowShouldClose(window);
 	}
-	public static boolean isFullscreen(){
+	public static boolean isFullscreen() {
 		return glfwGetWindowMonitor(window) != NULL;
 	}
-	public static void setFullscreen(boolean fullscreen){
+	public static void setFullscreen(boolean fullscreen) {
 		glfwSetWindowMonitor(window, fullscreen ? monitor : NULL, 0, 0, fullscreen ? getMonitorWidth() : 1280, fullscreen ? getMonitorHeight() : 720, fullscreen ? getMonitorRefreshRate() : GLFW_DONT_CARE);
 		setViewPort();
 		String value;
-		if(!fullscreen){
+		if(!fullscreen) {
 			center();
 			value = "false";
 		}
-		else{
+		else {
 			value = "true";
 		}
 		Settings.setValue("fullscreen", value);
 		Settings.writeToFile();
 	}
-	public static boolean isVSync(){
+	public static boolean isVSync() {
 		return vsync;
 	}
-	public static void setVSync(boolean vsync){
+	public static void setVSync(boolean vsync) {
 		GameWindow.vsync = vsync;
 		glfwSwapInterval(vsync ? 1 : 0);
 	}
-	public static void center(){
+	public static void center() {
 		glfwSetWindowPos(window, (getMonitorWidth() - windowWidth) / 2, (getMonitorHeight() - windowHeight) / 2);
 	}
-	public static void setViewPort(){
+	public static void setViewPort() {
 		IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
 		IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
 		glfwGetWindowSize(window, widthBuffer, heightBuffer);
@@ -79,20 +79,20 @@ public class GameWindow{
 		int aspectFixY;
 		int aspectFixWidth;
 		int aspectFixHeight;
-		if(aspectRatio == 16f / 9f){
+		if(aspectRatio == 16f / 9f) {
 			aspectFixX = 0;
 			aspectFixY = 0;
 			aspectFixWidth = width;
 			aspectFixHeight = height;
 		}
-		else if(aspectRatio < 16f / 9f){
+		else if(aspectRatio < 16f / 9f) {
 			int heightOffset = height / 2 - 9 * width / 32;
 			aspectFixX = 0;
 			aspectFixY = heightOffset;
 			aspectFixWidth = width;
 			aspectFixHeight = height - heightOffset * 2;
 		}
-		else{
+		else {
 			int widthOffset = width / 2 - 8 * height / 9;
 			aspectFixX = widthOffset;
 			aspectFixY = 0;
@@ -101,7 +101,7 @@ public class GameWindow{
 		}
 		GL11.glViewport(aspectFixX, aspectFixY, aspectFixWidth, aspectFixHeight);
 	}
-	public static void create(boolean fullscreen) throws Exception{
+	public static void create(boolean fullscreen) throws Exception {
 		windowWidth = 1280;
 		windowHeight = 720;
 		glfwDefaultWindowHints();
@@ -113,17 +113,17 @@ public class GameWindow{
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 		monitor = glfwGetPrimaryMonitor();
 		vidMode = glfwGetVideoMode(monitor);
-		if(fullscreen){
-			window = glfwCreateWindow(vidMode.width(), vidMode.height(), Main.TITLE, monitor, NULL);
+		if(fullscreen) {
+			window = glfwCreateWindow(vidMode.width(), vidMode.height(), Game.TITLE, monitor, NULL);
 		}
-		else{
-			window = glfwCreateWindow(windowWidth, windowHeight, Main.TITLE, NULL, NULL);
+		else {
+			window = glfwCreateWindow(windowWidth, windowHeight, Game.TITLE, NULL, NULL);
 		}
-		if(window == NULL){
+		if(window == NULL) {
 			ErrorHandler.printError("Could not create the window!", true);
 			throw new RuntimeException();
 		}
-		if(!fullscreen){
+		if(!fullscreen) {
 			center();
 		}
 		glfwMakeContextCurrent(window);
@@ -131,15 +131,15 @@ public class GameWindow{
 		setViewPort();
 		glfwShowWindow(window);
 	}
-	public static void update(){
+	public static void update() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		Render.clear();
 	}
-	public static void close(){
+	public static void close() {
 		glfwSetWindowShouldClose(window, true);
 	}
-	public static void destroy(){
+	public static void destroy() {
 		glfwDestroyWindow(window);
 	}
 }

@@ -12,37 +12,37 @@ import java.util.List;
 
 import org.lwjgl.BufferUtils;
 
-public class Model{
+public class Model {
 	private int vao;
 	private int faceVbo;
 	private int indexCount;
 	private List<Integer> vbos = new ArrayList<Integer>();
-	public Model(){
+	public Model() {
 		vao = glGenVertexArrays();
 		bind();
 	}
-	public int getVAO(){
+	public int getVAO() {
 		return vao;
 	}
-	public int getIndexCount(){
+	public int getIndexCount() {
 		return indexCount;
 	}
-	public void bind(){
+	public void bind() {
 		glBindVertexArray(vao);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faceVbo);
 	}
-	public static void unbind(){
+	public static void unbind() {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
-	public void setFaces(int[] data){
+	public void setFaces(int[] data) {
 		faceVbo = glGenBuffers();
 		IntBuffer buffer = createIntBuffer(data);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, faceVbo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
 		indexCount = data.length;
 	}
-	public void addAttrib(int index, int size, float[] data){
+	public void addAttrib(int index, int size, float[] data) {
 		int vboID = glGenBuffers();
 		vbos.add(vboID);
 		FloatBuffer buffer = createFloatBuffer(data);
@@ -51,20 +51,20 @@ public class Model{
 		glVertexAttribPointer(index, size, GL_FLOAT, false, 0, 0L);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-	private FloatBuffer createFloatBuffer(float[] data){
+	private FloatBuffer createFloatBuffer(float[] data) {
 		FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
 		buffer.put(data);
 		buffer.flip();
 		return buffer;
 	}
-	private IntBuffer createIntBuffer(int[] data){
+	private IntBuffer createIntBuffer(int[] data) {
 		IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
 		buffer.put(data);
 		buffer.flip();
 		return buffer;
 	}
-	public void dispose(){
-		for(int vboID : vbos){
+	public void dispose() {
+		for(int vboID : vbos) {
 			glDeleteBuffers(vboID);
 		}
 		glDeleteBuffers(faceVbo);

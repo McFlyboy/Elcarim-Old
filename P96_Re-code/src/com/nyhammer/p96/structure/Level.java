@@ -10,7 +10,7 @@ import com.nyhammer.p96.entities.ModelEntity;
 import com.nyhammer.p96.graphics.Render;
 import com.nyhammer.p96.util.timing.Timer;
 
-public abstract class Level{
+public abstract class Level {
 	protected List<Bullet> bullets;
 	protected List<List<Enemy>> enemyWaves;
 	protected List<ModelEntity> backgrounds;
@@ -22,7 +22,7 @@ public abstract class Level{
 	private int todderCount;
 	private int luckTodderCloverCount;
 	private int luckTodderSpadeCount;
-	public Level(Timer baseTimer){
+	public Level(Timer baseTimer) {
 		bullets = new ArrayList<Bullet>();
 		enemyWaves = new ArrayList<List<Enemy>>();
 		waveIndex = 0;
@@ -35,39 +35,39 @@ public abstract class Level{
 		addWaves(baseTimer);
 		setEnemyCounts();
 	}
-	public boolean isCompleted(){
+	public boolean isCompleted() {
 		return completed;
 	}
-	public List<Bullet> getBullets(){
+	public List<Bullet> getBullets() {
 		return bullets;
 	}
-	protected String getBossString(){
+	protected String getBossString() {
 		List<Enemy> currentWave = getCurrentWave();
-		if(currentWave == null){
+		if(currentWave == null) {
 			return "";
 		}
-		if(currentWave.size() == 0){
+		if(currentWave.size() == 0) {
 			return "";
 		}
 		Enemy boss = currentWave.get(0);
 		return boss.name + ": " + boss.lives;
 	}
-	protected String getEnemyCountString(){
+	protected String getEnemyCountString() {
 		StringBuilder enemyCount = new StringBuilder();
 		boolean firstLine = true;
-		if(todderCount > 0){
+		if(todderCount > 0) {
 			enemyCount.append("Todder x" + todderCount);
 			firstLine = false;
 		}
-		if(luckTodderCloverCount > 0){
-			if(!firstLine){
+		if(luckTodderCloverCount > 0) {
+			if(!firstLine) {
 				enemyCount.append("\n");
 			}
 			enemyCount.append("Clover-Todder x" + luckTodderCloverCount);
 			firstLine = false;
 		}
-		if(luckTodderSpadeCount > 0){
-			if(!firstLine){
+		if(luckTodderSpadeCount > 0) {
+			if(!firstLine) {
 				enemyCount.append("\n");
 			}
 			enemyCount.append("Spade-Todder x" + luckTodderSpadeCount);
@@ -75,78 +75,78 @@ public abstract class Level{
 		}
 		return enemyCount.toString();
 	}
-	public List<Enemy> getCurrentWave(){
-		if(completed){
+	public List<Enemy> getCurrentWave() {
+		if(completed) {
 			return null;
 		}
 		return enemyWaves.get(waveIndex);
 	}
-	public Music getCurrentMusic(){
+	public Music getCurrentMusic() {
 		return bgms.get(bgmIndex);
 	}
 	protected abstract void init(Timer baseTimer);
 	protected abstract void addWaves(Timer baseTimer);
-	public void clearBullets(){
-		for(Bullet bullet : bullets){
+	public void clearBullets() {
+		for(Bullet bullet : bullets) {
 			bullet.hp = 0;
 		}
 	}
-	protected void setEnemyCounts(){
+	protected void setEnemyCounts() {
 		List<Enemy> currentWave = enemyWaves.get(waveIndex);
-		for(Enemy enemy : currentWave){
-			if(enemy.name.equals("Todder")){
+		for(Enemy enemy : currentWave) {
+			if(enemy.name.equals("Todder")) {
 				todderCount++;
 			}
-			if(enemy.name.equals("CloverTodder")){
+			if(enemy.name.equals("CloverTodder")) {
 				luckTodderCloverCount++;
 			}
-			if(enemy.name.equals("SpadeTodder")){
+			if(enemy.name.equals("SpadeTodder")) {
 				luckTodderSpadeCount++;
 			}
 		}
 	}
-	public void subtractEnemyCount(String enemyType){
-		if(enemyType.equals("Todder")){
+	public void subtractEnemyCount(String enemyType) {
+		if(enemyType.equals("Todder")) {
 			todderCount--;
 		}
-		if(enemyType.equals("CloverTodder")){
+		if(enemyType.equals("CloverTodder")) {
 			luckTodderCloverCount--;
 		}
-		if(enemyType.equals("SpadeTodder")){
+		if(enemyType.equals("SpadeTodder")) {
 			luckTodderSpadeCount--;
 		}
 	}
 	protected abstract void updateSpecifics();
-	public void update(){
-		if(bgmIndex < bgms.size()){
+	public void update() {
+		if(bgmIndex < bgms.size()) {
 			bgms.get(bgmIndex).update();
 		}
-		if(completed){
+		if(completed) {
 			return;
 		}
-		if(enemyWaves.get(waveIndex).isEmpty()){
+		if(enemyWaves.get(waveIndex).isEmpty()) {
 			waveIndex++;
-			if(waveIndex < enemyWaves.size()){
+			if(waveIndex < enemyWaves.size()) {
 				setEnemyCounts();
 			}
 		}
-		if(waveIndex >= enemyWaves.size()){
+		if(waveIndex >= enemyWaves.size()) {
 			completed = true;
 			return;
 		}
 		updateSpecifics();
 	}
-	public void renderBackground(){
-		if(bgIndex < backgrounds.size()){
+	public void renderBackground() {
+		if(bgIndex < backgrounds.size()) {
 			Render.addToQueue(backgrounds.get(bgIndex));
 		}
 	}
-	public void renderEnemies(){
-		if(completed){
+	public void renderEnemies() {
+		if(completed) {
 			return;
 		}
 		List<Enemy> enemyWave = enemyWaves.get(waveIndex);
-		for(Enemy enemy : enemyWave){
+		for(Enemy enemy : enemyWave) {
 			Render.addToQueue(enemy);
 		}
 	}
