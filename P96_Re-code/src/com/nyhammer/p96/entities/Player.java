@@ -59,8 +59,8 @@ public class Player extends ModelEntity {
 					texture.setOffset(animations[0].getFrame(0), animations[0].getTextureRow());
 					alive = true;
 					invinsible = true;
-					invinsibilityTimer.resume();
-					visibilityTimer.resume();
+					invinsibilityTimer.start();
+					visibilityTimer.start();
 				}
 				else {
 					return true;
@@ -141,7 +141,7 @@ public class Player extends ModelEntity {
 		hitting = true;
 		animations[0].setTextureRow(1);
 		animations[1].setTextureRow(1);
-		hitTimer.resume();
+		hitTimer.start();
 	}
 	public void shoot(List<Shot> shots) {
 		Shot shot = new Shot();

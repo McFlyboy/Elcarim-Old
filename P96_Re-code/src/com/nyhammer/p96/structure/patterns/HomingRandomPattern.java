@@ -23,7 +23,7 @@ public class HomingRandomPattern extends BulletPattern {
 	}
 	@Override
 	protected void startSpecifics() {
-		intervalTimer.resume();
+		intervalTimer.start();
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed) {

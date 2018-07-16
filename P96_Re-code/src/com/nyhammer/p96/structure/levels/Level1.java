@@ -333,7 +333,7 @@ public class Level1 extends Level {
 				super.clearBullets();
 			}
 			ballInactive = true;
-			attackTimer.resume();
+			attackTimer.start();
 			if(attackTimer.targetReached()) {
 				attackTimer.reset();
 				super.clearBullets();

@@ -8,7 +8,7 @@ public class Time {
 	public static TargetTimer fpsTimer;
 	public static void init() {
 		fpsTimer = new TargetTimer(1.0);
-		fpsTimer.resume();
+		fpsTimer.start();
 	}
 	public static double getTime() {
 		return GLFW.glfwGetTime();

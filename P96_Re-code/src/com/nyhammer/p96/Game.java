@@ -11,7 +11,7 @@ import com.nyhammer.p96.input.Keyboard;
 import com.nyhammer.p96.input.Mouse;
 import com.nyhammer.p96.structure.ControlScheme;
 import com.nyhammer.p96.structure.ResourceStorage;
-import com.nyhammer.p96.structure.scenes.GlobalScene;
+import com.nyhammer.p96.structure.scenes.UniverseScene;
 import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.timing.DeltaTimer;
 import com.nyhammer.p96.util.timing.Time;
@@ -25,7 +25,7 @@ public class Game {
 	public static final String TITLE = "Project 1996: Elcarim";
 	private DeltaTimer systemDelta;
 	private static final Random RANDOM = new Random();
-	private GlobalScene globalScene;
+	private UniverseScene universeScene;
 	public static String getVersion() {
 		StringBuilder version = new StringBuilder();
 		version.append(String.format("%d.%d.%d%s", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, PRE_VERSION_SUFFIX));
@@ -61,17 +61,24 @@ public class Game {
 			//bootingSound.play();
 			Render.setAlphaBlend(true);
 			Render.init();
-			globalScene = new GlobalScene();
+			universeScene = new UniverseScene();
 			Time.init();
 			systemDelta = new DeltaTimer();
-			globalScene.start();
+			universeScene.start();
 		}
 		catch(Exception e) {
 			ErrorHandler.printError("Error in game-startup!", true);
 			ErrorHandler.printError(e);
 			stop();
 		}
-		run();
+		try {
+			run();
+		}
+		catch(Exception e) {
+			ErrorHandler.printError("An error has occured!", true);
+			ErrorHandler.printError(e);
+			stop();
+		}
 	}
 	private void run() {
 		double targetFrameTime = 1.0 / GameWindow.getMonitorRefreshRate();
@@ -101,29 +108,89 @@ public class Game {
 	}
 	private void update() {
 		Gamepad.update();
-		globalScene.update();
+		universeScene.update();
 	}
 	private void render() {
-		globalScene.render();
+		universeScene.render();
 		Render.renderQueue();
 		GameWindow.update();
 		Time.updateFPS();
 	}
 	private void stop() {
+		boolean shutdownMessagePrinted = false;
 		try {
-			globalScene.dispose();
-			ResourceStorage.disposeSound("bootingSound");
-			ResourceStorage.disposeTextFont("font");
-			ResourceStorage.disposeAll();
+			universeScene.dispose();
+		}
+		catch(Exception e) {
+			if(!shutdownMessagePrinted) {
+				ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
+				shutdownMessagePrinted = true;
+			}
+			ErrorHandler.printError("Error while disposing the universe-scene!");
+			ErrorHandler.printError(e);
+		}
+		
+		ResourceStorage.disposeSound("bootingSound");
+		ResourceStorage.disposeTextFont("font");
+		ResourceStorage.disposeAll();
+		
+		try {
 			Render.terminate();
+		}
+		catch(Exception e) {
+			if(!shutdownMessagePrinted) {
+				ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
+				shutdownMessagePrinted = true;
+			}
+			ErrorHandler.printError("Error while terminating the rendering-engine!");
+			ErrorHandler.printError(e);
+		}
+		
+		try {
 			AudioSystem.terminate();
+		}
+		catch(Exception e) {
+			if(!shutdownMessagePrinted) {
+				ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
+				shutdownMessagePrinted = true;
+			}
+			ErrorHandler.printError("Error while terminating the audio-system!");
+			ErrorHandler.printError(e);
+		}
+		
+		try {
 			Keyboard.destroy();
+		}
+		catch(Exception e) {
+			if(!shutdownMessagePrinted) {
+				ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
+				shutdownMessagePrinted = true;
+			}
+			ErrorHandler.printError("Error while disposing the keyboard-listener!");
+			ErrorHandler.printError(e);
+		}
+		
+		try {
 			GameWindow.destroy();
+		}
+		catch(Exception e) {
+			if(!shutdownMessagePrinted) {
+				ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
+				shutdownMessagePrinted = true;
+			}
+			ErrorHandler.printError("Error while closing the window!");
+			ErrorHandler.printError(e);
+		}
+		
+		try {
 			Framework.terminate();
 		}
 		catch(Exception e) {
-			ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
-			ErrorHandler.printError("Error in game-shutdown!");
+			if(!shutdownMessagePrinted) {
+				ErrorHandler.printError("\n------------------------ SHUTTING DOWN!!! ------------------------\n");
+				shutdownMessagePrinted = true;
+			}
+			ErrorHandler.printError("Error while terminating GLFW!");
 			ErrorHandler.printError(e);
 		}
 		ErrorHandler.terminate();

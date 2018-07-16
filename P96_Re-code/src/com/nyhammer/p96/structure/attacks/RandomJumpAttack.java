@@ -27,7 +27,7 @@ public class RandomJumpAttack extends Attack {
 	@Override
 	public void update(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition) {
 		if(!started) {
-			delayTimer.resume();
+			delayTimer.start();
 			started = true;
 		}
 		patterns[0].update(deltaTime, sourcePosition, targetPosition);

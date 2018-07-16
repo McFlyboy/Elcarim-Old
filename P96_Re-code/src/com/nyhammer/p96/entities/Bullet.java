@@ -30,7 +30,7 @@ public class Bullet extends ModelEntity {
 			return;
 		}
 		if(hp == 0) {
-			intactTimer.resume();
+			intactTimer.start();
 			super.colorActive = true;
 			direction.x = 0f;
 			direction.y = 0f;

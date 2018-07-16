@@ -142,7 +142,7 @@ public class GameplayScene extends Scene {
 		}
 		if(ball.miracleTimer.targetReached()) {
 			ball.deactivateMiracle();
-			normalTimer.resume();
+			normalTimer.start();
 			Music bgm = level1.getCurrentMusic();
 			bgm.setActivePart(bgm.getActivePart() - 2, true);
 		}
@@ -191,7 +191,7 @@ public class GameplayScene extends Scene {
 						}
 						killStreak++;
 						ResourceStorage.getSound("hitSound").play();
-						enemy.hitTimer.resume();
+						enemy.hitTimer.start();
 					}
 				}
 				if(enemy.hitTimer.targetReached() && !collision) {

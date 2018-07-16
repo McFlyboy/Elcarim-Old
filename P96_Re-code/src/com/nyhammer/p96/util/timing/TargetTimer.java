@@ -22,8 +22,8 @@ public class TargetTimer {
 	public double getProgress() {
 		return timer.getTime() / targetTime;
 	}
-	public void resume() {
-		timer.resume();
+	public void start() {
+		timer.start();
 	}
 	public void pause() {
 		timer.pause();

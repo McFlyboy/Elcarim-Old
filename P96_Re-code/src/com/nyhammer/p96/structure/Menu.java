@@ -45,7 +45,7 @@ public class Menu {
 		optionSelected = selected;
 		if(selected) {
 			optionTexts[activeOption].setColors(new Color3f(1f, 0f, 0f));
-			continueTimer.resume();
+			continueTimer.start();
 		}
 		else {
 			optionTexts[activeOption].setColors(new Color3f(1f, 1f, 0f));

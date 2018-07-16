@@ -12,7 +12,7 @@ import com.nyhammer.p96.ui.GameWindow;
 import com.nyhammer.p96.util.math.vector.Vector2f;
 import com.nyhammer.p96.util.timing.Time;
 
-public class GlobalScene extends Scene {
+public class UniverseScene extends Scene {
 	private GlobalControls controls;
 	private PauseScene pauseScene;
 	private GameOverScene gameOverScene;
@@ -24,7 +24,7 @@ public class GlobalScene extends Scene {
 	private TextField congratzLineText;
 	private TextField congratzText;
 	private TextField continueText;
-	public GlobalScene() {
+	public UniverseScene() {
 		super(null);
 		fpsText = new TextField();
 		fpsText.scale = new Vector2f(0.0015f, 0.0015f);

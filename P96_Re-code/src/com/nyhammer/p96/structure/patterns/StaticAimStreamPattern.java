@@ -25,7 +25,7 @@ public class StaticAimStreamPattern extends BulletPattern {
 	}
 	@Override
 	protected void startSpecifics() {
-		streamIntervalTimer.resume();
+		streamIntervalTimer.start();
 	}
 	@Override
 	protected void updateSpecifics(float deltaTime, Vector2f sourcePosition, Vector2f targetPosition, float speed) {
@@ -39,13 +39,13 @@ public class StaticAimStreamPattern extends BulletPattern {
 				bulletCount = 0;
 				bulletIntervalTimer.reset();
 				streamIntervalTimer.reset();
-				streamIntervalTimer.resume();
+				streamIntervalTimer.start();
 			}
 		}
 		else {
 			if(streamIntervalTimer.targetReached()) {
 				streaming = true;
-				bulletIntervalTimer.resume();
+				bulletIntervalTimer.start();
 			}
 		}
 	}

@@ -39,7 +39,7 @@ public class Timer {
 		pauseTime = baseTimer != null ? baseTimer.getTime() : Time.getTime();
 		pause = true;
 	}
-	public void resume() {
+	public void start() {
 		if(!pause) {
 			return;
 		}

@@ -62,7 +62,7 @@ public class Ball extends ModelEntity {
 	public void activateMiracle() {
 		colorActive = true;
 		miracleActive = true;
-		miracleTimer.resume();
+		miracleTimer.start();
 		ResourceStorage.getSound("miracleSound").play();
 	}
 	public void deactivateMiracle() {

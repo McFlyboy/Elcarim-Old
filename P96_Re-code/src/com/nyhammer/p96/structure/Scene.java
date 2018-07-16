@@ -30,7 +30,7 @@ public abstract class Scene {
 		if(running) {
 			return;
 		}
-		timer.resume();
+		timer.start();
 		startSpecifics();
 		running = true;
 	}

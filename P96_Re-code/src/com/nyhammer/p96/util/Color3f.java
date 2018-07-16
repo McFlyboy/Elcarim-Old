@@ -17,6 +17,25 @@ public class Color3f {
 		this.green = green;
 		this.blue = blue;
 	}
+	public Color3f getAdd(Color3f color) {
+		return new Color3f(red + color.red, green + color.green, blue + color.blue);
+	}
+	public void add(Color3f color) {
+		red += color.red;
+		green += color.green;
+		blue += color.blue;
+	}
+	public Color3f getSub(Color3f color) {
+		return new Color3f(red - color.red, green - color.green, blue - color.blue);
+	}
+	public void sub(Color3f color) {
+		red -= color.red;
+		green -= color.green;
+		blue -= color.blue;
+	}
+	public Color3f getMul(float scalar) {
+		return new Color3f(red * scalar, green * scalar, blue * scalar);
+	}
 	public void mul(float scalar) {
 		red *= scalar;
 		green *= scalar;
