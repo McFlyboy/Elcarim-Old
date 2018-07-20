@@ -1,5 +1,5 @@
-# Project 1996
-Also called "*P96*".
+# Elcarim
+Previously known as "*Project 1996*".
 <br />
 This is a game-dev project I've been working on-and-off on since november 2016.
 <br />
