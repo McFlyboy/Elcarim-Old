@@ -1,6 +1,7 @@
 package com.nyhammer.p96.test.entity.uiEntities;
 
 import com.nyhammer.p96.test.graphics.appearance.Appearance;
+import com.nyhammer.p96.util.math.vector.Vector2f;
 
 public abstract class UIAppearanceEntity extends UIEntity {
 	private Appearance appearance;
@@ -9,12 +10,9 @@ public abstract class UIAppearanceEntity extends UIEntity {
 		appearance = null;
 	}
 	@Override
-	public float getWidth() {
-		return appearance.getWidth() * super.getScale().x;
-	}
-	@Override
-	public float getHeight() {
-		return appearance.getHeight() * super.getScale().y;
+	public Vector2f getSize() {
+		Vector2f scale = super.getScale();
+		return new Vector2f(scale.x * appearance.getWidth(), scale.y * appearance.getHeight());
 	}
 	protected Appearance getAppearance() {
 		return appearance;

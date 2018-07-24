@@ -4,53 +4,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nyhammer.p96.test.entity.uiEntities.UIEntity;
+import com.nyhammer.p96.util.math.vector.Vector2f;
 
 public class Group extends UIEntity {
 	public enum RowType {
 		VERTICAL, HORIZONTAL;
 	}
+	public enum Alignment {
+		ALIGN_NEGATIVE, ALIGN_CENTER, ALIGN_POSITIVE;
+	}
 	private List<UIEntity> uiEntities;
 	private int index;
 	private RowType rowType;
+	private Alignment alignment;
 	private float spacing;
 	public Group() {
 		super();
 		uiEntities = new ArrayList<UIEntity>();
 		index = 0;
 		rowType = RowType.VERTICAL;
+		alignment = Alignment.ALIGN_CENTER;
 		spacing = 0f;
 	}
 	@Override
-	public float getWidth() {
-		float width = 0f;
-		if(rowType == RowType.HORIZONTAL) {
-			for(UIEntity uiEntity : uiEntities) {
-				width += uiEntity.getWidth();
-			}
-			width += spacing * (uiEntities.size() - 1);
-		}
-		else {
-			for(UIEntity uiEntity : uiEntities) {
-				width = Math.max(width, uiEntity.getWidth());
-			}
-		}
-		return width;
-	}
-	@Override
-	public float getHeight() {
-		float height = 0f;
+	public Vector2f getSize() {
+		Vector2f size = new Vector2f();
 		if(rowType == RowType.VERTICAL) {
 			for(UIEntity uiEntity : uiEntities) {
-				height += uiEntity.getHeight();
+				Vector2f uiEntitySize = uiEntity.getSize();
+				size.x = Math.max(size.x, uiEntitySize.x);
+				size.y += uiEntitySize.y;
 			}
-			height += spacing * (uiEntities.size() - 1);
+			size.y += spacing * (uiEntities.size() - 1);
 		}
 		else {
 			for(UIEntity uiEntity : uiEntities) {
-				height = Math.max(height, uiEntity.getHeight());
+				Vector2f uiEntitySize = uiEntity.getSize();
+				size.x += uiEntitySize.x;
+				size.y = Math.max(size.y, uiEntitySize.y);
 			}
+			size.x += spacing * (uiEntities.size() - 1);
 		}
-		return height;
+		return size;
 	}
 	public int getIndex() {
 		return index;
@@ -75,6 +70,12 @@ public class Group extends UIEntity {
 	}
 	public void setRowType(RowType rowType) {
 		this.rowType = rowType;
+	}
+	public Alignment getAlignment() {
+		return alignment;
+	}
+	public void setAlignment(Alignment alignment) {
+		this.alignment = alignment;
 	}
 	protected float getSpacing() {
 		return spacing;
