@@ -1,9 +1,9 @@
-# Elcarim
-Previously known as "*Project 1996*".
+# Project 1996
+Also known as "*Elcarim*".
 <br />
 This is a game-dev project I've been working on-and-off on since november 2016.
+I stopped working on this version in 2018 to re-create the game's code in C++, and continue development from there.
 <br />
-I'm programming it in Java with the use of [LWJGL3](https://www.lwjgl.org/).
+I made this version in Java with the use of [LWJGL3](https://www.lwjgl.org/).
 <br />
-<br />
-**Edit:** This is the old project for the game. Further development is being done in a private repo. Sorry ^^'
+Further development on the full game in C++ is being done in a private repo. Sorry ^^'
