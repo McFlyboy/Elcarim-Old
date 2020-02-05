@@ -6,4 +6,4 @@ I stopped working on this version in 2018 to re-create the game's code in C++, a
 <br />
 I made this version in Java with the use of [LWJGL3](https://www.lwjgl.org/).
 <br />
-Further development on the full game in C++ is being done in a private repo. Sorry ^^'
+Further development on the full game in C++ is being done in a different repo: https://github.com/McFlyboy/Elcarim
