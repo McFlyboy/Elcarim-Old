@@ -41,7 +41,7 @@ public class UI {
 		this.anchorPosition = anchorPosition;
 	}
 	public void organizeUI() {
-		if(uiEntity == null) {
+		/*if(uiEntity == null) {
 			return;
 		}
 		float halfWidth = uiEntity.getWidth() / 2f;
@@ -76,7 +76,7 @@ public class UI {
 			center = anchorPosition.getAdd(new Vector2f(-halfWidth, halfHeight));
 			break;
 		}
-		Vector2f top = center.getAdd(new Vector2f(0f, halfHeight));
+		Vector2f top = center.getAdd(new Vector2f(0f, halfHeight));*/
 	}
 	public void render() {
 		if(uiEntity == null) {
